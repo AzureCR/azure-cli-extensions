@@ -28,7 +28,8 @@ steps:
       --format json \
       --timeout 30m \
       --scanners vuln \
-      --output /workspace/data/$ScanReport
+      --output /workspace/data/$ScanReport \
+      --db-repository "mcr.microsoft.com/mirror/ghcr/aquasecurity/trivy-db:2"
 
   # Step 3: Attach the vulnerability scan report to the image
   - id: upload-trivy-report
