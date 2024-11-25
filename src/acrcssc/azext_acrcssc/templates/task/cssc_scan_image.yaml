@@ -22,7 +22,7 @@ steps:
       --timeout 30m \
       --scanners vuln \
       --output /workspace/data/vulnerability-report_trivy_$DATE.json \
-      --db-repository "mcr.microsoft.com/mirror/ghcr/aquasecurity/trivy-db:2"
+      --db-repository "public.ecr.aws/aquasecurity/trivy-db:latest"
 
   - cmd: cssc jq 'if .Results == null or (.Results | length) == 0 then 0 else [.Results[] | select(.Vulnerabilities != null) | .Vulnerabilities | length] | add end' /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/vulCount.txt
   - cmd: cssc jq 'if .Metadata.OS.EOSL == null then false else .Metadata.OS.EOSL end' /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/eosl.txt
