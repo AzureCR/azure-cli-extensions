@@ -1,0 +1,49 @@
+version: v1.1.0
+alias:
+  values:
+    SBOMGenerationTask: cssc-sbom-generation
+    cssc : mcr.microsoft.com/acr/cssc:56f0765
+steps:
+  # Step 1: Check if the image has an attached spdx sbom
+  - id: print-inputs
+    cmd: |
+        bash -c 'echo "Validate and generate SBOM for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
+  
+  - id: setup-data-dir
+    cmd: bash mkdir ./data
+
+  - id: oras-discover
+    cmd: | 
+      cssc oras discover \
+      --artifact-type application/spdx+json \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} > /workspace/data/discover_output.txt
+
+  - id: check-sbom-exists
+    cmd: az login --identity
+    cmd: |
+      az -c '
+      grep -q "application/spdx+json" /workspace/data/discover_output.txt && \
+      if [ $? -eq 0 ]; then \
+        echo "SBOM already exists for the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} "; \
+        exit 0; \  
+      else \
+        echo "No SBOM found in the spdx-json format for the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}, proceeding to generate SBOM"; \
+      fi'
+
+  # Step 2: Generate SBOM using syft
+  - id: generate-sbom
+    cmd: |
+      cssc syft \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
+      --scope all-layers \
+      -o spdx-json > /workspace/data/sbom-report-spdx.json
+    
+  # Step 3: Attach the SBOM as a referrer artifact to image
+  - id: upload-sbom
+    cmd: |
+      cssc oras attach \
+      --artifact-type application/spdx+json \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
+      ./data/sbom-report-spdx.json
+
+  - cmd: bash echo "Generated SBOM $SBOMReport is attached to the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"
