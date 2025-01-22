@@ -440,7 +440,7 @@ def _transform_task_list(tasks):
             transformed_obj["schedule"] = transform_cron_to_schedule(trigger.timer_triggers[0].schedule)
 
             # add a 'nextOccurrence' field to the task, only for the scheduling task
-            transformed_obj["nextOccurrence"] = get_next_date(task.trigger.timer_triggers[0].schedule)
+            transformed_obj["nextOccurrence"] = task.trigger.timer_triggers[0].additional_properties["nextOccurrence"]
         transformed.append(transformed_obj)
 
     return transformed
