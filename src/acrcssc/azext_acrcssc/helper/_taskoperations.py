@@ -46,15 +46,20 @@ logger = get_logger(__name__)
 def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, schedule, dryrun, run_immediately, is_create_workflow=True):
     logger.debug(f"Entering continuousPatchV1_creation {cssc_config_file} {dryrun} {run_immediately}")
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
+
+    next_date = None
     schedule_cron_expression = None
+
     if schedule is not None:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
-    logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
+    logger.debug(f"Converted schedule to cron expression: {schedule_cron_expression}")
+
     cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
-        _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
+        workflow = _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
+        next_date = workflow["nextOccurrence"]["value"]
     else:
         if not cssc_tasks_exists:
             raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Use 'az acr supply-chain workflow create' command to create {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow.")
@@ -67,13 +72,21 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, schedule,
     _eval_trigger_run(cmd, registry, resource_group, run_immediately)
 
     # on 'update' schedule is optional
-    if schedule is None:
+    if next_date is None:
         task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
         trigger = task.trigger
         if trigger and trigger.timer_triggers:
             schedule_cron_expression = trigger.timer_triggers[0].schedule
+            # Note (transteven): I think additional_properties is needed here because nextOccurrence isn't officially in ARM Manifest yet
+            next_date = trigger.timer_triggers[0].additional_properties["nextOccurrence"]
 
-    next_date = get_next_date(schedule_cron_expression)
+    computed_next_date = get_next_date(schedule_cron_expression)
+    if next_date is None:
+        logger.debug(f"Computed next occurrence from schedule")
+        next_date = computed_next_date
+    else:
+        logger.debug(f"Found next occurrence from task output: {next_date}, computed would be: {computed_next_date}")
+
     print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
 
 
@@ -89,7 +102,7 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
         param_name = CONTINUOUSPATCH_TASK_DEFINITION[task]["parameter_name"]
         parameters[param_name] = encoded_task
 
-    validate_and_deploy_template(
+    return validate_and_deploy_template(
         cmd.cli_ctx,
         registry,
         resource_group,
@@ -104,7 +117,7 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
 
 def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
     if schedule_cron_expression is not None:
-        _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dry_run)
+        return _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dry_run)
 
 
 def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
@@ -342,9 +355,10 @@ def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, d
         logger.debug("Dry run, skipping the update of the task schedule")
         return None
     try:
-        acr_task_client.begin_update(resource_group_name, registry.name,
+        update_task = acr_task_client.begin_update(resource_group_name, registry.name,
                                      CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
                                      taskUpdateParameters)
+        LongRunningOperation(cmd.cli_ctx)(update_task)
         print("Schedule has been successfully updated.")
     except Exception as exception:
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
@@ -426,7 +440,7 @@ def _transform_task_list(tasks):
             transformed_obj["schedule"] = transform_cron_to_schedule(trigger.timer_triggers[0].schedule)
 
             # add a 'nextOccurrence' field to the task, only for the scheduling task
-            transformed_obj["nextOccurrence"] = get_next_date(task.trigger.timer_triggers[0].schedule)
+            transformed_obj["nextOccurrence"] = task.trigger.timer_triggers[0].additional_properties["nextOccurrence"]
         transformed.append(transformed_obj)
 
     return transformed

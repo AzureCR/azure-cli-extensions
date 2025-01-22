@@ -143,5 +143,11 @@
         "[resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-trigger-workflow')]"
       ]
     }
-  ]
+  ],
+  "outputs": {
+    "nextOccurrence": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-trigger-workflow')).trigger.timerTriggers[0]['nextOccurrence']]"
+    }
+  }
 }
