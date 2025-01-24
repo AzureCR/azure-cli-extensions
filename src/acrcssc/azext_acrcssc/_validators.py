@@ -9,6 +9,7 @@ import json
 import os
 import re
 from knack.log import get_logger
+from croniter import croniter
 from azure.cli.command_modules.acr.repository import acr_repository_show
 from .helper._constants import (
     BEARER_TOKEN_USERNAME,
@@ -120,19 +121,29 @@ def _check_task_exists(cmd, registry, task_name=""):
     return False
 
 
+# schedule can be both a timespan (1d) or a cron expression (0 0 * * *), need to validate both
 def _validate_schedule(schedule):
     # during update, schedule can be null if we are only updating the config
     if schedule is None:
         return
+
+    # try to match a timespan first
     # Extract the numeric value and unit from the timespan expression
-    match = re.match(r'(\d+)(d)$', schedule)
-    if not match:
+    try:
+        match = re.match(r'^(\d+)(d)$', schedule)
+        if match:
+            value = int(match.group(1))
+            unit = match.group(2)
+            if unit == 'd' and (value < 1 or value > 30):  # day of the month
+                raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
+            return
+
+        # Validate cron expression using croniter
+        if not croniter(schedule).is_valid:
+            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT, recommendation=RECOMMENDATION_SCHEDULE)
+
+    except Exception:
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT, recommendation=RECOMMENDATION_SCHEDULE)
-    if match is not None:
-        value = int(match.group(1))
-        unit = match.group(2)
-    if unit == 'd' and (value < 1 or value > 30):  # day of the month
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
 
 
 def validate_inputs(schedule, config_file_path=None):

@@ -17,7 +17,16 @@ logger = get_logger(__name__)
 # pylint: disable=logging-fstring-interpolation
 
 
+# this is a cheaper regex to match than the cron expression
+def _schedule_is_timespan_format(schedule):
+    return re.match(r'^\d+d$', schedule)
+
+
 def convert_timespan_to_cron(schedule, date_time=None):
+    # only timespan and cron formats are supported, and 'schedule' has already been validated
+    if not _schedule_is_timespan_format(schedule):
+        return schedule
+
     # Regex to look for pattern 1d, 2d, 3d, etc.
     match = re.match(r'(\d+)([d])', schedule)
     value = int(match.group(1))
@@ -45,10 +54,19 @@ def transform_cron_to_schedule(cron_expression, just_days=False):
     match = re.search(r'\*/(\d+)', third_part)
 
     if match:
+        days = int(match.group(1))
+
+        # cron expressions like "0 0 */99 * *" are valid (it will only trigger on the 1st of every month), but displaying it as days makes no sense.
+        # Display the full cron expression so the user can see what's going on.
+        if days < 1 or days > 31:
+            return cron_expression
+
         if just_days:
-            return match.group(1)
-        return match.group(1) + 'd'
-    return None
+            return days
+        return days + 'd'
+
+    # if the cron expression is not in the format */n, return the cron expression as is
+    return cron_expression
 
 
 def create_temporary_dry_run_file(file_location, tmp_folder):
