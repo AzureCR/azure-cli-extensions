@@ -10,7 +10,12 @@ import shutil
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from ._constants import ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, TMP_DRY_RUN_FILE_NAME
 from azure.mgmt.core.tools import parse_resource_id
-from ._constants import RESOURCE_GROUP
+from ._constants import (
+    ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
+    RESOURCE_GROUP,
+    SCHEDULE_MIN_DAYS,
+    SCHEDULE_MAX_DAYS
+)
 from .._client_factory import cf_acr_tasks
 
 logger = get_logger(__name__)
@@ -18,19 +23,19 @@ logger = get_logger(__name__)
 
 
 # this is a cheaper regex to match than the cron expression
-def _schedule_is_timespan_format(schedule):
-    return re.match(r'^\d+d$', schedule)
+# Regex to look for pattern 1d, 2d, 3d, etc
+def schedule_timespan_format(schedule):
+    match = re.match(r'(\d+)d$', schedule)
+    if match is not None:
+        return int(match.group(1))
+    return None
 
 
 def convert_timespan_to_cron(schedule, date_time=None):
     # only timespan and cron formats are supported, and 'schedule' has already been validated
-    if not _schedule_is_timespan_format(schedule):
+    match = schedule_timespan_format(schedule)
+    if not match:
         return schedule
-
-    # Regex to look for pattern 1d, 2d, 3d, etc.
-    match = re.match(r'(\d+)([d])', schedule)
-    value = int(match.group(1))
-    unit = match.group(2)
 
     if date_time is None:
         date_time = datetime.now(timezone.utc)
@@ -38,10 +43,9 @@ def convert_timespan_to_cron(schedule, date_time=None):
     cron_hour = date_time.hour
     cron_minute = date_time.minute
 
-    if unit == 'd':  # day of the month
-        if value < 1 or value > 30:
-            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE)
-        cron_expression = f'{cron_minute} {cron_hour} */{value} * *'
+    if match < SCHEDULE_MIN_DAYS or match > SCHEDULE_MAX_DAYS:
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE)
+    cron_expression = f'{cron_minute} {cron_hour} */{match} * *'
 
     return cron_expression
 
@@ -63,7 +67,7 @@ def transform_cron_to_schedule(cron_expression, just_days=False):
 
         if just_days:
             return days
-        return days + 'd'
+        return f"{days}d"
 
     # if the cron expression is not in the format */n, return the cron expression as is
     return cron_expression

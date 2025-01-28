@@ -36,6 +36,8 @@ BEARER_TOKEN_USERNAME = "00000000-0000-0000-0000-000000000000"
 RESOURCE_GROUP = "resource_group"
 SUBSCRIPTION = "subscription"
 TMP_DRY_RUN_FILE_NAME = "tmp_dry_run_template.yaml"
+SCHEDULE_MIN_DAYS = 1
+SCHEDULE_MAX_DAYS = 30
 
 
 # Continuous Patch Constants
