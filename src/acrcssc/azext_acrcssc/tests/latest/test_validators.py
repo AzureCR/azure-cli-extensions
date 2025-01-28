@@ -21,17 +21,30 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
     def test_validate_schedule_valid(self):
         test_cases = [
-            ('1d' ),
+            ('1d'),
             ('5d'),
-            ('10d')
+            ('10d'),
+            ('* * * * *'),
+            ('0 0 * * *'),
+            ('20 4 */7 * *'),
+            ('20 4 2-30/7 * *')
         ]
 
         for timespan in test_cases:
             with self.subTest(timespan=timespan):
-               _validate_schedule(timespan)
-    
+                _validate_schedule(timespan)
+
     def test_validate_schedule_invalid(self):
-        test_cases = [('df'),('12'),('dd'),('41d'), ('21dd')]
+        test_cases = [
+            ('df'),
+            ('12'),
+            ('dd'),
+            ('41d'),
+            ('21dd'),
+            ('* * *'),
+            ('99 * * * *'),
+            ('* 9-100 * * *')
+        ]
 
         for timespan in test_cases:
             self.assertRaises(InvalidArgumentValueError, _validate_schedule, timespan)

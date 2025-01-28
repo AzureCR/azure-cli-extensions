@@ -9,6 +9,7 @@ import json
 import os
 import re
 from knack.log import get_logger
+from croniter import croniter, CroniterBadCronError
 from azure.cli.command_modules.acr.repository import acr_repository_show
 from .helper._constants import (
     BEARER_TOKEN_USERNAME,
@@ -20,14 +21,15 @@ from .helper._constants import (
     CONTINUOUSPATCH_ALL_TASK_NAMES,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
-    RESOURCE_GROUP,
+    SCHEDULE_MIN_DAYS,
+    SCHEDULE_MAX_DAYS,
     SUBSCRIPTION)
 from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_SCHEDULE
 from .helper._ociartifactoperations import _get_acr_token
 from azure.mgmt.core.tools import (parse_resource_id)
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from ._client_factory import cf_acr_tasks
-from .helper._utility import get_task
+from .helper._utility import get_task, schedule_timespan_format
 
 logger = get_logger(__name__)
 
@@ -120,19 +122,27 @@ def _check_task_exists(cmd, registry, task_name=""):
     return False
 
 
+# schedule can be both a timespan (1d) or a cron expression (0 0 * * *), need to validate both
 def _validate_schedule(schedule):
     # during update, schedule can be null if we are only updating the config
     if schedule is None:
         return
+
+    # try to match a timespan first
     # Extract the numeric value and unit from the timespan expression
-    match = re.match(r'(\d+)(d)$', schedule)
-    if not match:
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT, recommendation=RECOMMENDATION_SCHEDULE)
+    match = schedule_timespan_format(schedule)
     if match is not None:
-        value = int(match.group(1))
-        unit = match.group(2)
-    if unit == 'd' and (value < 1 or value > 30):  # day of the month
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
+        if match < SCHEDULE_MIN_DAYS or match > SCHEDULE_MAX_DAYS:  # day of the month
+            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
+                                            recommendation=RECOMMENDATION_SCHEDULE)
+    else:
+        try:
+            if not croniter(schedule).is_valid:
+                raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
+                                                recommendation=RECOMMENDATION_SCHEDULE)
+        except CroniterBadCronError:
+            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
+                                            recommendation=RECOMMENDATION_SCHEDULE)
 
 
 def validate_inputs(schedule, config_file_path=None):

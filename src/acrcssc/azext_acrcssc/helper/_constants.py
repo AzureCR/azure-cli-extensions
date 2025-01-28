@@ -36,6 +36,8 @@ BEARER_TOKEN_USERNAME = "00000000-0000-0000-0000-000000000000"
 RESOURCE_GROUP = "resource_group"
 SUBSCRIPTION = "subscription"
 TMP_DRY_RUN_FILE_NAME = "tmp_dry_run_template.yaml"
+SCHEDULE_MIN_DAYS = 1
+SCHEDULE_MAX_DAYS = 30
 
 
 # Continuous Patch Constants
@@ -68,7 +70,7 @@ WORKFLOW_STATUS_PATCH_NOT_AVAILABLE = "---No patch image available---"
 ERROR_MESSAGE_INVALID_TASK = "Workflow type is invalid"
 ERROR_MESSAGE_INVALID_TIMESPAN_VALUE = "Schedule value is invalid. "
 ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT = "Schedule format is invalid. "
-RECOMMENDATION_SCHEDULE = "Schedule must be in the format of <number><unit> where unit is d for days. Example: 1d. Max value for d is 30d."
+RECOMMENDATION_SCHEDULE = "Schedule must be in the format of <number><unit> where unit is d for days. Example: 1d. Max value for d is 30d.\nOr a valid cron expression. Example: 0 0 * * *"
 # this dictionary can be expanded to handle more configuration of the tasks regarding continuous patching
 # if this gets out of hand, or more types of tasks are supported, this should be a class on its own
 CONTINUOUSPATCH_TASK_DEFINITION = {
