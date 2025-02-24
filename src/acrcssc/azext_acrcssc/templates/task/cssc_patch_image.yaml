@@ -2,7 +2,7 @@ version: v1.1.0
 alias:
   values:
     ScanReport : os-vulnerability-report_trivy_{{ regexReplaceAll "[^a-zA-Z0-9]" .Values.SOURCE_REPOSITORY "-" }}_{{.Values.SOURCE_IMAGE_TAG}}_$(date "+%Y-%m-%d").json
-    cssc : mcr.microsoft.com/acr/cssc:f86c1b6
+    cssc : mcr.microsoft.com/acr/cssc:f86c1b6 
 steps:
   - id: print-inputs
     cmd: |
@@ -35,7 +35,7 @@ steps:
       --output /workspace/data/$ScanReport
 
   - id: buildkitd
-    cmd: moby/buildkit --addr tcp://0.0.0.0:8888
+    cmd: mobybuildkit --addr tcp://0.0.0.0:8888
     entrypoint: buildkitd
     detach: true
     privileged: true

@@ -41,11 +41,9 @@ steps:
       if ! [[ "$vulCount" =~ ^[0-9]+$ ]]; then vulCount=0; fi && \
       if [ "$eoslValue" = "true" ]; then \
         echo "PATCHING will be skipped as EOSL is $eoslValue for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
-      elif [ $vulCount -gt 0 ]; then \
-          echo "Total OS vulnerabilities found -> $vulCount"; \
-          echo "PATCHING task scheduled for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}, new patch tag will be {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"; \
-          az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --set SOURCE_IMAGE_NEWPATCH_TAG={{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} --no-wait; \
-        else \
-          echo "PATCHING will be skipped as no vulnerability found in the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
+      else \
+        echo "Total OS vulnerabilities found -> $vulCount"; \
+        echo "PATCHING task scheduled for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}, new patch tag will be {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"; \
+        az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --set SOURCE_IMAGE_NEWPATCH_TAG={{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} --no-wait; \
       fi'
     entryPoint: /bin/bash
