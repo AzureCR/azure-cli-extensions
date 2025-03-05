@@ -255,7 +255,7 @@ class WorkflowTaskStatus:
             concurrent.futures.wait(futures)
 
     @staticmethod
-    def from_taskrun(cmd, taskrun_client, registry, scan_taskruns, patch_taskruns, progress_indicator=None):
+    def from_taskrun(cmd, taskrun_client, registry, scan_taskruns, patch_taskruns, progress_indicator=None, workflow_status_filter=None):
         WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, scan_taskruns, progress_indicator)
         all_status = {}
 
@@ -312,6 +312,10 @@ class WorkflowTaskStatus:
             WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, taskrunList, progress_indicator)
             for workflow_status in failed_patch_tasklog_retrieval:
                 workflow_status.patch_logs = workflow_status.patch_task.task_log_result
+
+        if workflow_status_filter:
+            filtered_workflow = {key: workflow for key, workflow in all_status.items() if workflow.status() == workflow_status_filter}
+            all_status = filtered_workflow
 
         return [status.get_status() for status in all_status.values()]
 
