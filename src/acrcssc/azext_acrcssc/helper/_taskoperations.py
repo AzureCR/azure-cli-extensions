@@ -60,7 +60,7 @@ def create_update_continuous_patch_v1(cmd,
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
     schedule_cron_expression = None
     cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
-    
+
     if schedule is not None:
         schedule_cron_expression = convert_timespan_to_cron(schedule)
         logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
