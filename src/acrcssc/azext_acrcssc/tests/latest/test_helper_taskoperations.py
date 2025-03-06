@@ -153,11 +153,11 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.create_oci_artifact_continuous_patch")
     @mock.patch("azext_acrcssc.helper._taskoperations.validate_and_deploy_template")
     @mock.patch("azext_acrcssc.helper._taskoperations._eval_trigger_run")
-    def test_create_continuous_patch_v1_dryrun(self, mock_eval_trigger_run, mock_validate_and_deploy_template, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuoustask_exists):
+    def test_create_continuous_patch_v1_dryrun(self, mock_eval_trigger_run, mock_validate_and_deploy_template, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuous_task_exists):
         # Mock the necessary dependencies
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
-        mock_check_continuoustask_exists.return_value = False
+        mock_check_continuous_task_exists.return_value = False, []
         mock_convert_timespan_to_cron.return_value = "0 0 * * *"
 
         # Call the function
@@ -175,7 +175,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations._delete_task")
     def test_delete_continuous_patch_v1_dryrun(self, mock_delete_task, mock_delete_oci_artifact_continuous_patch, mock_check_continuous_task_config_exists, mock_check_continuous_task_exists):
         # Mock the necessary dependencies
-        mock_check_continuous_task_exists.return_value = True
+        mock_check_continuous_task_exists.return_value = True, []
         mock_check_continuous_task_config_exists.return_value = True
 
         # Call the function
@@ -190,7 +190,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations._transform_task_list")
     def test_list_continuous_patch_v1(self, mock_transform_task_list, mock_cf_acr_tasks, mock_check_continuous_task_exists):
         # Mock the necessary dependencies
-        mock_check_continuous_task_exists.return_value = True
+        mock_check_continuous_task_exists.return_value = True, []
         mock_acr_task_client = mock.MagicMock()
         mock_cf_acr_tasks.return_value = mock_acr_task_client
         mock_acr_task_client.list.return_value = []
