@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
 
 
 class AcrcsscScenarioTest(ScenarioTest):
-
+    @live_only()
     @ResourceGroupPreparer()
     def test_acrcssc_workflow(self, resource_group):
         curr_dir = os.path.dirname(os.path.abspath(__file__))
