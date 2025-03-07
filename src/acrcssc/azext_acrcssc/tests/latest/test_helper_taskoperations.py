@@ -257,7 +257,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         # Mock the necessary dependencies
         resource_group_name = "test_rg"
         status = "test_status"
-        mock_get_oci_artifact_continuous_patch.return_value = mock.MagicMock(schedule="1d")
+        mock_get_oci_artifact_continuous_patch.return_value = mock.MagicMock(schedule="1d"), mock.MagicMock()
 
         # Call the function
         result = track_scan_progress(self.cmd, resource_group_name, self.registry, status)
