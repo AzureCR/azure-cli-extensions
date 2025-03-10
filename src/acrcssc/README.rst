@@ -14,14 +14,15 @@ Continuous Patching is currently in preview. The following limitations apply:
 
 - Windows-based container images aren’t supported
 - Only "OS-level" vulnerabilities will be patched. This includes packages in the image managed by a package manager such as “apt” and “yum”. Vulnerabilities at the “application level” are unable to be patched, such as compiled languages like Go, Python, NodeJS
-- PAtching is only supported in Public regions, not in Sovereign regions
+- Patching is only supported in Public regions, not in Sovereign regions
 
 Features
 ========
 - **Continuous Patching Workflow**: Automates the process of scanning and patching container images.
-- **Task Management**: Create, update, delete, and list continuous patch tasks in the registry.
+- **Task Management**: Create, update, delete, show, and cancel continuous patch tasks in the registry.
 - **Dry Run Mode**: Validate the configuration without making any changes.
 - **Immediate Run**: Trigger the patching workflow immediately.
+- **Run Status**: Monitor the status of the scanning and patching tasks.
 
 Commands
 ========
