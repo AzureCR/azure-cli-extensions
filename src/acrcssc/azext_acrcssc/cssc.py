@@ -47,11 +47,11 @@ def _perform_continuous_patch_operation(cmd,
     # every time we perform a create or update operation, we need to validate for the number of images selected on the
     # configuration file. The way to do this is by silently running the dryrun operation. If the limit is exceeded, we
     # will not proceed with the operation.
-    dryrun_output = acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create, remove_internal_statements=not dryrun)
-    validate_continuous_patch_v1_image_limit(dryrun_output)
+    dryrun_output = acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create, remove_internal_statements=not dryrun)    
     if dryrun:
         print(dryrun_output)
     else:
+        validate_continuous_patch_v1_image_limit(dryrun_output)
         create_update_continuous_patch_v1(cmd, registry, config, schedule, dryrun, run_immediately, is_create)
 
 
@@ -98,7 +98,8 @@ def update_acrcssc(cmd,
 def delete_acrcssc(cmd,
                    resource_group_name,
                    registry_name,
-                   workflow_type):
+                   workflow_type,
+                   yes=False):
     '''Delete a continuous patch task in the registry.'''
     logger.debug(f"Entering delete_acrcssc with parameters: {resource_group_name} {registry_name} {workflow_type}")
 
@@ -106,7 +107,7 @@ def delete_acrcssc(cmd,
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
 
-    user_confirmation(f"Are you sure you want to delete the workflow {CONTINUOUS_PATCHING_WORKFLOW_NAME} from registry {registry_name}?")
+    user_confirmation(f"Are you sure you want to delete the workflow {CONTINUOUS_PATCHING_WORKFLOW_NAME} from registry {registry_name}?", yes=yes)
 
     delete_continuous_patch_v1(cmd, registry, False)
     print(f"Deleted {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow successfully from registry {registry_name}")
