@@ -523,10 +523,15 @@ class WorkflowLogPollingMethod(PollingMethod):
         self.registry_name = registry_name
         self.run_id = run_id
         self.run_status = TaskRunStatus.Running.value
+        self.start_time = time.time()
+        self.timeout = 10 * 60  # 60 minutes
 
     def initialize(self, client, initial_response, deserialization_callback):
         pass
 
+    def _timeout(self):
+        return (time.time() - self.start_time) >= self.timeout
+    
     def run(self):
 
         while WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.run_status):
@@ -534,6 +539,12 @@ class WorkflowLogPollingMethod(PollingMethod):
                                                                       self.resource_group_name,
                                                                       self.registry_name,
                                                                       self.run_id)
+            if self._timeout():
+                # if the taskrun is in a non-terminal state, we need to set it to timeout
+                logger.debug("Timeout waiting for task run to complete. Current status: %s", self.run_status)
+                self.run_status = TaskRunStatus.Timeout.value
+                raise AzCLIError("Timeout waiting for task run to complete.")
+            
             if WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.run_status):
                 logger.debug("Waiting for the task run to complete. Current status: %s", self.run_status)
                 time.sleep(2)
@@ -545,7 +556,7 @@ class WorkflowLogPollingMethod(PollingMethod):
                                                        self.run_id)
 
     def finished(self):
-        return not WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.status())
+        return not WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.status()) if not self._timeout() else True
 
     def done(self):
         return self.finished()
