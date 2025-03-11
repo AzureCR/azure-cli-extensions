@@ -285,9 +285,17 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
 def track_scan_progress(cmd, resource_group_name, registry, status):
     logger.debug("Entering track_scan_progress")
 
+    cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
+    if not cssc_tasks_exists:
+        logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks")
+        return
+
     config, _ = get_oci_artifact_continuous_patch(cmd, registry)
 
-    return _retrieve_logs_for_image(cmd, registry, resource_group_name, config.schedule, status)
+    image_status = _retrieve_logs_for_image(cmd, registry, resource_group_name, config.schedule, status)
+    print(f"Listing images that have been scanned and/or patched in the last {config.schedule} days")
+    print(f"Total images: {len(image_status) if image_status else 0}")
+    return image_status
 
 
 def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workflow_status=None):
