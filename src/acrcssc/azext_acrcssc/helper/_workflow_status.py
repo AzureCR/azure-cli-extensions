@@ -420,10 +420,11 @@ class WorkflowTaskStatus:
                                                       resource_group_name,
                                                       registry_name,
                                                       run_id)
-            LongRunningOperation(
+            result = LongRunningOperation(
                 cmd.cli_ctx,
                 progress_bar=IndeterminateProgressBar(cmd.cli_ctx, message=await_task_message)
             )(polling_method)
+            logger.debug("Polling result: %s", result)
 
         blobClient = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '_blob_client#BlobClient')
         return WorkflowTaskStatus._download_logs(blobClient.from_blob_url(log_file_sas))
@@ -524,36 +525,35 @@ class WorkflowLogPollingMethod(PollingMethod):
         self.run_id = run_id
         self.run_status = TaskRunStatus.Running.value
         self.start_time = time.time()
-        self.timeout = 10 * 60  # 60 minutes
+        self.timeout = 1
 
     def initialize(self, client, initial_response, deserialization_callback):
         pass
 
     def _timeout(self):
         return (time.time() - self.start_time) >= self.timeout
-    
+
     def run(self):
 
         while WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.run_status):
-            self.run_status = WorkflowTaskStatus.get_run_status_local(self.client,
-                                                                      self.resource_group_name,
-                                                                      self.registry_name,
-                                                                      self.run_id)
             if self._timeout():
                 # if the taskrun is in a non-terminal state, we need to set it to timeout
                 logger.debug("Timeout waiting for task run to complete. Current status: %s", self.run_status)
                 self.run_status = TaskRunStatus.Timeout.value
-                raise AzCLIError("Timeout waiting for task run to complete.")
-            
+                break
+                # raise AzCLIError("Timeout waiting for task run to complete.")
+                
+            self.run_status = WorkflowTaskStatus.get_run_status_local(self.client,
+                                                                      self.resource_group_name,
+                                                                      self.registry_name,
+                                                                      self.run_id)
+
             if WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.run_status):
                 logger.debug("Waiting for the task run to complete. Current status: %s", self.run_status)
                 time.sleep(2)
 
     def status(self):
-        return WorkflowTaskStatus.get_run_status_local(self.client,
-                                                       self.resource_group_name,
-                                                       self.registry_name,
-                                                       self.run_id)
+        return self.run_status
 
     def finished(self):
         return not WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.status()) if not self._timeout() else True
