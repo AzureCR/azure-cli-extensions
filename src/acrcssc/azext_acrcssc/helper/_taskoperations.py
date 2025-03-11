@@ -34,6 +34,7 @@ from ._constants import (
 from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
+from azure.cli.core.util import user_confirmation
 from azure.cli.command_modules.acr._utils import prepare_source_location
 from azure.cli.command_modules.acr._archive_utils import logger as acr_archive_utils_logger
 from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
@@ -145,10 +146,24 @@ def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
         _trigger_task_run(cmd, registry, resource_group, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
 
 
-def delete_continuous_patch_v1(cmd, registry, dryrun):
+def delete_continuous_patch_v1(cmd, registry, dryrun, yes):
     logger.debug("Entering delete_continuous_patch_v1")
     cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
     cssc_config_exists = check_continuous_task_config_exists(cmd, registry)
+
+    acr_run_client = cf_acr_runs(cmd.cli_ctx)
+    resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
+    running_tasks = WorkflowTaskStatus.get_taskruns_with_filter(
+        acr_run_client,
+        registry_name=registry.name,
+        resource_group_name=resource_group_name,
+        status_filter=[TaskRunStatus.Running.value, TaskRunStatus.Queued.value, TaskRunStatus.Started.value],
+        taskname_filter=[CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME, CONTINUOUSPATCH_TASK_SCANIMAGE_NAME, CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME])
+    if len(running_tasks) > 0:
+        from knack.prompting import prompt_y_n
+        if yes or prompt_y_n("There are currently running tasks for this workflow. Do you want to cancel their execution?"):
+            _cancel_task_runs(acr_run_client, registry.name, resource_group_name, running_tasks)
+
     if not dryrun and (cssc_tasks_exists or cssc_config_exists):
         cssc_tasks = ', '.join(CONTINUOUSPATCH_ALL_TASK_NAMES)
         logger.warning(f"All of these tasks will be deleted: {cssc_tasks}")
@@ -277,10 +292,14 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
         status_filter=[TaskRunStatus.Running.value, TaskRunStatus.Queued.value, TaskRunStatus.Started.value],
         taskname_filter=[CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME, CONTINUOUSPATCH_TASK_SCANIMAGE_NAME, CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME])
 
+    _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks)
+    logger.warning("All active running workflow tasks have been cancelled.")
+
+
+def _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks):
     for task in running_tasks:
         logger.warning("Sending request to cancel task %s", task.name)
         acr_task_run_client.begin_cancel(resource_group_name, registry_name, task.name)
-    logger.warning("All active running workflow tasks have been cancelled.")
 
 
 def track_scan_progress(cmd, resource_group_name, registry, status):
