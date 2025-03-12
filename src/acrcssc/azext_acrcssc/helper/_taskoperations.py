@@ -161,7 +161,7 @@ def delete_continuous_patch_v1(cmd, registry, dryrun, yes):
     if len(running_tasks) > 0:
         from knack.prompting import prompt_y_n
         if yes or prompt_y_n("There are currently running tasks for this workflow. Do you want to cancel their execution?"):
-            _cancel_task_runs(acr_run_client, registry.name, resource_group_name, running_tasks)
+            _cancel_task_runs(acr_run_client, registry.name, resource_group_name, running_tasks, dryrun)
 
     if not dryrun and (cssc_tasks_exists or cssc_config_exists):
         cssc_tasks = ', '.join(CONTINUOUSPATCH_ALL_TASK_NAMES)
@@ -296,10 +296,13 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
     logger.warning("All active running workflow tasks have been cancelled.")
 
 
-def _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks):
+def _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks, dryrun=False):
     for task in running_tasks:
         logger.warning("Sending request to cancel task %s", task.name)
-        acr_task_run_client.begin_cancel(resource_group_name, registry_name, task.name)
+        if dryrun:
+            logger.debug(f"Dry run, skipping the cancellation of task {task.name}")
+        else:
+            acr_task_run_client.begin_cancel(resource_group_name, registry_name, task.name)
 
 
 def track_scan_progress(cmd, resource_group_name, registry, status):
