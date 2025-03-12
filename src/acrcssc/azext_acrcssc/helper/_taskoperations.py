@@ -34,7 +34,6 @@ from ._constants import (
 from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
-from azure.cli.core.util import user_confirmation
 from azure.cli.command_modules.acr._utils import prepare_source_location
 from azure.cli.command_modules.acr._archive_utils import logger as acr_archive_utils_logger
 from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
@@ -175,7 +174,8 @@ def delete_continuous_patch_v1(cmd, registry, dryrun, yes):
         delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
     if not cssc_tasks_exists:
-        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")        
+        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
+
 
 def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")

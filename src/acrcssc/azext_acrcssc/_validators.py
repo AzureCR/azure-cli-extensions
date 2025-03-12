@@ -174,7 +174,7 @@ def validate_continuous_patch_v1_image_limit(dryrun_log):
         result = re.sub(r'(?s)' + re.escape(pattern_postfix) + r'.*', pattern_postfix, result)
 
         raise InvalidArgumentValueError(error_msg=result)
-    
+
     if image_limit == 0:
         # when no matching images are found, we should relay the information to the user
         # extract everything between and including the target lines
