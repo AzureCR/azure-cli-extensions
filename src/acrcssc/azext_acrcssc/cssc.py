@@ -113,7 +113,7 @@ def delete_acrcssc(cmd,
 
     user_confirmation(f"Are you sure you want to delete the workflow {CONTINUOUS_PATCHING_WORKFLOW_NAME} from registry {registry_name}?", yes=yes)
 
-    delete_continuous_patch_v1(cmd, registry, False, yes=yes)
+    delete_continuous_patch_v1(cmd, registry, yes=yes)
     print(f"Deleted {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow successfully from registry {registry_name}")
 
 

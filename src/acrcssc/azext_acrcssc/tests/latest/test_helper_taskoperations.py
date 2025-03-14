@@ -133,7 +133,6 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_authorization')
     def test_delete_continuous_patch_v1(self, mock_cf_authorization, mock_cf_acr_tasks, mock_check_continuoustask_exists, mock_delete_oci_artifact_continuous_patch, mock_check_continuous_task_config_exists, mock_get_taskruns_with_filter, mock_cancel_task_runs):
         # Mock the necessary dependencies
-        mock_dryrun = False
         mock_check_continuoustask_exists.return_value = True, []
         mock_check_continuous_task_config_exists.return_value = True
         mock_resource_group = mock.MagicMock()
@@ -147,7 +146,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_acr_tasks_client.get.return_value = mock_task
         mock_get_taskruns_with_filter.return_value = [mock.MagicMock()]
 
-        delete_continuous_patch_v1(self.cmd, self.registry, mock_dryrun, yes=True)
+        delete_continuous_patch_v1(self.cmd, self.registry, yes=True)
         ## Assert here
         mock_delete_oci_artifact_continuous_patch.assert_called_once()
         mock_cancel_task_runs.assert_called_once()
@@ -173,25 +172,6 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_validate_and_deploy_template.assert_called_once()
         mock_eval_trigger_run.assert_called_once()
 
-    @mock.patch("azext_acrcssc.helper._taskoperations._cancel_task_runs")
-    @mock.patch("azext_acrcssc.helper._taskoperations.WorkflowTaskStatus.get_taskruns_with_filter")
-    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
-    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_config_exists")
-    @mock.patch("azext_acrcssc.helper._taskoperations.delete_oci_artifact_continuous_patch")
-    @mock.patch("azext_acrcssc.helper._taskoperations._delete_task")
-    def test_delete_continuous_patch_v1_dryrun(self, mock_delete_task, mock_delete_oci_artifact_continuous_patch, mock_check_continuous_task_config_exists, mock_check_continuous_task_exists, mock_get_taskruns_with_filter, mock_cancel_task_runs):
-        # Mock the necessary dependencies
-        mock_check_continuous_task_exists.return_value = True, []
-        mock_check_continuous_task_config_exists.return_value = True
-        mock_get_taskruns_with_filter.return_value = [mock.MagicMock()]
-
-        # Call the function
-        delete_continuous_patch_v1(self.cmd, self.registry, True, yes=True)
-
-        # Assert that the dependencies were called with the correct arguments
-        mock_delete_task.assert_not_called()
-        mock_delete_oci_artifact_continuous_patch.assert_not_called()
-        mock_cancel_task_runs.assert_called_once()
 
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
     @mock.patch("azext_acrcssc.helper._taskoperations.cf_acr_tasks")
