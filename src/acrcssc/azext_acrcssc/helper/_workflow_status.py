@@ -424,7 +424,7 @@ class WorkflowTaskStatus:
                 result = LongRunningOperation(
                     cmd.cli_ctx,
                     progress_bar=IndeterminateProgressBar(cmd.cli_ctx, message=await_task_message),
-                    poller_done_interval_ms = 2000 # every poller call will do a call to the API
+                    poller_done_interval_ms = 1500 # every poller call will do a call to the API
                 )(polling_method)
                 logger.debug("Task result: %s", result)
             except TimeoutError:
