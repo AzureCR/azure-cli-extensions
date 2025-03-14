@@ -418,13 +418,13 @@ class WorkflowTaskStatus:
         if await_task_run:
             try:
                 polling_method = WorkflowLogPollingMethod(client,
-                                                        resource_group_name,
-                                                        registry_name,
-                                                        run_id)
+                                                          resource_group_name,
+                                                          registry_name,
+                                                          run_id)
                 result = LongRunningOperation(
                     cmd.cli_ctx,
                     progress_bar=IndeterminateProgressBar(cmd.cli_ctx, message=await_task_message),
-                    poller_done_interval_ms = 1500 # every poller call will do a call to the API
+                    poller_done_interval_ms=1500  # every poller call will do a call to the API
                 )(polling_method)
                 logger.debug("Task result: %s", result)
             except TimeoutError:
@@ -552,9 +552,9 @@ class WorkflowLogPollingMethod(PollingMethod):
             raise TimeoutError("Timeout waiting for task run to complete")
 
         self.run_status = WorkflowTaskStatus.get_run_status_local(self.client,
-                                                                    self.resource_group_name,
-                                                                    self.registry_name,
-                                                                    self.run_id)
+                                                                  self.resource_group_name,
+                                                                  self.registry_name,
+                                                                  self.run_id)
 
         return not WorkflowTaskStatus.evaluate_task_run_nonterminal_state(self.status())
 
