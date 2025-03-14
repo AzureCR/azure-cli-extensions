@@ -426,7 +426,7 @@ class WorkflowTaskStatus:
                     progress_bar=IndeterminateProgressBar(cmd.cli_ctx, message=await_task_message),
                     poller_done_interval_ms = 2000 # every poller call will do a call to the API
                 )(polling_method)
-                logger.debug("Polling result: %s", result)
+                logger.debug("Task result: %s", result)
             except TimeoutError:
                 logger.debug("Timeout waiting for task run to complete, workflow task run ID: %s", run_id)
                 logger.debug("An attempt to retrieve the logs will be done, if there are any")
