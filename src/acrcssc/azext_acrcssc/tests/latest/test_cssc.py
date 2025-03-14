@@ -34,7 +34,7 @@ class AcrcsscTest(unittest.TestCase):
     def test_delete_acrcssc(self, mock_user_confirmation, mock_cf_acr_registries, mock_delete_continuous_patch_v1):
         mock_cf_acr_registries.return_value.get.return_value = self.registry
         delete_acrcssc(self.cmd, "mockrg", self.registry.name, "continuouspatchv1", True)
-        mock_delete_continuous_patch_v1.assert_called_once_with(self.cmd, self.registry, False, yes=True)
+        mock_delete_continuous_patch_v1.assert_called_once_with(self.cmd, self.registry, yes=True)
 
     @mock.patch("azext_acrcssc.cssc.list_continuous_patch_v1")
     @mock.patch("azext_acrcssc.cssc.cf_acr_registries")
