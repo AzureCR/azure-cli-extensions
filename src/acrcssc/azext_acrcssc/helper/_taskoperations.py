@@ -167,9 +167,11 @@ def delete_continuous_patch_v1(cmd, registry, yes):
         cssc_tasks = ', '.join(CONTINUOUSPATCH_ALL_TASK_NAMES)
         logger.warning(f"All of these tasks will be deleted: {cssc_tasks}")
         for taskname in CONTINUOUSPATCH_ALL_TASK_NAMES:
-            # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
-            _delete_task(cmd, registry, taskname)
-            logger.warning(f"Task {taskname} deleted.")
+            try:
+                _delete_task(cmd, registry, taskname)
+                logger.warning(f"Task {taskname} deleted.")
+            except AzCLIError as e:
+                logger.error(f"Failed to delete task {taskname}: {e}")
         logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
         delete_oci_artifact_continuous_patch(cmd, registry)
 
