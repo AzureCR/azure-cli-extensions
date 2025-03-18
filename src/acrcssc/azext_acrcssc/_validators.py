@@ -139,7 +139,7 @@ def validate_inputs(schedule, config_file_path=None, dryrun=False, run_immediate
     if config_file_path is not None:
         validate_continuouspatch_config_v1(config_file_path)
     validate_run_type(dryrun, run_immediately)
-    
+
 
 def validate_run_type(dryrun, run_immediately):
     if dryrun and run_immediately:

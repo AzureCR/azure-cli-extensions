@@ -163,17 +163,18 @@ def delete_continuous_patch_v1(cmd, registry, yes):
         if yes or prompt_y_n("There are currently running tasks for this workflow. Do you want to cancel their execution?"):
             _cancel_task_runs(acr_run_client, registry.name, resource_group_name, running_tasks)
 
-    if cssc_tasks_exists or cssc_config_exists:
+    if cssc_tasks_exists:
         cssc_tasks = ', '.join(CONTINUOUSPATCH_ALL_TASK_NAMES)
         logger.warning(f"All of these tasks will be deleted: {cssc_tasks}")
         for taskname in CONTINUOUSPATCH_ALL_TASK_NAMES:
             _delete_task(cmd, registry, taskname)
             logger.warning(f"Task {taskname} deleted.")
+    else:
+        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
+
+    if cssc_config_exists:
         logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
         delete_oci_artifact_continuous_patch(cmd, registry)
-
-    if not cssc_tasks_exists:
-        logger.warning(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
 
 
 def list_continuous_patch_v1(cmd, registry):
@@ -298,6 +299,7 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
 def _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks):
     for task in running_tasks:
         logger.warning("Sending request to cancel task %s", task.name)
+        logger.debug("Cancel Task run, name %s run id: %s", task.name, task.run_id)
         acr_task_run_client.begin_cancel(resource_group_name, registry_name, task.name)
 
 
