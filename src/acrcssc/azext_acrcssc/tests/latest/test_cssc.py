@@ -22,7 +22,6 @@ class AcrcsscTest(unittest.TestCase):
     def test_create_acrcssc(self, mock_perform_continuous_patch_operation):
         create_acrcssc(self.cmd, "mockrg", self.registry.name, "continuouspatchv1", "mockconfig", "1d", False, False)
         mock_perform_continuous_patch_operation.assert_called_once_with(self.cmd, "mockrg", self.registry.name, "mockconfig", "1d", False, False, is_create=True)
-        self.assertTrue(False)
 
     @mock.patch("azext_acrcssc.cssc._perform_continuous_patch_operation")
     def test_update_acrcssc(self, mock_perform_continuous_patch_operation):

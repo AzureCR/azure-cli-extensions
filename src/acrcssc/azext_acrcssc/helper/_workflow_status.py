@@ -116,13 +116,6 @@ class WorkflowTaskStatus:
             return self.scan_status()
 
         return self.patch_status()
-    
-    def workflow_status(self, filter_status):
-        # this is the workflow status, which is the status of the scan task and the patch task
-        # if both exist, we return the patch status, otherwise we return the scan status
-        if self.patch_task is None: # use _workflow_status_to_task_status to filter the status on the tasks
-            return any() self.scan_task
-        return self.patch_status()
 
     # this extracts the image from the copacetic task logs, using this when we only have a repository
     # name and a wildcard tag
@@ -321,7 +314,9 @@ class WorkflowTaskStatus:
                 workflow_status.patch_logs = workflow_status.patch_task.task_log_result
 
         if workflow_status_filter:
-            filtered_workflow = {key: workflow for key, workflow in all_status.items() if workflow.status() == workflow_status_filter}
+            filtered_workflow = {key: workflow 
+                                 for key, workflow in all_status.items() 
+                                 if workflow.status() == workflow_status_filter}
             all_status = filtered_workflow
 
         return [status.get_status() for status in all_status.values()]
