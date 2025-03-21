@@ -159,11 +159,11 @@ Error: unsupported osType azurelinux specified"""
         self.assertTrue(result[0]["patch_status"] == WorkflowTaskState.SUCCEEDED.value)
 
         # Test with mixed scan and patch tasks status
-        patch_taskruns = [self._generate_test_taskrun(True, status=TaskRunStatus.Succeeded.value, tag="tag0"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Canceled.value, tag="tag1"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Queued.value, tag="tag2"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Running.value, tag="tag3"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Failed.value, tag="tag4")]
+        patch_taskruns = [self._generate_test_taskrun(False, status=TaskRunStatus.Succeeded.value, tag="tag0"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Canceled.value, tag="tag1"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Queued.value, tag="tag2"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Running.value, tag="tag3"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Failed.value, tag="tag4")]
 
         scan_taskruns = [self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[0].run_id, tag="tag0"),
                          self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[1].run_id, tag="tag1"),
@@ -201,18 +201,18 @@ Error: unsupported osType azurelinux specified"""
         cmd.cli_ctx = DummyCli()
         taskrun_client = MagicMock()
         registry = MagicMock()
-        scan_taskruns = [self._generate_test_taskrun(True, repository="mock1"), self._generate_test_taskrun(True, repository="mock2"), self._generate_test_taskrun(True, repository="mock3")]
+        scan_taskruns = []
         patch_taskruns = []
 
         mock_retrieve_all_tasklogs.return_value = scan_taskruns
         mock_get_missing_taskrun.return_value = None
         
          # Test with mixed scan and patch tasks status
-        patch_taskruns = [self._generate_test_taskrun(True, status=TaskRunStatus.Succeeded.value, tag="tag0"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Canceled.value, tag="tag1"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Queued.value, tag="tag2"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Running.value, tag="tag3"),
-                          self._generate_test_taskrun(True, status=TaskRunStatus.Failed.value, tag="tag4")]
+        patch_taskruns = [self._generate_test_taskrun(False, status=TaskRunStatus.Succeeded.value, tag="tag0"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Canceled.value, tag="tag1"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Queued.value, tag="tag2"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Running.value, tag="tag3"),
+                          self._generate_test_taskrun(False, status=TaskRunStatus.Failed.value, tag="tag4")]
 
         scan_taskruns = [self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[0].run_id, tag="tag0"),
                          self._generate_test_taskrun(True, patch_taskid_in_scan=patch_taskruns[1].run_id, tag="tag1"),
@@ -222,7 +222,8 @@ Error: unsupported osType azurelinux specified"""
                          self._generate_test_taskrun(True, status=TaskRunStatus.Failed.value, tag="tag5"),
                          self._generate_test_taskrun(True, status=TaskRunStatus.Canceled.value, tag="tag6"),
                          self._generate_test_taskrun(True, status=TaskRunStatus.Queued.value, tag="tag7"),
-                         self._generate_test_taskrun(True, status=TaskRunStatus.Running.value, tag="tag8"),]
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Running.value, tag="tag8"),
+                         self._generate_test_taskrun(True, status=TaskRunStatus.Succeeded.value, tag="tag9")]
         
         result = WorkflowTaskStatus.from_taskrun(cmd,
                                                  taskrun_client,
