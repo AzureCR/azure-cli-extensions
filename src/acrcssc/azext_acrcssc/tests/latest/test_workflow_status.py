@@ -231,6 +231,7 @@ Error: unsupported osType azurelinux specified"""
                                                  scan_taskruns,
                                                  patch_taskruns,
                                                  workflow_status_filter=WorkflowTaskState.SUCCEEDED.value)
+        self.assertTrue(len(result) > 0)
         self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.SUCCEEDED.value 
                             for workflow in result))
         self.assertTrue(all(workflow["patch_status"] == WorkflowTaskState.SUCCEEDED.value or 
@@ -243,6 +244,7 @@ Error: unsupported osType azurelinux specified"""
                                                  scan_taskruns,
                                                  patch_taskruns,
                                                  workflow_status_filter=WorkflowTaskState.FAILED.value)
+        self.assertTrue(len(result) > 0)
         self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.FAILED.value or 
                             workflow["patch_status"] == WorkflowTaskState.FAILED.value 
                             for workflow in result))
@@ -253,6 +255,7 @@ Error: unsupported osType azurelinux specified"""
                                                  scan_taskruns,
                                                  patch_taskruns,
                                                  workflow_status_filter=WorkflowTaskState.RUNNING.value)
+        self.assertTrue(len(result) > 0)
         self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.RUNNING.value or
                             workflow["patch_status"] == WorkflowTaskState.RUNNING.value or
                             workflow["scan_status"] == WorkflowTaskState.QUEUED.value or
@@ -265,6 +268,7 @@ Error: unsupported osType azurelinux specified"""
                                                  scan_taskruns,
                                                  patch_taskruns,
                                                  workflow_status_filter=WorkflowTaskState.CANCELED.value)
+        self.assertTrue(len(result) > 0)
         self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.CANCELED.value or
                             workflow["patch_status"] == WorkflowTaskState.CANCELED.value
                             for workflow in result))
@@ -275,6 +279,7 @@ Error: unsupported osType azurelinux specified"""
                                                  scan_taskruns,
                                                  patch_taskruns,
                                                  workflow_status_filter=WorkflowTaskState.SKIPPED.value)
+        self.assertTrue(len(result) > 0)
         self.assertTrue(all(workflow["scan_status"] == WorkflowTaskState.SUCCEEDED.value and
                             workflow["patch_status"] == WorkflowTaskState.SKIPPED.value
                             for workflow in result))
