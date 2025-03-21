@@ -330,9 +330,10 @@ class WorkflowTaskStatus:
         if not workflow_status_filter:
             return workflows
 
-        # SKIPPED is a special case, because it means that the patch task does not exist, but the scan task
-        # succeeded. Another special case that is not explicit here is SUCCEEDED, which will include both 
-        # scan and patch tasks that succeeded, or the scan task succeeded and the patch task is skipped
+        # SKIPPED is a special case, because it means that the patch task does not exist,
+        # but the scan task succeeded. Another special case that is not explicit here is SUCCEEDED,
+        # which will include both scan and patch tasks that succeeded, or the scan task succeeded
+        # and the patch task is skipped
         if workflow_status_filter == WorkflowTaskState.SKIPPED.value:
             filtered_workflow = {key: workflow
                                  for key, workflow in workflows.items()
@@ -340,9 +341,10 @@ class WorkflowTaskStatus:
                                  workflow.patch_status() == WorkflowTaskState.SKIPPED.value}
             return filtered_workflow
 
-        filtered_workflow = {key: workflow
-                                for key, workflow in workflows.items()
-                                if workflow.status() == workflow_status_filter}
+        filtered_workflow = {
+            key: workflow
+            for key, workflow in workflows.items()
+            if workflow.status() == workflow_status_filter}
         return filtered_workflow
 
     def get_status(self):
