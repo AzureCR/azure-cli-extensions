@@ -126,9 +126,9 @@ def _oras_client(registry):
     try:
         token = _get_acr_token(registry.name, subscription)
         client = OrasClient(hostname=str.lower(registry.login_server), auth_backend="token")
-        wut = client.login(BEARER_TOKEN_USERNAME, token)
+        response = client.login(BEARER_TOKEN_USERNAME, token)
 
-        logger.debug(f"Login to ACR {registry.name} completed successfully: {wut}")
+        logger.debug(f"Login to ACR {registry.name} completed successfully: {response}")
     except Exception as exception:
         raise AzCLIError(f"Failed to login to Artifact Store ACR {registry.name}: {exception}")
 
