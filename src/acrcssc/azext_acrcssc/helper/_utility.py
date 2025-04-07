@@ -9,8 +9,12 @@ from datetime import (datetime, timezone)
 import shutil
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 from azure.mgmt.core.tools import parse_resource_id
-from ._constants import ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, TMP_DRY_RUN_FILE_NAME
-from ._constants import RESOURCE_GROUP
+from ._constants import (
+    CONTINUOUSPATCH_SCHEDULE_MIN_DAYS,
+    CONTINUOUSPATCH_SCHEDULE_MAX_DAYS,
+    ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
+    RESOURCE_GROUP,
+    TMP_DRY_RUN_FILE_NAME)
 from .._client_factory import cf_acr_tasks
 
 logger = get_logger(__name__)
@@ -34,7 +38,7 @@ def convert_timespan_to_cron(schedule, date_time=None):
     cron_expression = ""
 
     if unit == 'd':  # day of the month
-        if value < 1 or value > 30:
+        if value < CONTINUOUSPATCH_SCHEDULE_MIN_DAYS or value > CONTINUOUSPATCH_SCHEDULE_MAX_DAYS:
             raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE)
         cron_expression = f'{cron_minute} {cron_hour} */{value} * *'
 

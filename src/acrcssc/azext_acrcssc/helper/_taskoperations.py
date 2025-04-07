@@ -67,7 +67,6 @@ def create_update_continuous_patch_v1(cmd,
         schedule_cron_expression = convert_timespan_to_cron(schedule)
         logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
 
-    cssc_tasks_exists, task_list = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
             raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
@@ -195,6 +194,9 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
     logger.debug(f"Entering acr_cssc_dry_run with parameters: {registry} {config_file_path}")
     cssc_tasks_exists, _ = check_continuous_task_exists(cmd, registry)
 
+    if is_create and cssc_tasks_exists:
+        raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
+
     if config_file_path is None:
         if not cssc_tasks_exists:
             raise InvalidArgumentValueError("--config parameter is needed to perform dry-run check.")
@@ -204,9 +206,6 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
         _, config_file_path = get_oci_artifact_continuous_patch(cmd, registry)
         if config_file_path is None:
             raise AzCLIError("Failed to retrieve the configuration file from the registry.")
-
-    if is_create and cssc_tasks_exists:
-        raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
 
     file_name = None
     tmp_folder = None
@@ -455,7 +454,6 @@ def _delete_task(cmd, registry, task_name):
 
 def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_group, task_name):
     role_client = cf_authorization(cli_ctx)
-    acrtask_client = cf_acr_tasks(cli_ctx)
 
     try:
         task = acrtask_client.get(resource_group, registry.name, task_name)
@@ -473,11 +471,16 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
         )
 
         for role in assigned_roles:
-            logger.debug(f"Deleting role assignments of task {task_name} from the registry")
-            role_client.role_assignments.delete(
-                scope=registry.id,
-                role_assignment_name=role.name
-            )
+            try:
+                logger.debug(f"Deleting role assignments of task {task_name} from the registry")
+                role_client.role_assignments.delete(
+                    scope=registry.id,
+                    role_assignment_name=role.name
+                )
+            except ResourceNotFoundError:
+                logger.debug(f"Role assignment {role.name} does not exist in registry {registry.name}")
+            except AzCLIError as exception:
+                logger.error(f"Failed to delete role assignment {role.name} from registry {registry.name} : {exception}")
 
 
 def _transform_task_list(tasks):
