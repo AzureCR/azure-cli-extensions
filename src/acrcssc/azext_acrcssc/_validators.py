@@ -163,9 +163,9 @@ def validate_continuous_patch_v1_image_limit(dryrun_log):
         logger.error("Error parsing for image limit.")
         return
 
-    image_limit = int(match.group(1))
+    image_count = int(match.group(1))
 
-    if image_limit > CONTINUOUSPATCH_IMAGE_LIMIT:
+    if image_count > CONTINUOUSPATCH_IMAGE_LIMIT:
         # these expressions remove all the Task related output from the log, and only leaves the listing of repositories and tags
         pattern_prefix = "Listing repositories and tags matching the filter"
         result = re.sub(r'^(.*\n)*?' + re.escape(pattern_prefix), pattern_prefix, dryrun_log, flags=re.MULTILINE)
@@ -175,9 +175,11 @@ def validate_continuous_patch_v1_image_limit(dryrun_log):
 
         raise InvalidArgumentValueError(error_msg=result)
 
-    if image_limit == 0:
+    if image_count == 0:
         # when no matching images are found, we should relay the information to the user
         # extract everything between and including the target lines
         match = re.search(r'No matching repository and tag found!.*?Matches found: 0', dryrun_log, re.DOTALL)
         if match:
             logger.warning(match.group())
+
+    return image_count

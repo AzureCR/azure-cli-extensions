@@ -55,6 +55,7 @@ def create_update_continuous_patch_v1(cmd,
                                       schedule,
                                       dryrun,
                                       run_immediately,
+                                      image_count,
                                       is_create_workflow=True):
 
     logger.debug(f"Entering continuousPatchV1_creation {cssc_config_file} {dryrun} {run_immediately}")
@@ -89,7 +90,8 @@ def create_update_continuous_patch_v1(cmd,
         if trigger and trigger.timer_triggers:
             schedule_cron_expression = trigger.timer_triggers[0].schedule
 
-    _eval_trigger_run(cmd, registry, resource_group, run_immediately)
+    if (image_count is not None) and (image_count > 0):
+        _eval_trigger_run(cmd, registry, resource_group, run_immediately)
     next_date = get_next_date(schedule_cron_expression)
     print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
 

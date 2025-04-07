@@ -55,8 +55,8 @@ def _perform_continuous_patch_operation(cmd,
     if dryrun:
         print(dryrun_output)
     else:
-        validate_continuous_patch_v1_image_limit(dryrun_output)
-        create_update_continuous_patch_v1(cmd, registry, config, schedule, dryrun, run_immediately, is_create)
+        image_count = validate_continuous_patch_v1_image_limit(dryrun_output)
+        create_update_continuous_patch_v1(cmd, registry, config, schedule, dryrun, run_immediately, is_create, image_count)
 
 
 def create_acrcssc(cmd,
