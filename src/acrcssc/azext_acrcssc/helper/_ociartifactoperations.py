@@ -81,6 +81,7 @@ def get_oci_artifact_continuous_patch(cmd, registry):
                                          overwrite=True)
         trigger_task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
         file_name = oci_artifacts[0]
+        logger.debug(f"OCI artifact file name: {file_name}, trigger task: {trigger_task}")
         config = ContinuousPatchConfig().from_file(file_name, trigger_task)
     except Exception as exception:
         raise AzCLIError(f"Failed to get OCI artifact from ACR: {exception}")

@@ -258,7 +258,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
                 architecture=platform_arch,
                 variant=platform_variant
             ),
-            credentials=_get_custom_registry_credentials(cmd, auth_mode=None),
+            credentials=_get_custom_registry_credentials(cmd),
             agent_pool_name=None,
             log_template=None
         )
@@ -511,60 +511,11 @@ def _transform_task_list(tasks):
     return transformed
 
 
-def _get_custom_registry_credentials(cmd,
-                                     auth_mode=None,
-                                     login_server=None,
-                                     username=None,
-                                     password=None,
-                                     identity=None,
-                                     is_remove=False):
-    """Get the credential object from the input
-    :param str auth_mode: The login mode for the source registry
-    :param str login_server: The login server of custom registry
-    :param str username: The username for custom registry (plain text or a key vault secret URI)
-    :param str password: The password for custom registry (plain text or a key vault secret URI)
-    :param str identity: The task managed identity used for the credential
-    """
+def _get_custom_registry_credentials(cmd):
     acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
-    source_registry_credentials = None
-    if auth_mode:
-        source_registry_credentials = acr_tasks_client.models.SourceRegistryCredentials(
-            login_mode=auth_mode)
-
-    custom_registries = None
-    if login_server:
-        # if null username and password (or identity), then remove the credential
-        custom_reg_credential = None
-
-        is_identity_credential = False
-        if not username and not password:
-            is_identity_credential = identity is not None
-
-        if not is_remove:
-            if is_identity_credential:
-                custom_reg_credential = acr_tasks_client.models.CustomRegistryCredentials(
-                    identity=identity
-                )
-            else:
-                custom_reg_credential = acr_tasks_client.models.CustomRegistryCredentials(
-                    user_name=acr_tasks_client.models.SecretObject(
-                        type=acr_tasks_client.models.SecretObjectType.vaultsecret if _is_vault_secret(
-                            cmd, username)else acr_tasks_client.models.SecretObjectType.opaque,
-                        value=username
-                    ),
-                    password=acr_tasks_client.models.SecretObject(
-                        type=acr_tasks_client.models.SecretObjectType.vaultsecret if _is_vault_secret(
-                            cmd, password) else acr_tasks_client.models.SecretObjectType.opaque,
-                        value=password
-                    ),
-                    identity=identity
-                )
-
-        custom_registries = {login_server: custom_reg_credential}
-
     return acr_tasks_client.models.Credentials(
-        source_registry=source_registry_credentials,
-        custom_registries=custom_registries
+        source_registry=None,
+        custom_registries=None
     )
 
 
