@@ -31,7 +31,7 @@ from ._constants import (
     DESCRIPTION,
     WORKFLOW_VALIDATION_MESSAGE,
     TaskRunStatus)
-from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
+from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
 from azure.cli.command_modules.acr._utils import prepare_source_location
@@ -185,8 +185,15 @@ def list_continuous_patch_v1(cmd, registry):
 
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
     resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
-    tasks_list = acr_task_client.list(resource_group_name, registry.name)
-    filtered_cssc_tasks = _transform_task_list(tasks_list)
+    task_list = []
+    for task in CONTINUOUSPATCH_ALL_TASK_NAMES:
+        try:
+            task_list.append(acr_task_client.get(resource_group_name, registry.name, task))
+            logger.debug(f"Task {task} exists in registry {registry.name}")
+        except ResourceNotFoundError:
+            logger.debug(f"Task {task} does not exist in registry {registry.name}")
+
+    filtered_cssc_tasks = _transform_task_list(task_list)
     return filtered_cssc_tasks
 
 
