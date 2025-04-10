@@ -22,7 +22,6 @@ from .helper._constants import (
     CONTINUOUSPATCH_SCHEDULE_MAX_DAYS,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
-    REGISTRY_BASIC_SKU,
     SUBSCRIPTION)
 from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_SCHEDULE
 from .helper._ociartifactoperations import _get_acr_token
@@ -135,9 +134,7 @@ def _validate_schedule(schedule):
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
 
 
-def validate_inputs(registry, schedule, config_file_path=None, dryrun=False, run_immediately=False):
-    if registry is None or registry.sku.name.lower() == REGISTRY_BASIC_SKU:
-        raise InvalidArgumentValueError(error_msg="This operation is not supported for registries in Basic SKU. Please use Standard or Premium SKU.")
+def validate_inputs(schedule, config_file_path=None, dryrun=False, run_immediately=False):
     _validate_schedule(schedule)
     if config_file_path is not None:
         validate_continuouspatch_config_v1(config_file_path)
