@@ -11,8 +11,6 @@ from enum import Enum
 class CSSCTaskTypes(Enum):
     """Enum for the task type."""
     ContinuousPatchV1 = 'continuouspatchv1'
-    # CopaV1 = "CopaV1"
-    # TrivyV1 = "TrivyV1"
 
 
 class TaskRunStatus(Enum):
