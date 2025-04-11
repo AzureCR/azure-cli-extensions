@@ -356,19 +356,15 @@ class WorkflowTaskStatus:
         patch_task_id = WORKFLOW_STATUS_NOT_AVAILABLE if self.patch_task is None else self.patch_task.run_id
         patched_image = self._get_patched_image_name_from_tasklog()
         workflow_type = CSSCTaskTypes.ContinuousPatchV1.value
-        patch_skipped_reason = ""
-        scan_error_reason = ""
-        patch_error_reason = ""
+        # Initialize reasons only if needed
+        patch_skipped_reason = self._get_patch_skip_reason_from_tasklog() \
+            if self.patch_status() == WorkflowTaskState.SKIPPED.value else ""
 
-        # this situation means that we don't have a patched image
-        if self.patch_status() == WorkflowTaskState.SKIPPED.value:
-            patch_skipped_reason = self._get_patch_skip_reason_from_tasklog()
+        scan_error_reason = self._get_scan_error_reason_from_tasklog() \
+            if self.scan_status() == WorkflowTaskState.FAILED.value else ""
 
-        if self.scan_status() == WorkflowTaskState.FAILED.value:
-            scan_error_reason = self._get_scan_error_reason_from_tasklog()
-
-        if self.patch_status() == WorkflowTaskState.FAILED.value:
-            patch_error_reason = self._get_patch_error_reason_from_tasklog()
+        patch_error_reason = self._get_patch_error_reason_from_tasklog() \
+            if self.patch_status() == WorkflowTaskState.FAILED.value else ""
 
         if patched_image == self.image():
             patched_image = WORKFLOW_STATUS_PATCH_NOT_AVAILABLE
@@ -378,7 +374,11 @@ class WorkflowTaskStatus:
             "scan_status": scan_status,
             "scan_date": scan_date,
             "scan_task_ID": scan_task_id,
-            "patch_status": patch_status
+            "patch_status": patch_status,
+            "patch_date": patch_date,
+            "patch_task_ID": patch_task_id,
+            "last_patched_image": patched_image,
+            "workflow_type": workflow_type
         }
 
         if patch_skipped_reason != "":
@@ -389,11 +389,6 @@ class WorkflowTaskStatus:
 
         if patch_error_reason != "":
             result["patch_error_reason"] = patch_error_reason
-
-        result["patch_date"] = patch_date
-        result["patch_task_ID"] = patch_task_id
-        result["last_patched_image"] = patched_image
-        result["workflow_type"] = workflow_type
 
         return result
 
