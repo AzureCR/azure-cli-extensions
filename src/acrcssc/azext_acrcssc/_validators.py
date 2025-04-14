@@ -76,7 +76,7 @@ def _validate_continuouspatch_config(config):
                 raise InvalidArgumentValueError("Configuration error: Tag '*' is not allowed with other tags in the same repository. Use '*' as the only tag in the repository to avoid overlaps.")
 
 
-# to save on API calls, we the list of tasks found in the registry
+# to save on API calls, we use task_list to return a list of CSSC tasks found in the registry
 def check_continuous_task_exists(cmd, registry):
     task_list = []
     missing_tasks = []
@@ -140,7 +140,7 @@ def validate_inputs(registry, schedule, config_file_path=None, dryrun=False, run
     if registry is None or registry.sku.name.lower() == REGISTRY_BASIC_SKU:
         raise InvalidArgumentValueError(error_msg="This operation is not supported for registries in Basic SKU. Please use Standard or Premium SKU.")
     _validate_schedule(schedule)
-    if config_file_path is not None:
+    if config_file_path:
         validate_continuouspatch_config_v1(config_file_path)
     validate_run_type(dryrun, run_immediately)
 

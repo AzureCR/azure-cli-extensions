@@ -204,15 +204,13 @@ class WorkflowTaskStatus:
             return None
 
         repository, patched_tag, _ = self._get_scanning_repo_from_scan_task()
-        if repository is not None and patched_tag is not None:
+        if repository and patched_tag:
             return f"{repository}:{patched_tag}"
 
-        if self.patch_task is None:
-            return None
-
-        match = re.search(r'Patched image pushed to (\S+)', self.patch_logs)
-        if match:
-            return match.group(1)
+        if self.patch_task:
+            match = re.search(r'Patched image pushed to (\S+)', self.patch_logs)
+            if match:
+                return match.group(1)
         return None
 
     @staticmethod
@@ -301,7 +299,7 @@ class WorkflowTaskStatus:
             # missing the patch task id means that the scan either failed, or succeeded and patching is not needed.
             # this is important, because patching status depends on both the patching task status (if it exists)
             # and the scan task status
-            if patch_task_id is not None:
+            if patch_task_id:
                 # it is possible for the patch task to be mentioned in the logs, but the API has not returned the
                 # taskrun for it yet, attempt to retrieve it from client
                 try:
@@ -441,6 +439,7 @@ class WorkflowTaskStatus:
             logger.debug("log file not found for run_id: %s, registry: %s, "
                          "resource_group: %s -- exception: %s",
                          run_id, registry_name, resource_group_name, e)
+            return ""
 
         if await_task_run:
             try:
@@ -475,24 +474,27 @@ class WorkflowTaskStatus:
 
     @staticmethod
     def _download_logs(blob_service):
-        blob = blob_service.download_blob()
-        blob_text = blob.readall().decode('utf-8')
-
-        return blob_text
+        try:
+            blob = blob_service.download_blob()
+            blob_text = blob.readall().decode('utf-8')
+            return blob_text
+        except AzCLIError as e:
+            logger.debug("Failed to download logs from blob: %s", e)
+            return ""
 
     @staticmethod
     def remove_internal_acr_statements(blob_content):
         logger.debug("Removing internal ACR statements from logs, blob content size: %s", len(blob_content))
-        lines = blob_content.split("\n")
+        lines = blob_content.splitlines()
         starting_identifier = "DRY RUN mode enabled"
         terminating_identifier = "Total matches found"
         print_line = False
         output = ""
 
         for line in lines:
-            if line.startswith(starting_identifier):
+            if line.strip().startswith(starting_identifier):
                 print_line = True
-            elif line.startswith(terminating_identifier):
+            elif line.strip().startswith(terminating_identifier):
                 output += "\n" + line
                 print_line = False
 
