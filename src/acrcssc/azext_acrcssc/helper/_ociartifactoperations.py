@@ -73,6 +73,7 @@ def get_oci_artifact_continuous_patch(cmd, registry):
     logger.debug("Entering get_oci_artifact_continuous_patch with parameter: %s", registry.login_server)
     config = None
     file_name = None
+    oras_client = None
     try:
         oras_client = _oras_client(registry)
 
