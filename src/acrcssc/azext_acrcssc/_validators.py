@@ -22,7 +22,6 @@ from .helper._constants import (
     CONTINUOUSPATCH_SCHEDULE_MAX_DAYS,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
-    REGISTRY_BASIC_SKU,
     SUBSCRIPTION)
 from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_SCHEDULE
 from .helper._ociartifactoperations import _get_acr_token
