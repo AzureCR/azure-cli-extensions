@@ -76,7 +76,8 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
                 cmd_ctx, "Validating ARM template..."
             )(validation)
             break
-        except Exception:  # pylint: disable=broad-except
+        except Exception as exception:  # pylint: disable=broad-except
+            logger.debug(f"Validation attempt {validation_attempt + 1} failed for template {template}, exception: {exception}")
             if validation_attempt == 1:
                 raise
 
@@ -134,7 +135,7 @@ def deploy_template(cmd_ctx, resource_group, deployment_name, template):
     logger.debug(f"Deployed: {deployment.name} {deployment.id} {depl_props}")
 
     if depl_props.provisioning_state != "Succeeded":
-        logger.debug(f"Failed to provision: {depl_props}")
+        logger.error(f"Failed to provision: {depl_props}")
         raise RuntimeError(
             "Deploy of template to resource group"
             f" {resource_group} proceeded but the provisioning"

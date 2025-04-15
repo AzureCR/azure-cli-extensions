@@ -71,9 +71,8 @@ def create_update_continuous_patch_v1(cmd,
         if cssc_tasks_exists:
             raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_ALREADY_EXISTS}")
 
-        if cssc_config_file:
-            create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
-            logger.debug(f"Uploading of {cssc_config_file} for create completed successfully.")
+        create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
+        logger.debug(f"Uploading of {cssc_config_file} for create completed successfully.")
 
         _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
     else:

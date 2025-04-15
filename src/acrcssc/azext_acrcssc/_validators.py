@@ -136,9 +136,7 @@ def _validate_schedule(schedule):
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
 
 
-def validate_inputs(registry, schedule, config_file_path=None, dryrun=False, run_immediately=False):
-    if registry is None or registry.sku.name.lower() == REGISTRY_BASIC_SKU:
-        raise InvalidArgumentValueError(error_msg="This operation is not supported for registries in Basic SKU. Please use Standard or Premium SKU.")
+def validate_inputs(schedule, config_file_path=None, dryrun=False, run_immediately=False):
     _validate_schedule(schedule)
     if config_file_path:
         validate_continuouspatch_config_v1(config_file_path)
