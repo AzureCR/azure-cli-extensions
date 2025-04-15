@@ -284,17 +284,17 @@ class WorkflowTaskStatus:
                 continue
 
             # need to check if we have the latest scan task
-            task = scan
-            logs = scan.task_log_result
-
             if image in all_status:
-                task, logs = WorkflowTaskStatus._latest_task(all_status[image].scan_task,
-                                                             all_status[image].scan_logs,
-                                                             scan, scan.task_log_result)
+                all_status[image].scan_task, all_status[image].scan_logs = WorkflowTaskStatus._latest_task(
+                    all_status[image].scan_task,
+                    all_status[image].scan_logs,
+                    scan,
+                    scan.task_log_result)
             else:
                 all_status[image] = WorkflowTaskStatus(image)
-            all_status[image].scan_task = task
-            all_status[image].scan_logs = logs
+                all_status[image].scan_task = scan
+                all_status[image].scan_logs = scan.task_log_result
+
             patch_task_id = all_status[image].get_patch_task_from_scan_tasklog()
             # missing the patch task id means that the scan either failed, or succeeded and patching is not needed.
             # this is important, because patching status depends on both the patching task status (if it exists)
@@ -302,17 +302,18 @@ class WorkflowTaskStatus:
             if patch_task_id:
                 # it is possible for the patch task to be mentioned in the logs, but the API has not returned the
                 # taskrun for it yet, attempt to retrieve it from client
-                try:
-                    patch_task = next((task for task in patch_taskruns if task.run_id == patch_task_id))
-                except StopIteration:
+                patch_task = next((task for task in patch_taskruns if task.run_id == patch_task_id), None)
+                if patch_task is None:
                     patch_task = WorkflowTaskStatus._get_missing_taskrun(taskrun_client, registry, patch_task_id)
 
                 all_status[image].patch_task = patch_task
-                if WorkflowTaskStatus._task_status_to_workflow_status(patch_task) == WorkflowTaskState.FAILED.value:
+                if patch_task and WorkflowTaskStatus._task_status_to_workflow_status(
+                    patch_task
+                ) == WorkflowTaskState.FAILED.value:
                     failed_patch_tasklog_retrieval.append(all_status[image])
 
-        if len(failed_patch_tasklog_retrieval) > 0:
-            taskrunList = [task.patch_task for task in failed_patch_tasklog_retrieval]
+        if failed_patch_tasklog_retrieval:
+            taskrunList = [task.patch_task for task in failed_patch_tasklog_retrieval if task.patch_task]
             WorkflowTaskStatus._retrieve_all_tasklogs(cmd, taskrun_client, registry, taskrunList, progress_indicator)
             for workflow_status in failed_patch_tasklog_retrieval:
                 workflow_status.patch_logs = workflow_status.patch_task.task_log_result

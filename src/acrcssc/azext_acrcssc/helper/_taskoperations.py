@@ -475,23 +475,26 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
 
     identity = task.identity
 
-    if identity:
-        assigned_roles = role_client.role_assignments.list_for_scope(
-            registry.id,
-            filter=f"principalId eq '{identity.principal_id}'"
-        )
+    if not identity or not identity.principal_id:
+        logger.debug(f"Task {task_name} has no associated managed identity. Skipping role assignment deletion.")
+        return None
 
-        for role in assigned_roles:
-            try:
-                logger.debug(f"Deleting role assignments of task {task_name} from the registry")
-                role_client.role_assignments.delete(
-                    scope=registry.id,
-                    role_assignment_name=role.name
-                )
-            except ResourceNotFoundError:
-                logger.debug(f"Role assignment {role.name} does not exist in registry {registry.name}")
-            except AzCLIError as exception:
-                logger.error(f"Failed to delete role assignment {role.name} from registry {registry.name} : {exception}")
+    assigned_roles = role_client.role_assignments.list_for_scope(
+        registry.id,
+        filter=f"principalId eq '{identity.principal_id}'"
+    )
+
+    for role in assigned_roles:
+        try:
+            logger.debug(f"Deleting role assignments of task {task_name} from the registry")
+            role_client.role_assignments.delete(
+                scope=registry.id,
+                role_assignment_name=role.name
+            )
+        except ResourceNotFoundError:
+            logger.debug(f"Role assignment {role.name} does not exist in registry {registry.name}")
+        except AzCLIError as exception:
+            logger.error(f"Failed to delete role assignment {role.name} from registry {registry.name} : {exception}")
 
 
 def _transform_task_list(tasks):
