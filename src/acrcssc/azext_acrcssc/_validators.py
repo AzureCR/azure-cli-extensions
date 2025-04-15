@@ -92,7 +92,7 @@ def check_continuous_task_exists(cmd, registry):
             logger.debug(f"Failed to find tasks from registry {registry.name} : {exception}")
             missing_tasks.append(task_name)
 
-    if len(missing_tasks) > 0:
+    if missing_tasks:
         logger.debug(f"Failed to find tasks {', '.join(missing_tasks)} from registry {registry.name}")
         return False, task_list
 
@@ -115,7 +115,7 @@ def check_continuous_task_config_exists(cmd, registry):
         if hasattr(exception, 'status_code') and exception.status_code == 404:
             return False
         # report on the error only if we get something other than 404
-        logger.debug(f"Failed to find config {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG} from registry {registry.name} : {exception}")
+        logger.error(f"Failed to find config {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG} from registry {registry.name} : {exception}")
         raise
     return True
 
@@ -161,7 +161,8 @@ def validate_continuous_patch_v1_image_limit(dryrun_log):
     match = re.search(r"Matches found: (\d+)", dryrun_log)
     if match is None:
         # the quick task did not return the expected output, we cannot validate the image limit but cannot block the operation
-        logger.error("Error parsing for image limit.")
+        logger.error("Failed to parse the image limit from the dry run log. Execution will continue.")
+        logger.debug("Dry run log: %s", dryrun_log)
         return
 
     image_limit = int(match.group(1))

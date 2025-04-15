@@ -67,7 +67,7 @@ def create_temporary_dry_run_file(file_location, tmp_folder):
     templates_path = os.path.abspath(os.path.join(
         os.path.dirname(__file__),
         "../templates"))
-    logger.debug(f"templates_path:  {templates_path}")
+    logger.debug(f"templates_path: {templates_path}")
 
     try:
         os.makedirs(tmp_folder, exist_ok=True)

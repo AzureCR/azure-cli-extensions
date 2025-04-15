@@ -91,19 +91,19 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
         logger.error(
             (
                 f"Template for resource group {resource_group} has failed validation. The message"
-                " was: {validation_res.error.message}. See logs for additional details."
+                f" was: {validation_res.error.message}. See logs for additional details."
             )
         )
         logger.debug(
             (
                 f"Template for resource group {resource_group} failed validation."
-                " Full error details: {validation_res.error}"
+                f" Full error details: {validation_res.error}"
             )
         )
         raise RuntimeError("Azure template validation failed.")
 
     # Validation succeeded so proceed with deployment
-    logger.debug("Successfully validated resources for {resource_group}")
+    logger.debug(f"Successfully validated resources for {resource_group}")
 
 
 def deploy_template(cmd_ctx, resource_group, deployment_name, template):
