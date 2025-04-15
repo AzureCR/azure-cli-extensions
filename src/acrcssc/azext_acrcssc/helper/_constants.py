@@ -34,7 +34,6 @@ BEARER_TOKEN_USERNAME = "00000000-0000-0000-0000-000000000000"
 RESOURCE_GROUP = "resource_group"
 SUBSCRIPTION = "subscription"
 TMP_DRY_RUN_FILE_NAME = "tmp_dry_run_template.yaml"
-REGISTRY_BASIC_SKU = "basic"
 
 
 # Continuous Patch Constants

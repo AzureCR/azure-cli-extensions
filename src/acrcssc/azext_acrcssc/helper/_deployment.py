@@ -120,7 +120,6 @@ def deploy_template(cmd_ctx, resource_group, deployment_name, template):
         resource_group_name=resource_group,
         deployment_name=deployment_name,
         parameters=deployment)
-    logger.debug(poller)
 
     # Wait for the deployment to complete and get the outputs
     deployment: DeploymentExtended = LongRunningOperation(
