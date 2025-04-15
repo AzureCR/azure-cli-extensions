@@ -479,10 +479,14 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
         logger.debug(f"Task {task_name} has no associated managed identity. Skipping role assignment deletion.")
         return None
 
-    assigned_roles = role_client.role_assignments.list_for_scope(
-        registry.id,
-        filter=f"principalId eq '{identity.principal_id}'"
-    )
+    try:
+        assigned_roles = role_client.role_assignments.list_for_scope(
+            registry.id,
+            filter=f"principalId eq '{identity.principal_id}'"
+        )
+    except ResourceNotFoundError:
+        logger.debug(f"Role assignments for principal ID {identity.principal_id} do not exist in registry {registry.name}")
+        return None
 
     for role in assigned_roles:
         try:

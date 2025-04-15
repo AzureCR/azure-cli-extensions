@@ -159,14 +159,13 @@ def _get_acr_token(registry_name, subscription):
         )
         token = result.stdout.strip()
         if not token or token == "":
-            logger.debug("Failed to retrieve ACR token: Token is empty.")
             raise AzCLIError("Failed to retrieve ACR token. The token is empty.")
         return token
     except subprocess.CalledProcessError as error:
-        logger.debug(f"Error while retrieving ACR token: {error.stderr.strip()}")
-
-        unauthorized = (error.stderr
-                        and (" 401" in error.stderr or "unauthorized" in error.stderr))
+        stderr = error.stderr.strip()
+        logger.debug(f"Error while retrieving ACR token: {stderr}")
+        unauthorized = (stderr
+                        and (" 401" in stderr or "unauthorized" in stderr.lower()))
 
         if unauthorized:
             # As we shell out the the subprocess, I think checking for these
@@ -179,7 +178,7 @@ def _get_acr_token(registry_name, subscription):
                 " artifact store."
             ) from error
 
-        raise AzCLIError(f"Failed to retrieve ACR token: {error.stderr.strip()}") from error
+        raise AzCLIError(f"Failed to retrieve ACR token: {stderr}") from error
 
 
 class ContinuousPatchConfig:
