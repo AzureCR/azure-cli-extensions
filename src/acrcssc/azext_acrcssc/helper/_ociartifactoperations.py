@@ -168,8 +168,7 @@ def _get_acr_token(registry_name, subscription):
     except subprocess.CalledProcessError as error:
         stderr = error.stderr.strip()
         logger.debug(f"Error while retrieving ACR token: {stderr}")
-        unauthorized = (stderr
-                        and (" 401" in stderr or "unauthorized" in stderr.lower()))
+        unauthorized = "401" in stderr or "unauthorized" in stderr.lower()
 
         if unauthorized:
             # As we shell out the the subprocess, I think checking for these
