@@ -117,7 +117,7 @@ def _validate_schedule(schedule):
     # the convertion to cron will raise an error if the format is invalid
     cron = convert_timespan_to_cron(schedule)
     if not cron:
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT % schedule)
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT)
 
 
 def validate_inputs(schedule, config_file_path=None, dryrun=False, run_immediately=False):
