@@ -53,6 +53,7 @@ def validate_continuouspatch_json(config_path):
         raise InvalidArgumentValueError(f"Config path file: {config_path} is not a valid JSON file. Use --help to see the schema of the config file.")
     return config
 
+
 def _validate_continuouspatch_config(config):
     if not isinstance(config, ContinuousPatchConfig):
         raise InvalidArgumentValueError("Config file is not a valid JSON file. Use --help to see the schema of the config file.")
@@ -62,6 +63,7 @@ def _validate_continuouspatch_config(config):
                 raise InvalidArgumentValueError(f"Configuration error: Repository '{repository.repository}' with tag '{tag}' is not allowed. Tags ending with '*-patched' (floating tag) or '*-0' to '*-999' (incremental tag) are reserved for internal use.")
             if tag == "*" and len(repository.tags) > 1:
                 raise InvalidArgumentValueError("Configuration error: Tag '*' is not allowed with other tags in the same repository. Use '*' as the only tag in the repository to avoid overlaps.")
+
 
 # to save on API calls, we use task_list to return a list of CSSC tasks found in the registry
 def check_continuous_task_exists(cmd, registry):
