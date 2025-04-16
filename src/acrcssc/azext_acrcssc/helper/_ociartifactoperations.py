@@ -9,11 +9,13 @@ import os
 import dataclasses
 import shutil
 import subprocess
+import json
 
 from oras.client import OrasClient
-from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
 from azure.cli.command_modules.acr.repository import acr_repository_delete
 from azure.mgmt.core.tools import parse_resource_id
+from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from knack.log import get_logger
 from tempfile import NamedTemporaryFile
@@ -25,6 +27,8 @@ from ._constants import (
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN,
     CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
+    ERROR_MESSAGE_INVALID_JSON_PARSE,
+    ERROR_MESSAGE_INVALID_JSON_SCHEMA,
     SUBSCRIPTION
 )
 from ._utility import (
@@ -192,16 +196,19 @@ class ContinuousPatchConfig:
             return self.from_json(file.read(), trigger_task)
 
     def from_json(self, json_str, trigger_task=None):
-        import json
-        from jsonschema import validate
-
         try:
             json_config = json.loads(json_str)
             validate(json_config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
         except json.JSONDecodeError as e:
-            raise AzCLIError(f"Failed to parse JSON: {e}", e)
+            raise AzCLIError(ERROR_MESSAGE_INVALID_JSON_PARSE) from e
         except ValidationError as e:
-            raise AzCLIError(f"Error validating the continuous patch config file: {e}", e)
+            logger.error(f"Error validating the continuous patch config file: {e}")
+            raise AzCLIError(ERROR_MESSAGE_INVALID_JSON_SCHEMA) from e
+        except Exception as e:
+            logger.error(f"Error validating the continuous patch config file: {e}")
+            if json_str:
+                logger.debug(f"Config file content: {json_str}")
+            raise InvalidArgumentValueError(ERROR_MESSAGE_INVALID_JSON_PARSE) from e
 
         self.version = json_config.get("version", "")
         repositories = json_config.get("repositories", [])
