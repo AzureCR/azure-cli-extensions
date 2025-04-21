@@ -111,6 +111,7 @@ def delete_oci_artifact_continuous_patch(cmd, registry):
     try:
         token = _get_acr_token(registry.name, subscription)
         oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}"
+        logger.debug(f"Deleting OCI artifact from: {oci_target_name}, token length: {len(token)}")
         # Delete repository, removing only image isn't deleting the repository always (Bug)
         acr_repository_delete(
             cmd=cmd,
@@ -135,6 +136,7 @@ def _oras_client(registry):
         setup_logger(quiet=False, debug=True)
 
         token = _get_acr_token(registry.name, subscription)
+        logger.debug(f"Loggin into ACR with Token length: {len(token)}")
         client = OrasClient(hostname=str.lower(registry.login_server), auth_backend="token")
         client.login(BEARER_TOKEN_USERNAME, token)
         logger.debug(f"Login to ACR {registry.name} completed successfully.")
