@@ -131,6 +131,9 @@ def _oras_client(registry):
     subscription = resourceid[SUBSCRIPTION]
 
     try:
+        from oras.logger import setup_logger
+        setup_logger(quiet=False, debug=True)
+
         token = _get_acr_token(registry.name, subscription)
         client = OrasClient(hostname=str.lower(registry.login_server), auth_backend="token")
         client.login(BEARER_TOKEN_USERNAME, token)
