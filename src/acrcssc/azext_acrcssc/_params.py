@@ -19,7 +19,7 @@ def load_arguments(self: AzCommandsLoader, _):
     from .helper._workflow_status import WorkflowTaskState
 
     with self.argument_context("acr supply-chain workflow") as c:
-        c.argument('resource_group', resource_group_name_type, completer=get_resource_name_completion_list(REGISTRY_RESOURCE_TYPE))
+        c.argument('resource_group', arg_type=resource_group_name_type, completer=get_resource_name_completion_list(REGISTRY_RESOURCE_TYPE))
         c.argument('registry_name', options_list=['--registry', '-r'], help='The name of the container registry. It should be specified in lower case. You can configure the default registry name using `az configure --defaults acr=<registry name>`', completer=get_resource_name_completion_list(REGISTRY_RESOURCE_TYPE), configured_default='acr', validator=validate_registry_name)
         c.argument("workflow_type", arg_type=get_enum_type(CSSCTaskTypes), options_list=['--type', '-t'], help="Type of workflow task.", required=True)
 
