@@ -37,9 +37,14 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_DEFAULT_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_DEFAULT_VMS_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
     CONST_SSH_ACCESS_LOCALUSER,
 )
-from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
+from azext_aks_preview._helpers import (
+    get_nodepool_snapshot_by_snapshot_id,
+    filter_hard_taints,
+)
 
 logger = get_logger(__name__)
 
@@ -477,6 +482,26 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return undrainable_node_behavior
 
+    def get_max_unavailable(self) -> str:
+        """Obtain the value of max_unavailable.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        max_unavailable = self.raw_param.get("max_unavailable")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings and
+                self.agentpool.upgrade_settings.max_unavailable is not None
+            ):
+                max_unavailable = self.agentpool.upgrade_settings.max_unavailable
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return max_unavailable
+
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
         :return: bool
@@ -691,6 +716,12 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             vm_sizes = [x.strip() for x in raw_value.split(",")]
         else:
             vm_sizes = [self.get_node_vm_size()]
+            # Populate default values if vm_sizes still empty
+            if vm_sizes == [""]:
+                if self.get_os_type().lower() == "windows":
+                    vm_sizes = [CONST_DEFAULT_WINDOWS_VMS_VM_SIZE]
+                else:
+                    vm_sizes = [CONST_DEFAULT_VMS_VM_SIZE]
         return vm_sizes
 
     # Overrides azure-cli command to allow changes after create
@@ -850,7 +881,11 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         :return: the AgentPool object
         """
         self._ensure_agentpool(agentpool)
-        agentpool.node_initialization_taints = self.context.get_node_initialization_taints()
+        nodepool_initialization_taints = self.context.get_node_initialization_taints()
+        # filter out taints with hard effects for System pools
+        if agentpool.mode is None or agentpool.mode.lower() == "system":
+            nodepool_initialization_taints = filter_hard_taints(nodepool_initialization_taints)
+        agentpool.node_initialization_taints = nodepool_initialization_taints
         return agentpool
 
     def set_up_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
@@ -955,12 +990,14 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             return agentpool
 
         sizes = self.context.get_vm_sizes()
+        if len(sizes) != 1:
+            raise InvalidArgumentValueError(f"We only accept single sku size for manual profile. {sizes} is invalid.")
         count, _, _, _ = self.context.get_node_count_and_enable_cluster_autoscaler_min_max_count()
         agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
             scale=self.models.ScaleProfile(
                 manual=[
                     self.models.ManualScaleProfile(
-                        sizes=sizes,
+                        size=sizes[0],
                         count=count,
                     )
                 ]
@@ -1041,6 +1078,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         undrainable_node_behavior = self.context.get_undrainable_node_behavior()
         if undrainable_node_behavior:
             upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
+
+        max_unavailable = self.context.get_max_unavailable()
+        if max_unavailable:
+            upgrade_settings.max_unavailable = max_unavailable
 
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
@@ -1266,6 +1307,10 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         if undrainable_node_behavior:
             upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
             agentpool.upgrade_settings = upgrade_settings
+
+        max_unavailable = self.context.get_max_unavailable()
+        if max_unavailable:
+            upgrade_settings.max_unavailable = max_unavailable
 
         return agentpool
 

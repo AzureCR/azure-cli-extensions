@@ -2872,7 +2872,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/listBuildSourceUploadUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/d8c4be14-bec3-4f9d-8e6d-1d72deeec981.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A51%3A44Z&sr=b&sp=cw&sig=FP8uveMbxFTf9Ws77li90sHXmmAv3AnrPTpE2BKH9Ys%3D","relativePath":"source/202411010000/d8c4be14-bec3-4f9d-8e6d-1d72deeec981.tar.gz"}'
+      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/d8c4be14-bec3-4f9d-8e6d-1d72deeec981.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A51%3A44Z&sr=b&sp=cw&sig=***","relativePath":"source/202411010000/d8c4be14-bec3-4f9d-8e6d-1d72deeec981.tar.gz"}'
     headers:
       cache-control:
       - no-cache
@@ -3057,7 +3057,7 @@ interactions:
       x-ms-version:
       - '2022-11-02'
     method: PUT
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/d8c4be14-bec3-4f9d-8e6d-1d72deeec981.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A51%3A44Z&sr=b&sp=cw&sig=FP8uveMbxFTf9Ws77li90sHXmmAv3AnrPTpE2BKH9Ys%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/d8c4be14-bec3-4f9d-8e6d-1d72deeec981.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A51%3A44Z&sr=b&sp=cw&sig=***
   response:
     body:
       string: ''
@@ -3160,7 +3160,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/runs/ca1/listLogSasUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D"}'
+      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***"}'
     headers:
       cache-control:
       - no-cache
@@ -3201,7 +3201,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3253,7 +3253,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3307,7 +3307,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "2024/11/01 08:51:50 Downloading source code...\r\n2024/11/01 08:51:51\
@@ -3370,7 +3370,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3422,7 +3422,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3476,7 +3476,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "Step 1/17 : FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base\n6.0:\
@@ -3545,7 +3545,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3597,7 +3597,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3651,7 +3651,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in f874be912c1f\nRemoving intermediate container f874be912c1f\n\
@@ -3713,7 +3713,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3765,7 +3765,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3819,7 +3819,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "8010a408bc14: Pull complete\neaad07398560: Pull complete\r\n"
@@ -3873,7 +3873,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3925,7 +3925,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -3979,7 +3979,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "be7a97af7e5d: Pull complete\nDigest: sha256:3e7491422fb3a14f0bfe98fcb58afc1d477ee6ee4aac8dff8557332140ac9cf1\n\
@@ -4042,7 +4042,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4094,7 +4094,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4148,7 +4148,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in 30a8a40b114f\nRemoving intermediate container 30a8a40b114f\n\
@@ -4205,7 +4205,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4257,7 +4257,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4311,7 +4311,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  All projects are up-to-date for restore.\n  TestWebApp202305 -> /app/build/TestWebApp202305.dll\r\
@@ -4372,7 +4372,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4424,7 +4424,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4478,7 +4478,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  TestWebApp202305 -> /src/bin/Release/net6.0/TestWebApp202305.dll\n\
@@ -4538,7 +4538,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4590,7 +4590,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4642,7 +4642,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4694,7 +4694,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4748,7 +4748,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in 0a2290217e0a\nRemoving intermediate container 0a2290217e0a\n\
@@ -4813,7 +4813,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4865,7 +4865,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -4919,7 +4919,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "7794e8d8212d: Pushed\n261abc8281b7: Pushed\r\n"
@@ -4973,7 +4973,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -5025,7 +5025,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -5079,7 +5079,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "ceffe60ed721: Pushed\r\ncli-containerapp-20241101165143475281: digest:\
@@ -5149,7 +5149,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=9dylsB%2B3Ae2hpiN5mLB7WHZ%2Bmg1VpT7%2FsDL603Js7EI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca1/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A01%3A51Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -9755,7 +9755,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/listBuildSourceUploadUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/ea243ddc-991b-4435-a6c1-009975624acb.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A54%3A10Z&sr=b&sp=cw&sig=IXVHZ2%2FSfPPjMybDhnYZPBc2y0MBPHG0Qr%2B6z58TzOk%3D","relativePath":"source/202411010000/ea243ddc-991b-4435-a6c1-009975624acb.tar.gz"}'
+      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/ea243ddc-991b-4435-a6c1-009975624acb.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A54%3A10Z&sr=b&sp=cw&sig=***","relativePath":"source/202411010000/ea243ddc-991b-4435-a6c1-009975624acb.tar.gz"}'
     headers:
       cache-control:
       - no-cache
@@ -9940,7 +9940,7 @@ interactions:
       x-ms-version:
       - '2022-11-02'
     method: PUT
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/ea243ddc-991b-4435-a6c1-009975624acb.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A54%3A10Z&sr=b&sp=cw&sig=IXVHZ2%2FSfPPjMybDhnYZPBc2y0MBPHG0Qr%2B6z58TzOk%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/ea243ddc-991b-4435-a6c1-009975624acb.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A54%3A10Z&sr=b&sp=cw&sig=***
   response:
     body:
       string: ''
@@ -10043,7 +10043,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/runs/ca2/listLogSasUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D"}'
+      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***"}'
     headers:
       cache-control:
       - no-cache
@@ -10084,7 +10084,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10136,7 +10136,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10190,7 +10190,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "2024/11/01 08:54:14 Downloading source code...\r\n2024/11/01 08:54:15\
@@ -10253,7 +10253,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10305,7 +10305,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10359,7 +10359,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "Step 1/17 : FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base\n6.0:\
@@ -10422,7 +10422,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10476,7 +10476,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "e85481dfd30f: Pull complete\n1c3b6f9e7b03: Pull complete\na352695c487b:\
@@ -10536,7 +10536,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10588,7 +10588,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10642,7 +10642,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in a6869b10bba4\nRemoving intermediate container a6869b10bba4\n\
@@ -10704,7 +10704,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10756,7 +10756,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10810,7 +10810,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "8010a408bc14: Pull complete\neaad07398560: Pull complete\r\n"
@@ -10864,7 +10864,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10916,7 +10916,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -10970,7 +10970,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "be7a97af7e5d: Pull complete\nDigest: sha256:3e7491422fb3a14f0bfe98fcb58afc1d477ee6ee4aac8dff8557332140ac9cf1\n\
@@ -11030,7 +11030,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11082,7 +11082,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11136,7 +11136,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  Restored /src/TestWebApp202305.csproj (in 398 ms).\nRemoving intermediate\
@@ -11196,7 +11196,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11248,7 +11248,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11302,7 +11302,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  All projects are up-to-date for restore.\n  TestWebApp202305 -> /app/build/TestWebApp202305.dll\r\
@@ -11357,7 +11357,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11409,7 +11409,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11463,7 +11463,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed\
@@ -11527,7 +11527,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11579,7 +11579,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11633,7 +11633,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> 36635621b751\nStep 17/17 : ENTRYPOINT [\"dotnet\", \"TestWebApp202305.dll\"\
@@ -11694,7 +11694,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11746,7 +11746,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11798,7 +11798,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -11854,7 +11854,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "The push refers to repository [acr000005.azurecr.io/aca000002]\r\n\
@@ -11930,7 +11930,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=xnOWsnTA%2F3%2Bu%2FA84cPd%2FrtA7sMrtTZbpsJ4UEJRlMDA%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca2/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A04%3A15Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -16271,7 +16271,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/listBuildSourceUploadUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/d3d98664-f5e2-4cd3-9959-8193b158532a.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A56%3A14Z&sr=b&sp=cw&sig=wfcMVBEbP8vk45CbmkQCBCmRhMwC%2Bv8VkiODHLvxM50%3D","relativePath":"source/202411010000/d3d98664-f5e2-4cd3-9959-8193b158532a.tar.gz"}'
+      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/d3d98664-f5e2-4cd3-9959-8193b158532a.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A56%3A14Z&sr=b&sp=cw&sig=***","relativePath":"source/202411010000/d3d98664-f5e2-4cd3-9959-8193b158532a.tar.gz"}'
     headers:
       cache-control:
       - no-cache
@@ -16456,7 +16456,7 @@ interactions:
       x-ms-version:
       - '2022-11-02'
     method: PUT
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/d3d98664-f5e2-4cd3-9959-8193b158532a.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A56%3A14Z&sr=b&sp=cw&sig=wfcMVBEbP8vk45CbmkQCBCmRhMwC%2Bv8VkiODHLvxM50%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/d3d98664-f5e2-4cd3-9959-8193b158532a.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A56%3A14Z&sr=b&sp=cw&sig=***
   response:
     body:
       string: ''
@@ -16561,7 +16561,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/runs/ca3/listLogSasUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D"}'
+      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***"}'
     headers:
       cache-control:
       - no-cache
@@ -16602,7 +16602,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -16654,7 +16654,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -16708,7 +16708,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "2024/11/01 08:56:18 Downloading source code...\r\n2024/11/01 08:56:19\
@@ -16771,7 +16771,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -16823,7 +16823,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -16877,7 +16877,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "Step 1/17 : FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base\n6.0:\
@@ -16946,7 +16946,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -16998,7 +16998,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17052,7 +17052,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in 069eab2b51fa\nRemoving intermediate container 069eab2b51fa\n\
@@ -17114,7 +17114,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17166,7 +17166,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17220,7 +17220,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "8010a408bc14: Pull complete\neaad07398560: Pull complete\r\n"
@@ -17274,7 +17274,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17326,7 +17326,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17380,7 +17380,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "be7a97af7e5d: Pull complete\nDigest: sha256:3e7491422fb3a14f0bfe98fcb58afc1d477ee6ee4aac8dff8557332140ac9cf1\n\
@@ -17440,7 +17440,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17492,7 +17492,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17546,7 +17546,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  Restored /src/TestWebApp202305.csproj (in 446 ms).\nRemoving intermediate\
@@ -17606,7 +17606,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17658,7 +17658,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17712,7 +17712,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  All projects are up-to-date for restore.\n  TestWebApp202305 -> /app/build/TestWebApp202305.dll\r\
@@ -17767,7 +17767,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17819,7 +17819,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17873,7 +17873,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed\
@@ -17933,7 +17933,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -17987,7 +17987,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  TestWebApp202305 -> /app/publish/\nRemoving intermediate container\
@@ -18045,7 +18045,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -18097,7 +18097,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -18151,7 +18151,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> 9af1bd5be1a2\nStep 17/17 : ENTRYPOINT [\"dotnet\", \"TestWebApp202305.dll\"\
@@ -18212,7 +18212,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -18264,7 +18264,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -18318,7 +18318,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "The push refers to repository [acr000005.azurecr.io/aca000002]\r\n"
@@ -18372,7 +18372,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -18424,7 +18424,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -18480,7 +18480,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "5d9c85876909: Preparing\n6ee2b59acf4d: Preparing\n734661639d51: Preparing\n\
@@ -18555,7 +18555,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=Ei4F9pkW0DvRjz8Ww8Y4a0uWH84tJiqBZ8w1MXOIXWU%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca3/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A06%3A19Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -34490,7 +34490,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/listBuildSourceUploadUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/9c760493-030c-4d21-98ef-cd7ebe5fb7c0.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A58%3A11Z&sr=b&sp=cw&sig=SRbs1XlFPA%2FguMqbWUTMbkwUecU1g3AbrcI25dzriLE%3D","relativePath":"source/202411010000/9c760493-030c-4d21-98ef-cd7ebe5fb7c0.tar.gz"}'
+      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/9c760493-030c-4d21-98ef-cd7ebe5fb7c0.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A58%3A11Z&sr=b&sp=cw&sig=***","relativePath":"source/202411010000/9c760493-030c-4d21-98ef-cd7ebe5fb7c0.tar.gz"}'
     headers:
       cache-control:
       - no-cache
@@ -34675,7 +34675,7 @@ interactions:
       x-ms-version:
       - '2022-11-02'
     method: PUT
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/9c760493-030c-4d21-98ef-cd7ebe5fb7c0.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A58%3A11Z&sr=b&sp=cw&sig=SRbs1XlFPA%2FguMqbWUTMbkwUecU1g3AbrcI25dzriLE%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/9c760493-030c-4d21-98ef-cd7ebe5fb7c0.tar.gz?sv=2023-01-03&se=2024-11-01T09%3A58%3A11Z&sr=b&sp=cw&sig=***
   response:
     body:
       string: ''
@@ -34780,7 +34780,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/runs/ca4/listLogSasUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D"}'
+      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***"}'
     headers:
       cache-control:
       - no-cache
@@ -34821,7 +34821,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -34873,7 +34873,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -34927,7 +34927,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "2024/11/01 08:58:14 Downloading source code...\r\n2024/11/01 08:58:15\
@@ -34990,7 +34990,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35042,7 +35042,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35096,7 +35096,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "Step 1/17 : FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base\n6.0:\
@@ -35165,7 +35165,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35217,7 +35217,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35271,7 +35271,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in dcc5bd6aad14\nRemoving intermediate container dcc5bd6aad14\n\
@@ -35333,7 +35333,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35385,7 +35385,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35437,7 +35437,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35491,7 +35491,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "8010a408bc14: Pull complete\neaad07398560: Pull complete\r\nbe7a97af7e5d:\
@@ -35552,7 +35552,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35604,7 +35604,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35658,7 +35658,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  Restored /src/TestWebApp202305.csproj (in 406 ms).\nRemoving intermediate\
@@ -35714,7 +35714,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35766,7 +35766,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35820,7 +35820,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in f9dc50109f67\nRemoving intermediate container f9dc50109f67\n\
@@ -35877,7 +35877,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -35931,7 +35931,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  All projects are up-to-date for restore.\n  TestWebApp202305 -> /app/build/TestWebApp202305.dll\r\
@@ -35986,7 +35986,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -36038,7 +36038,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -36092,7 +36092,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed\
@@ -36158,7 +36158,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -36210,7 +36210,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -36262,7 +36262,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -36314,7 +36314,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -36368,7 +36368,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in 52394e293dec\nRemoving intermediate container 52394e293dec\n\
@@ -36434,7 +36434,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -36486,7 +36486,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -36542,7 +36542,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "a23ab841b32b: Pushed\ncli-containerapp-20241101165810897986: digest:\
@@ -36612,7 +36612,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=cWa5U0sJznQ48LmPY%2BLVLSdNaQ2GXxQzHBMTCno5d4A%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca4/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A08%3A16Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -53658,7 +53658,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/listBuildSourceUploadUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/98e14c51-77ec-4cca-a931-8ba7a56aa69b.tar.gz?sv=2023-01-03&se=2024-11-01T10%3A00%3A36Z&sr=b&sp=cw&sig=mYJY%2BR%2F7T3etKxe7cyxCJIiRON%2BAqq6fR10owvLG6UM%3D","relativePath":"source/202411010000/98e14c51-77ec-4cca-a931-8ba7a56aa69b.tar.gz"}'
+      string: '{"uploadUrl":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/98e14c51-77ec-4cca-a931-8ba7a56aa69b.tar.gz?sv=2023-01-03&se=2024-11-01T10%3A00%3A36Z&sr=b&sp=cw&sig=***","relativePath":"source/202411010000/98e14c51-77ec-4cca-a931-8ba7a56aa69b.tar.gz"}'
     headers:
       cache-control:
       - no-cache
@@ -53843,7 +53843,7 @@ interactions:
       x-ms-version:
       - '2022-11-02'
     method: PUT
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/98e14c51-77ec-4cca-a931-8ba7a56aa69b.tar.gz?sv=2023-01-03&se=2024-11-01T10%3A00%3A36Z&sr=b&sp=cw&sig=mYJY%2BR%2F7T3etKxe7cyxCJIiRON%2BAqq6fR10owvLG6UM%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/source/202411010000/98e14c51-77ec-4cca-a931-8ba7a56aa69b.tar.gz?sv=2023-01-03&se=2024-11-01T10%3A00%3A36Z&sr=b&sp=cw&sig=***
   response:
     body:
       string: ''
@@ -53948,7 +53948,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/runs/ca5/listLogSasUrl?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D"}'
+      string: '{"logLink":"https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***"}'
     headers:
       cache-control:
       - no-cache
@@ -53989,7 +53989,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54041,7 +54041,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54095,7 +54095,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "2024/11/01 09:00:40 Downloading source code...\r\n2024/11/01 09:00:41\
@@ -54158,7 +54158,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54210,7 +54210,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54264,7 +54264,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "Sending build context to Docker daemon  35.33kB\r\r\nStep 1/17 : FROM\
@@ -54334,7 +54334,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54386,7 +54386,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54440,7 +54440,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in 68dfd0fe6ede\nRemoving intermediate container 68dfd0fe6ede\n\
@@ -54502,7 +54502,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54554,7 +54554,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54608,7 +54608,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "8010a408bc14: Pull complete\neaad07398560: Pull complete\r\n"
@@ -54662,7 +54662,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54714,7 +54714,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54768,7 +54768,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "be7a97af7e5d: Pull complete\nDigest: sha256:3e7491422fb3a14f0bfe98fcb58afc1d477ee6ee4aac8dff8557332140ac9cf1\n\
@@ -54827,7 +54827,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54879,7 +54879,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -54933,7 +54933,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: " ---> Running in b5d766383989\n  Determining projects to restore...\n\
@@ -54993,7 +54993,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -55045,7 +55045,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -55097,7 +55097,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -55151,7 +55151,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "MSBuild version 17.3.4+a400405ba for .NET\n  Determining projects to\
@@ -55213,7 +55213,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -55265,7 +55265,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -55319,7 +55319,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "  All projects are up-to-date for restore.\n  TestWebApp202305 -> /src/bin/Release/net6.0/TestWebApp202305.dll\n\
@@ -55379,7 +55379,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -55431,7 +55431,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -55483,7 +55483,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -55535,7 +55535,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''
@@ -55591,7 +55591,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: "Removing intermediate container 9496835dee1e\n ---> 98e36c7d020a\n\
@@ -55672,7 +55672,7 @@ interactions:
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=Wrww0i7Z5bFHPRMr%2FSRnkuXaO7h2DbifvsL%2FTvtvzXI%3D
+    uri: https://eusmanaged201.blob.core.windows.net/20a102be11af4d21a0e5708c64a1f478-tmn65p7kyv/logs/ca5/rawtext.log?sv=2023-01-03&se=2024-11-01T10%3A10%3A42Z&sr=b&sp=r&sig=***
   response:
     body:
       string: ''

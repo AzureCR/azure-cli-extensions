@@ -5,6 +5,23 @@ Release History
 upcoming
 ++++++
 
+1.1.0b5
+++++++
+* 'az containerapp auth update': Support authenticating blob storage token store using managed identity with `--blob-container-uri` and `--blob-container-identity`.
+* 'az containerapp env create': Set identity only when `--mi-system-assigned` or `--mi-user-assigned` is specified.
+* 'az containerapp env create': Set identity only when `--system-assigned` or `--user-assigned` is specified.
+* 'az containerapp up': Support deploying Azure AI Foundry model to Container App with `--model-registry`, `--model-name`, `--model-version`.
+
+1.1.0b4
+++++++
+* 'az containerapp create': Support --kind {functionapp}
+* Removed preview tag for command groups 'az containerapp sessionpool' and 'az containerapp session code-interpreter'
+
+1.1.0b3
+++++++
+* 'az containerapp sessionpool update': Fix updating registry credentials with `--registry-username` and `--registry-password` when existing registry credentials are empty
+* 'az containerapp env create': Update minimumCount from 0 to 1 for `--enable-dedicated-gpu`
+
 1.1.0b2
 ++++++
 * 'az containerapp create/update': Fix an issue about `--bind`/`--unbind` when the cloud is not AzureCloud.

@@ -16,12 +16,12 @@ import shutil
 import stat
 import tempfile
 import time
-import urllib.request
 from base64 import b64decode, b64encode
 from concurrent.futures import ThreadPoolExecutor
 from subprocess import DEVNULL, PIPE, Popen
 from typing import TYPE_CHECKING, Any, Iterable
 
+import oras.client  # type: ignore[import-untyped]
 import yaml
 from azure.cli.command_modules.role import graph_client_factory
 from azure.cli.core import get_default_cli, telemetry
@@ -968,7 +968,8 @@ def create_connectedk8s(
         raise CLIInternalError(
             "Timed out waiting for Agent State to reach terminal state."
         )
-
+    if cl_oid and enable_custom_locations and cl_oid == custom_locations_oid:
+        logger.warning(consts.Manual_Custom_Location_Oid_Warning)
     return put_cc_response
 
 
@@ -1169,20 +1170,23 @@ def install_helm_client() -> str:
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.MachineType": machine_type}
     )
-
     # Set helm binary download & install locations
     if operating_system == "windows":
-        download_location_string = f".azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        download_location_string = f".azure\\helm\\{consts.HELM_VERSION}"
+        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
         install_location_string = (
             f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
         )
-        requestUri = f"{consts.HELM_STORAGE_URL}/helmsigned/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     elif operating_system == "linux" or operating_system == "darwin":
-        download_location_string = f".azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        download_location_string = f".azure/helm/{consts.HELM_VERSION}"
+        download_file_name = (
+            f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        )
         install_location_string = (
             f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
         )
-        requestUri = f"{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     else:
         telemetry.set_exception(
             exception="Unsupported OS for installing helm client",
@@ -1215,11 +1219,15 @@ def install_helm_client() -> str:
         logger.warning(
             "Downloading helm client for first time. This can take few minutes..."
         )
+        client = oras.client.OrasClient()
         retry_count = 3
         retry_delay = 5
         for i in range(retry_count):
             try:
-                response = urllib.request.urlopen(requestUri)
+                client.pull(
+                    target=f"{consts.HELM_MCR_URL}:{artifactTag}",
+                    outdir=download_location,
+                )
                 break
             except Exception as e:
                 if i == retry_count - 1:
@@ -1236,26 +1244,13 @@ def install_helm_client() -> str:
                     )
                 time.sleep(retry_delay)
 
-        responseContent = response.read()
-        response.close()
-
-        # Creating the compressed helm binaries
-        try:
-            with open(download_location, "wb") as f:
-                f.write(responseContent)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Create_HelmExe_Fault_Type,
-                summary="Unable to create helm executable",
-            )
-            reco_str = f"Please ensure that you delete the directory '{download_dir}' before trying again."
-            raise ClientRequestError(
-                "Failed to create helm executable." + str(e), recommendation=reco_str
-            )
         # Extract the archive.
         try:
-            shutil.unpack_archive(download_location, download_dir)
+            extract_dir = download_location
+            download_location = os.path.expanduser(
+                os.path.join(download_location, download_file_name)
+            )
+            shutil.unpack_archive(download_location, extract_dir)
             os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
         except Exception as e:
             telemetry.set_exception(
@@ -1263,7 +1258,7 @@ def install_helm_client() -> str:
                 fault_type=consts.Extract_HelmExe_Fault_Type,
                 summary="Unable to extract helm executable",
             )
-            reco_str = f"Please ensure that you delete the directory '{download_dir}' before trying again."
+            reco_str = f"Please ensure that you delete the directory '{extract_dir}' before trying again."
             raise ClientRequestError(
                 "Failed to extract helm executable." + str(e), recommendation=reco_str
             )
@@ -1361,14 +1356,16 @@ def get_private_key(key_pair: RsaKey) -> str:
     return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
 
 
+# Updated function to include more Kubernetes distributions based on provided criteria
 def get_kubernetes_distro(api_response: V1NodeList) -> str:  # Heuristic
     if api_response is None:
         return "generic"
     try:
         for node in api_response.items:
-            labels = node.metadata.labels
+            labels = node.metadata.labels or {}
             provider_id = str(node.spec.provider_id)
-            annotations = node.metadata.annotations
+            annotations = node.metadata.annotations or {}
+
             if labels.get("node.openshift.io/os_id"):
                 return "openshift"
             if labels.get("kubernetes.azure.com/node-image-version"):
@@ -1393,6 +1390,28 @@ def get_kubernetes_distro(api_response: V1NodeList) -> str:  # Heuristic
                 "rke.cattle.io/internal-ip"
             ):
                 return "rancher_rke"
+            if any(label.startswith("snap.microk8s") for label in labels):
+                return "microk8s"
+            if any(label.startswith("k3os.io") for label in labels):
+                return "k3os"
+            if any(label.startswith("talos.dev") for label in labels):
+                return "talos"
+            if any(key.startswith("rke2.io") for key in annotations):
+                return "rke2"
+            if any(
+                label.startswith("node-role.kubernetes.io") for label in labels
+            ) or any(
+                key.startswith("kubeadm.alpha.kubernetes.io") for key in annotations
+            ):
+                return "kubeadm"
+            if any(label.startswith("run.tanzu.vmware.com") for label in labels):
+                return "tkg"
+            if any(label.startswith("openebs.io") for label in labels):
+                return "openebs"
+            if any(label.startswith("flatcar-linux") for label in labels):
+                return "flatcar"
+            if any(label.startswith("k0s.k0sproject.io") for label in labels):
+                return "k0s"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug(
@@ -1414,8 +1433,10 @@ def get_kubernetes_infra(api_response: V1NodeList) -> str:  # Heuristic
         for node in api_response.items:
             provider_id = str(node.spec.provider_id)
             infra = provider_id.split(":")[0]
-            if infra == "k3s" or infra == "kind":
-                return "generic"
+            if infra == "k3s":
+                return "k3s"
+            if infra == "kind":
+                return "kind"
             if infra == "azure":
                 return "azure"
             if infra == "gce":
@@ -2839,16 +2860,17 @@ def enable_features(
             if custom_token_passed is True
             else get_subscription_id(cmd.cli_ctx)
         )
-        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(
+        final_enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(
             cmd, cl_oid, subscription_id
         )
-        if not enable_cluster_connect and enable_cl:
+        if not enable_cluster_connect and final_enable_cl:
             enable_cluster_connect = True
             logger.warning(
                 "Enabling 'custom-locations' feature will enable 'cluster-connect' feature too."
             )
-        if not enable_cl:
+        if not final_enable_cl:
             features.remove("custom-locations")
+            logger.warning(consts.Custom_Location_Enable_Failed_warning)
             if len(features) == 0:
                 raise ClientRequestError("Failed to enable 'custom-locations' feature.")
 
@@ -2972,7 +2994,7 @@ def enable_features(
         cmd_helm_upgrade.extend(
             ["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"]
         )
-    if enable_cl:
+    if final_enable_cl:
         cmd_helm_upgrade.extend(
             ["--set", "systemDefaultValues.customLocations.enabled=true"]
         )
@@ -3000,7 +3022,8 @@ def enable_features(
         raise CLIInternalError(
             str.format(consts.Error_enabling_Features, helm_upgrade_error_message)
         )
-
+    if cl_oid and final_enable_cl and cl_oid == custom_locations_oid:
+        logger.warning(consts.Manual_Custom_Location_Oid_Warning)
     return str.format(
         consts.Successfully_Enabled_Features, features, connected_cluster.name
     )
@@ -3822,8 +3845,7 @@ def check_cl_registration_and_get_oid(
     cmd: CLICommmand, cl_oid: str | None, subscription_id: str | None
 ) -> tuple[bool, str]:
     print(
-        f"Step: {utils.get_utctimestring()}: Checking Microsoft.ExtendedLocation RP Registration state for this Subscription, and get OID, "
-        "if registered "
+        f"Step: {utils.get_utctimestring()}: Checking Custom Location(Microsoft.ExtendedLocation) RP Registration state for this Subscription, and attempt to get the Custom Location Object ID (OID),if registered"
     )
     enable_custom_locations = True
     custom_locations_oid = ""
@@ -3847,8 +3869,8 @@ def check_cl_registration_and_get_oid(
     except Exception as e:
         enable_custom_locations = False
         warn_msg = (
-            "Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Failed to enable "
-            "'custom-locations' feature. This is fine if not required. Proceeding with helm install."
+            "The custom location feature was not enabled because the custom location OID could not be retrieved. Please refer to: https://aka.ms/enable-customlocation "
+            "Proceeding with helm install..."
         )
         logger.warning(warn_msg)
         telemetry.set_exception(
@@ -3900,7 +3922,8 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
         return cl_oid
     except Exception as e:
         # Encountered exeption while fetching OID, log error
-        log_string = "Unable to fetch the Object ID of the Azure AD application used by Azure Arc service. "
+        log_string = "Unable to fetch the Custom Location OID  with permissions set on this account. The account does not have sufficient permissions to fetch or validate the OID."
+
         telemetry.set_exception(
             exception=e,
             fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type_Exception,
@@ -3908,11 +3931,12 @@ def get_custom_locations_oid(cmd: CLICommmand, cl_oid: str | None) -> str:
         )
         # If Cl OID was input, use that
         if cl_oid:
-            log_string += "Proceeding with the Object ID provided to enable the 'custom-locations' feature."
+            log_string += "\nProceeding with using the OID manually provided to enable the 'custom-locations' feature without validation."
+            log_string += "\nIf the manual OID is invalid, custom location may not be properly enabled."
             logger.warning(log_string)
             return cl_oid
         # If no Cl OID was input, log a Warning and return empty for OID
-        log_string += "Unable to enable the 'custom-locations' feature. " + str(e)
+        log_string += "\nException encountered: " + str(e)
         logger.warning(log_string)
         return ""
 

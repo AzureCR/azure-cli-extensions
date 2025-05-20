@@ -355,11 +355,6 @@
     "URL": "https://learn.microsoft.com/azure/azure-arc/kubernetes"
   },
   {
-    "Command": "az k8sconfiguration",
-    "AzureServiceName": "Kubernetes Service (AKS)",
-    "URL": "https://learn.microsoft.com/azure/azure-arc/kubernetes"
-  },
-  {
     "Command": "az k8s-extension",
     "AzureServiceName": "Kubernetes Service (AKS)",
     "URL": "https://learn.microsoft.com/azure/azure-arc/kubernetes"
@@ -887,7 +882,7 @@
   {
     "Command": "az nexusidentity",
     "AzureServiceName": "Nexus Identity",
-    "URL": ""
+    "URL": "https://learn.microsoft.com/en-us/azure/operator-nexus/"
   },
   {
     "Command": "az storage-actions",
@@ -920,8 +915,33 @@
     "URL": ""
   },
   {
+    "Command": "az zones",
+    "AzureServiceName": "Availability Zones",
+    "URL": "https://learn.microsoft.com/azure/availability-zones/az-overview"
+  },
+  {
     "Command": "az playwright-testing",
     "AzureServiceName": "Playwright Testing",
     "URL": "https://learn.microsoft.com/en-us/azure/playwright-testing/"
+  },
+  {
+    "Command": "az computeschedule",
+    "AzureServiceName": "Computeschedule",
+    "URL": "https://learn.microsoft.com/en-us/rest/api/computeschedule/"
+  },
+  {
+    "Command": "az pinecone",
+    "AzureServiceName": "Pinecone",
+    "URL": "https://learn.microsoft.com/en-us/azure/partner-solutions"
+  },
+  {
+    "Command": "az weights-and-biases",
+    "AzureServiceName": "WeightsAndBiases",
+    "URL": "https://learn.microsoft.com/en-us/azure/partner-solutions"
+  },
+  {
+    "Command": "az lambda-test",
+    "AzureServiceName": "LambdaTest",
+    "URL": "https://learn.microsoft.com/en-us/azure/partner-solutions"
   }
 ]

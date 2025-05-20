@@ -9,6 +9,91 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
+Pending
++++++++
+
+18.0.0b1
++++++++
+* [BREAKING CHANGE] Remove `--enable-pod-security-policy` and `--disable-pod-security-policy` as it's deprecated.
+
+17.0.0b4
+++++++++
+* Reset vm_size and count to None for `az aks update --migrate-vmas-to-vms`
+
+17.0.0b3
+++++++++
+* Add default value of option `--vm-sizes` for `az aks create` and `az aks nodepool add`.
+
+17.0.0b2
+++++++++
+* Add option `--migrate-vmas-to-vms` to `az aks update`
+
+17.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Change default value of option `--node-vm-size` to ""
+* [BREAKING CHANGE]: `az aks nodepool add`: Change default value of option `--node-vm-size` to ""
+
+16.0.0b1
++++++++
+* [BREAKING CHANGE] Remove flux extension from the list of supported core extensions
+
+15.0.0b2
++++++++
+* Add aks extension and aks extension-type command groups
+* Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
+
+15.0.0b1
+++++++++
+* [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines manual profile to awalys support single SKU size.
+
+14.0.0b7
+++++++++
+* Add `az aks create/update --enable-retina-flow-logs` and `az aks update --disable-retina-flow-logs` commands.
+
+14.0.0b6
++++++++
+* Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`
+
+14.0.0b5
+++++++++
+* Re-generate the SDK for API version 2025-02-02-preview with @autorest/python@6.32.3 to fix `\#31345 <https://github.com/Azure/azure-cli/issues/31345>`_.
+
+14.0.0b4
+++++++++
+* Vendor new SDK and bump API version to 2025-02-02-preview.
+
+14.0.0b3
++++++++
+* Support `az aks loadbalancer show/list/add/update/delete/rebalance` commands.
+
+14.0.0b2
++++++++
+* Update the `disable-egress-gateway` subcommand to fix `--help` output for the `az aks mesh` command.
+* Modify behavior for `--nodepool-initialization-taints` to ignore taints with hard effects on node pools with system mode when creating or updating a cluster.
+
+14.0.0b1
++++++++
+* Vendor new SDK and bump API version to 2025-01-02-preview.
+* [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` to `az aks create` commands.
+* [BREAKING CHANGE] Rename `--enable-addon-autoscaling` to `--enable-optimized-addon-scaling` and `--disable-addon-autoscaling` to `--disable-optimized-addon-scaling` to `az aks update` commands.
+
+13.0.0b9
++++++++
+* Vendor new SDK and bump API version to 2024-10-02-preview.
+* Add `enable-egress-gateway` and `disable-egress-gateway` subcommands to the `az aks mesh` command.
+
+13.0.0b8
++++++++
+* `az aks create/update``: Update recording rule group create logic for managed prometheus addon
+
+13.0.0b7
++++++++
+* Add `--max-unavailable` to the `az aks nodepool add/update/upgrade` commands.
+
+13.0.0b6
++++++++
+* `az aks create/update`: Update parameter description of `--custom-ca-certificates`.
+
 13.0.0b5
 +++++++
 * `az aks create/az aks nodepool add`: Emit error message when using `--asg-ids` alone without `--allowed-host-ports`.
@@ -24,9 +109,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 13.0.0b2
 +++++++
 * `az aks create/update`: Update advanced container networking service (acns) with 2024-09-02-preview API version enablement.
-
-Pending
-+++++++
 * Vendor new SDK and bump API version to 2024-09-02-preview.
 
 13.0.0b1
