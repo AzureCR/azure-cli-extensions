@@ -98,11 +98,22 @@ def acr_cache_create(cmd,
                      ends_with=None,
                      contains=None,
                      dry_run=False,
-                     yes=False):
+                     yes=False,
+                     platforms=None,
+                     sync_referrers=False,
+                     include_artifact_types=None,
+                     exclude_artifact_types=None
+                     ):
+
+    # Return not implemented if any new parameter is used
+    if platforms or sync_referrers or include_artifact_types or exclude_artifact_types:
+        raise CLIError("This feature is not implemented yet. Please check back later.")
 
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
     sync_str = "Active" if sync else "Inactive"
+    if include_artifact_types and exclude_artifact_types:
+        raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
     tag = None
     if ':' in source_repo:
@@ -141,9 +152,19 @@ def acr_cache_update_custom(cmd,
                             starts_with=None,
                             ends_with=None,
                             contains=None,
-                            yes=False):
+                            yes=False,
+                            platforms=None,
+                            sync_referrers=False,
+                            include_artifact_types=None,
+                            exclude_artifact_types=None
+                            ):
 
     instance = CacheRuleUpdateParameters()
+    # Return not implemented if any new parameter is used
+    if platforms or sync_referrers or include_artifact_types or exclude_artifact_types:
+        raise CLIError("This feature is not implemented yet. Please check back later.")
+    if include_artifact_types and exclude_artifact_types:
+        raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")    
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
     if remove_cred_set:
@@ -207,3 +228,5 @@ def acr_cache_sync(cmd,
     return client.registries.begin_import_image(resource_group_name=rg,
                                                 registry_name=registry_name,
                                                 parameters=params)
+
+                                               

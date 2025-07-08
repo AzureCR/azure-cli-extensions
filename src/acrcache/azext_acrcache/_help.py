@@ -23,6 +23,9 @@ examples:
 helps['acr cache list'] = """
 type: command
 short-summary: List the cache rules in an Azure Container Registry.
+long-summary: |
+  NOTE: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented. Using any of these parameters will return a 'not implemented' error message.
+
 examples:
   - name: List the cache rules in an Azure Container Registry.
     text: az acr cache list -r myregistry
@@ -38,11 +41,20 @@ examples:
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu -c MyCredSet
   - name: Create a cache rule with artifact sync enabled and set a tag filter.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync true --starts-with v1 --ends-with beta
+  - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify platforms and sync referrers.
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync true --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
+  - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify  platforms, sync referrers and artifact types to include.
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync true --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types images,notary-project-signature 
+  - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify platforms, sync referrers and artifact types to exclude.
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync true --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.aquasec.trivy.vulnerability.report 
 """
 
 helps['acr cache update'] = """
 type: command
 short-summary: Update the credential set on a cache rule.
+long-summary: |
+  NOTE: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented. Using any of these parameters will return a 'not implemented' error message.
+
 examples:
   - name: Change or add a credential set to an existing cache rule.
     text: az acr cache update -r myregistry -n MyRule -c NewCredSet
@@ -50,6 +62,12 @@ examples:
     text: az acr cache update -r myregistry -n MyRule --remove-cred-set
   - name: Enable artifact sync and set a tag filter.
     text: az acr cache update -r myregistry -n MyRule --sync true --starts-with v1 --ends-with beta
+  - name: Enable artifact sync, set a tag filter, and specify platforms and sync referrers.
+    text: az acr cache update -r myregistry -n MyRule --sync true --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
+  - name: Enable artifact sync, set a tag filter, and specify platforms, sync referrers and artifact types to include.
+    text: az acr cache update -r myregistry -n MyRule --sync true --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types images,notary-project-signature
+  - name: Enable artifact sync, set a tag filter, and specify platforms, sync referrers and artifact types to exclude.
+    text: az acr cache update -r myregistry -n MyRule --sync true -- starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.aquasec.trivy.vulnerability.report
 """
 
 helps['acr cache delete'] = """

@@ -22,3 +22,7 @@ def load_arguments(self, _):
         c.argument('ends_with', help='Only sync the tags that end with the specified string.')
         c.argument('contains', help='Only sync the tags that contain the specified string.')
         c.argument('image', help='The name of the tag you want to sync immediately. Can only be used if artifact sync is enabled and the tag is within any specified tag filter.')
+        c.argument('platforms', help='A list of platforms to filter the artifacts by.')
+        c.argument('sync_referrers', arg_type=get_three_state_flag(), help='Optional boolean indicating whether to sync the referrers of the artifacts. False by default.')
+        c.argument('include_artifact_types', help='A list of artifact types to include in the sync.')
+        c.argument('exclude_artifact_types', help='A list of artifact types to exclude from the sync.')
