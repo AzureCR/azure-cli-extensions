@@ -106,9 +106,9 @@ def acr_cache_create(cmd,
                      exclude_artifact_types=None
                      ):
 
-    # Return not implemented if any new parameter is used
+    # Warn if any new parameters are used
     if platforms or sync_referrers or include_artifact_types or exclude_artifact_types:
-        raise CLIError("This feature is not implemented yet. Please check back later.")
+        print("Warning: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented..")
 
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
@@ -131,6 +131,10 @@ def acr_cache_create(cmd,
     cache_rule_create_params.credential_set_resource_id = cred_set_id
     cache_rule_create_params.artifact_sync_status = sync_str
     cache_rule_create_params.artifact_sync_scope_filter_properties = ArtifactSyncScopeFilterProperties(type="KQL", query=kql_str)
+    cache_rule_create_params.platforms = platforms if platforms else []
+    cache_rule_create_params.sync_referrers = sync_referrers
+    cache_rule_create_params.include_artifact_types = include_artifact_types if include_artifact_types else []
+    cache_rule_create_params.exclude_artifact_types = exclude_artifact_types if exclude_artifact_types else []
 
     if tag is None and sync and not dry_run:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Run with the dry-run flag for details. Continue?", yes)
@@ -161,9 +165,10 @@ def acr_cache_update_custom(cmd,
                             ):
 
     instance = CacheRuleUpdateParameters()
-    # Return not implemented if any new parameter is used
+    # Warn if any new parameters are used
     if platforms or sync_referrers or include_artifact_types or exclude_artifact_types:
-        raise CLIError("This feature is not implemented yet. Please check back later.")
+        print("Warning: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented.")
+    
     if include_artifact_types and exclude_artifact_types:
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")    
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
