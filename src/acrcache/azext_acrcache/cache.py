@@ -6,6 +6,7 @@
 
 
 from azure.cli.core.util import user_confirmation
+from knack.util import CLIError
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
 from .vendored_sdks.containerregistry.v2023_11_01_preview.models._models_py3 import CacheRule, ArtifactSyncScopeFilterProperties, CacheRuleUpdateParameters, ImportSource, ImportImageParameters
