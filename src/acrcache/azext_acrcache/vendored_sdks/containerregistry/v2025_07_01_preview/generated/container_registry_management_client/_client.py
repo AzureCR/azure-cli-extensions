@@ -118,7 +118,14 @@ class ContainerRegistryManagementClient:  # pylint: disable=too-many-instance-at
                 policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
                 self._config.http_logging_policy,
             ]
-        self._client: PipelineClient = PipelineClient(base_url=endpoint, policies=_policies, **kwargs)
+        # self._client: PipelineClient = PipelineClient(base_url=endpoint, policies=_policies, **kwargs)
+
+        if 'base_url' in kwargs:
+            # If base_url is already in kwargs, don't pass it explicitly
+            self._client: PipelineClient = PipelineClient(policies=_policies, **kwargs)
+        else:
+            # Otherwise use the endpoint parameter
+            self._client: PipelineClient = PipelineClient(base_url=endpoint, policies=_policies, **kwargs)
 
         client_models = {k: v for k, v in _models._models.__dict__.items() if isinstance(v, type)}
         client_models.update({k: v for k, v in _models.__dict__.items() if isinstance(v, type)})

@@ -4,13 +4,16 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-
 from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
+# Import AzureCoreNull to represent a null value for Azure resource IDs when credential set is not provided
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
-from .vendored_sdks.containerregistry.v2023_11_01_preview.models._models_py3 import CacheRule, ArtifactSyncScopeFilterProperties, CacheRuleUpdateParameters, ImportSource, ImportImageParameters
-
+from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client.models import (
+    CacheRule, CacheRuleProperties, ArtifactSyncFilterProperties, 
+    CacheRuleUpdateParameters, ImportSource, ImportImageParameters,
+    PlatformFilter, ArtifactTypeFilter  # Add these new types
+)
 
 def _create_kql(starts_with=None, ends_with=None, contains=None):
     if not starts_with and not ends_with and not contains:
@@ -106,44 +109,102 @@ def acr_cache_create(cmd,
                      exclude_artifact_types=None
                      ):
 
-    # Warn if any new parameters are used
     if platforms or sync_referrers or include_artifact_types or exclude_artifact_types:
-        print("Warning: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented..")
+        print("Warning: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented.")
 
-    registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
+    registry, _ = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
-    sync_str = "Active" if sync else "Inactive"
+
+  # Debug the client and registry information
+    logger.debug(f"Client type: {type(client)}")
+    logger.debug(f"Client dir: {dir(client)}")
+    logger.debug(f"Registry type: {type(registry)}")
+    logger.debug(f"Registry ID: {registry.id}")
+
+    #extract resource group from registry id
+    if resource_group_name:
+        rg = resource_group_name
+    else:
+        #extract resource group from registry id
+        import re
+        match = re.search(r'/resourceGroups/([^/]+)/', registry.id)
+        rg = match.group(1) if match else None
+
+    if not rg:
+        raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")    
+
+    sync_str = "Enable" if sync else "Disable"
+    sync_referrers_str = "Enable" if sync_referrers else "Disable"
+
     if include_artifact_types and exclude_artifact_types:
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
+    
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
     tag = None
+
     if ':' in source_repo:
-        tag = source_repo.split(':')[1]
-        source_repo = source_repo.split(':')[0]
+        source_repo, tag = source_repo.rsplit(':', 1)
+
+    #create artifact sync filters object
+    artifact_sync_filters = {}
+
+    if platforms:
+        #convert comma separated string to list
+        platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
+        artifact_sync_filters['platforms'] = PlatformFilter(
+            type="array",
+            values=platform_list
+        )
+        
+    if include_artifact_types:
+        #convert comma separated string to list
+        include_artifact_list = include_artifact_types if isinstance(include_artifact_types, list) else include_artifact_types.split(',')
+        artifact_sync_filters["artifactTypes"] = ArtifactTypeFilter(
+            type="include",
+            values=include_artifact_list
+        )
+    elif exclude_artifact_types:
+        exclude_artifact_list = exclude_artifact_types if isinstance(exclude_artifact_types, list) else exclude_artifact_types.split(',')
+        artifact_sync_filters["artifactTypes"] = ArtifactTypeFilter(
+            type="exclude",
+            values=exclude_artifact_list
+        )
 
     kql_str = f"Tags | where Name == '{tag}'" if tag is not None else _create_kql(starts_with, ends_with, contains)
+    if kql_str and kql_str != "Tags":
+        artifact_sync_filters["tags"] = TagFilter(
+            type="KQL",
+            query=kql_str
+        )
 
-    CacheRuleCreateParameters = CacheRule
-    cache_rule_create_params = CacheRuleCreateParameters()
-    cache_rule_create_params.name = name
-    cache_rule_create_params.source_repository = source_repo
-    cache_rule_create_params.target_repository = target_repo
-    cache_rule_create_params.credential_set_resource_id = cred_set_id
-    cache_rule_create_params.artifact_sync_status = sync_str
-    cache_rule_create_params.artifact_sync_scope_filter_properties = ArtifactSyncScopeFilterProperties(type="KQL", query=kql_str)
-    cache_rule_create_params.platforms = platforms if platforms else []
-    cache_rule_create_params.sync_referrers = sync_referrers
-    cache_rule_create_params.include_artifact_types = include_artifact_types if include_artifact_types else []
-    cache_rule_create_params.exclude_artifact_types = exclude_artifact_types if exclude_artifact_types else []
+
+    #create cacheRuleProperties object
+    properties = CacheRuleProperties(
+        credential_set_resource_id=cred_set_id,
+        source_repository=source_repo,
+        target_repository=target_repo,
+        artifact_sync_status=sync_str,
+        sync_referrers=sync_referrers_str,
+    )
+
+    if artifact_sync_filters:
+        properties.artifact_sync_filters = artifact_sync_filters
+
+    # Create cache rule with properties
+    cache_rule = CacheRule(
+        name=name,
+        properties=properties
+    )
 
     if tag is None and sync and not dry_run:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Run with the dry-run flag for details. Continue?", yes)
 
-    return client.begin_create(resource_group_name=rg,
-                               registry_name=registry_name,
-                               cache_rule_name=name,
-                               cache_rule_create_parameters=cache_rule_create_params,
-                               dry_run=dry_run)
+    return client.begin_create(
+        resource_group_name=rg,
+        registry_name=registry_name,
+        cache_rule_name=name,
+        cache_rule_create_parameters=cache_rule
+    )
 
 
 def acr_cache_update_custom(cmd,
