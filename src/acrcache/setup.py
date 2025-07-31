@@ -49,5 +49,9 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_acrcache': ['azext_metadata.json']},
+    package_data={'azext_acrcache': ['azext_metadata.json',
+                                    'vendored_sdks/containerregistry/v2025_07_01_preview/**/*',
+                                    'vendored_sdks/containerregistry/v2025_07_01_preview/generated/**/*',
+                                    'vendored_sdks/containerregistry/v2025_07_01_preview/generated/container_registry_management_client/**/*',
+                                    'vendored_sdks/containerregistry/v2025_07_01_preview/generated/container_registry_management_client/models/**/*']},
 )

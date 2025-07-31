@@ -9,11 +9,20 @@ from knack.util import CLIError
 # Import AzureCoreNull to represent a null value for Azure resource IDs when credential set is not provided
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
-from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client.models import (
+from azure.cli.core._profile import Profile
+from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client import ContainerRegistryManagementClient
+from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client.models._models import (
     CacheRule, CacheRuleProperties, ArtifactSyncFilterProperties, 
     CacheRuleUpdateParameters, ImportSource, ImportImageParameters,
-    PlatformFilter, ArtifactTypeFilter  # Add these new types
+    PlatformFilter, ArtifactTypeFilter, TagFilter
 )
+
+import logging
+import traceback
+
+# Set up logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 def _create_kql(starts_with=None, ends_with=None, contains=None):
     if not starts_with and not ends_with and not contains:
@@ -114,13 +123,6 @@ def acr_cache_create(cmd,
 
     registry, _ = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
-
-  # Debug the client and registry information
-    logger.debug(f"Client type: {type(client)}")
-    logger.debug(f"Client dir: {dir(client)}")
-    logger.debug(f"Registry type: {type(registry)}")
-    logger.debug(f"Registry ID: {registry.id}")
-
     #extract resource group from registry id
     if resource_group_name:
         rg = resource_group_name
@@ -133,7 +135,7 @@ def acr_cache_create(cmd,
     if not rg:
         raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")    
 
-    sync_str = "Enable" if sync else "Disable"
+    sync_str = "Active" if sync else "Inactive"
     sync_referrers_str = "Enable" if sync_referrers else "Disable"
 
     if include_artifact_types and exclude_artifact_types:
@@ -149,7 +151,6 @@ def acr_cache_create(cmd,
     artifact_sync_filters = {}
 
     if platforms:
-        #convert comma separated string to list
         platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
         artifact_sync_filters['platforms'] = PlatformFilter(
             type="array",
@@ -157,7 +158,6 @@ def acr_cache_create(cmd,
         )
         
     if include_artifact_types:
-        #convert comma separated string to list
         include_artifact_list = include_artifact_types if isinstance(include_artifact_types, list) else include_artifact_types.split(',')
         artifact_sync_filters["artifactTypes"] = ArtifactTypeFilter(
             type="include",
@@ -171,12 +171,13 @@ def acr_cache_create(cmd,
         )
 
     kql_str = f"Tags | where Name == '{tag}'" if tag is not None else _create_kql(starts_with, ends_with, contains)
-    if kql_str and kql_str != "Tags":
-        artifact_sync_filters["tags"] = TagFilter(
-            type="KQL",
-            query=kql_str
-        )
+    if sync and not kql_str:
+        kql_str = "Tags | where Name != ''"
 
+    artifact_sync_filters["tags"] = TagFilter(
+        type="KQL",
+        query=kql_str
+    )
 
     #create cacheRuleProperties object
     properties = CacheRuleProperties(
@@ -190,6 +191,8 @@ def acr_cache_create(cmd,
     if artifact_sync_filters:
         properties.artifact_sync_filters = artifact_sync_filters
 
+    logger.debug(f"Artifact Sync Filters: {artifact_sync_filters}")
+    logger.debug(f"CacheRuleProperties: {properties}")
     # Create cache rule with properties
     cache_rule = CacheRule(
         name=name,
@@ -199,6 +202,8 @@ def acr_cache_create(cmd,
     if tag is None and sync and not dry_run:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Run with the dry-run flag for details. Continue?", yes)
 
+    logger.debug(f"CacheRule: {cache_rule}")
+    
     return client.begin_create(
         resource_group_name=rg,
         registry_name=registry_name,
