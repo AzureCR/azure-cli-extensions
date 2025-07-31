@@ -91,14 +91,15 @@ class ContainerRegistryManagementClient:  # pylint: disable=too-many-instance-at
 
     def __init__(
         self,
-        subscription_id: str,
         credential: "TokenCredential",
+        subscription_id: str
+        ,
         *,
         endpoint: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
         self._config = ContainerRegistryManagementClientConfiguration(
-            subscription_id=subscription_id, credential=credential, **kwargs
+           credential=credential, subscription_id=subscription_id, **kwargs
         )
 
         _policies = kwargs.pop("policies", None)
