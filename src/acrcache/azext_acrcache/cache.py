@@ -135,7 +135,7 @@ def acr_cache_create(cmd,
     if not rg:
         raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")    
 
-    sync_str = "Active" if sync else "Inactive"
+    sync_str = "Enable" if sync else "Disable"
     sync_referrers_str = "Enable" if sync_referrers else "Disable"
 
     if include_artifact_types and exclude_artifact_types:
