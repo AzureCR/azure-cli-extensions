@@ -11,6 +11,23 @@ helps['acr cache'] = """
 type: group
 short-summary: Manage cache rules in Azure Container Registries.
 """
+#add The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types to the help text
+helps['acr cache platforms'] = """
+type: group
+short-summary: Manage platforms for cache rules in Azure Container Registries.
+"""
+helps['acr cache sync-referrers'] = """type: group
+short-summary: Manage sync referrers for cache rules in Azure Container Registries.
+""" 
+helps['acr cache include-artifact-types'] = """
+type: group
+short-summary: Manage included artifact types for cache rules in Azure Container Registries.
+""" 
+helps['acr cache exclude-artifact-types'] = """
+type: group
+short-summary: Manage excluded artifact types for cache rules in Azure Container Registries.
+""" 
+
 
 helps['acr cache show'] = """
 type: command

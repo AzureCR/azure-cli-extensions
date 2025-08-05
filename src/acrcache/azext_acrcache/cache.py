@@ -13,7 +13,7 @@ from azure.cli.core._profile import Profile
 from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client import ContainerRegistryManagementClient
 from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client.models._models import (
     CacheRule, CacheRuleProperties, ArtifactSyncFilterProperties, 
-    CacheRuleUpdateParameters, ImportSource, ImportImageParameters,
+    CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
     PlatformFilter, ArtifactTypeFilter, TagFilter
 )
 
@@ -150,34 +150,35 @@ def acr_cache_create(cmd,
     #create artifact sync filters object
     artifact_sync_filters = {}
 
-    if platforms:
-        platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
-        artifact_sync_filters['platforms'] = PlatformFilter(
-            type="array",
-            values=platform_list
-        )
-        
-    if include_artifact_types:
-        include_artifact_list = include_artifact_types if isinstance(include_artifact_types, list) else include_artifact_types.split(',')
-        artifact_sync_filters["artifactTypes"] = ArtifactTypeFilter(
-            type="include",
-            values=include_artifact_list
-        )
-    elif exclude_artifact_types:
-        exclude_artifact_list = exclude_artifact_types if isinstance(exclude_artifact_types, list) else exclude_artifact_types.split(',')
-        artifact_sync_filters["artifactTypes"] = ArtifactTypeFilter(
-            type="exclude",
-            values=exclude_artifact_list
-        )
+    if sync:
+        if platforms:
+            platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
+            artifact_sync_filters['platforms'] = PlatformFilter(
+                type="array",
+                values=platform_list
+            )
+            
+        if include_artifact_types:
+            include_artifact_list = include_artifact_types if isinstance(include_artifact_types, list) else include_artifact_types.split(',')
+            artifact_sync_filters["artifactTypes"] = ArtifactTypeFilter(
+                type="include",
+                values=include_artifact_list
+            )
+        elif exclude_artifact_types:
+            exclude_artifact_list = exclude_artifact_types if isinstance(exclude_artifact_types, list) else exclude_artifact_types.split(',')
+            artifact_sync_filters["artifactTypes"] = ArtifactTypeFilter(
+                type="exclude",
+                values=exclude_artifact_list
+            )
 
-    kql_str = f"Tags | where Name == '{tag}'" if tag is not None else _create_kql(starts_with, ends_with, contains)
-    if sync and not kql_str:
-        kql_str = "Tags | where Name != ''"
+        kql_str = f"Tags | where Name == '{tag}'" if tag is not None else _create_kql(starts_with, ends_with, contains)
+        if sync and not kql_str:
+            kql_str = "Tags | where Name != ''"
 
-    artifact_sync_filters["tags"] = TagFilter(
-        type="KQL",
-        query=kql_str
-    )
+        artifact_sync_filters["tags"] = TagFilter(
+            type="KQL",
+            query=kql_str
+        )
 
     #create cacheRuleProperties object
     properties = CacheRuleProperties(
@@ -191,8 +192,6 @@ def acr_cache_create(cmd,
     if artifact_sync_filters:
         properties.artifact_sync_filters = artifact_sync_filters
 
-    logger.debug(f"Artifact Sync Filters: {artifact_sync_filters}")
-    logger.debug(f"CacheRuleProperties: {properties}")
     # Create cache rule with properties
     cache_rule = CacheRule(
         name=name,
@@ -201,8 +200,6 @@ def acr_cache_create(cmd,
 
     if tag is None and sync and not dry_run:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Run with the dry-run flag for details. Continue?", yes)
-
-    logger.debug(f"CacheRule: {cache_rule}")
     
     return client.begin_create(
         resource_group_name=rg,
@@ -237,6 +234,7 @@ def acr_cache_update_custom(cmd,
     
     if include_artifact_types and exclude_artifact_types:
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")    
+    
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
     if remove_cred_set:
@@ -247,13 +245,59 @@ def acr_cache_update_custom(cmd,
     cred_set_id = AzureCoreNull if remove_cred_set else f'{registry.id}/credentialSets/{cred_set}'
 
     if remove_cred_set or cred_set:
-        instance.credential_set_resource_id = cred_set_id
+        credential_set_resource_id = cred_set_id
 
     if sync is not None:
-        instance.artifact_sync_status = "Active" if sync else "Inactive"
+        artifact_sync_status = "Enable" if sync else "Disable"
 
-    if starts_with or ends_with or contains:
-        instance.artifact_sync_scope_filter_properties = ArtifactSyncScopeFilterProperties(type="KQL", query=_create_kql(starts_with, ends_with, contains))
+    if sync_referrers is not None:
+       sync_referrers = "Enable" if sync_referrers else "Disable"    
+
+    #create artifact sync filters object
+    artifact_sync_filters = {}
+
+    if sync:
+        if starts_with or ends_with or contains:
+            artifact_sync_filters["tags"] = TagFilter(
+                type="KQL",
+                query=_create_kql(starts_with, ends_with, contains)
+            )
+        else:
+            artifact_sync_filters["tags"] = TagFilter(
+                type="KQL",
+                query="Tags | where Name != ''"
+            )
+
+
+        if platforms:
+            platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
+            artifact_sync_filters["platforms"] = PlatformFilter(
+                type="array",
+                values=platform_list
+            )
+
+        if include_artifact_types:
+            include_artifact_list = include_artifact_types if isinstance(include_artifact_types, list) else include_artifact_types.split(',')
+            artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
+                type="include",
+                values=include_artifact_list
+            ) 
+        elif exclude_artifact_types:
+            exclude_artifact_list = exclude_artifact_types if isinstance(exclude_artifact_types, list) else exclude_artifact_types.split(',')
+            artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
+                type="exclude",
+                values=exclude_artifact_list
+            )
+
+    #create CacheRuleUpdateProperties from CacheRuleUpdateParameters
+    instance.properties = CacheRuleUpdateProperties(
+        credential_set_resource_id=cred_set_id,
+        artifact_sync_status= artifact_sync_status,
+        sync_referrers=sync_referrers,
+        artifact_sync_filters=artifact_sync_filters
+    )
+
+    logger.debug(f"Updating cache rule {name} with properties: {instance.properties}")
 
     if sync:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Continue?", yes)
