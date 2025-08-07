@@ -20,10 +20,6 @@ from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_re
 import logging
 import traceback
 
-# Set up logging
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
-
 def _create_kql(starts_with=None, ends_with=None, contains=None):
     if not starts_with and not ends_with and not contains:
         return "Tags"
@@ -115,11 +111,10 @@ def acr_cache_create(cmd,
                      platforms=None,
                      sync_referrers=False,
                      include_artifact_types=None,
-                     exclude_artifact_types=None
+                     exclude_artifact_types=None,
+                     include_image_types=None,
+                     exclude_image_types=None
                      ):
-
-    if platforms or sync_referrers or include_artifact_types or exclude_artifact_types:
-        print("Warning: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented.")
 
     registry, _ = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
@@ -135,11 +130,17 @@ def acr_cache_create(cmd,
     if not rg:
         raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")    
 
-    sync_str = "Enable" if sync else "Disable"
-    sync_referrers_str = "Enable" if sync_referrers else "Disable"
+    sync_str = "Enable" if sync == 'enable' else "Disable"
+    sync_referrers_str = "Enable" if sync_referrers == 'enable' else "Disable"
+
+    if sync_referrers and not sync:
+        raise CLIError("The --sync-referrers parameter requires the --sync parameter to be enabled. Please enable sync to use this feature.")
 
     if include_artifact_types and exclude_artifact_types:
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
+
+    if include_image_types and exclude_image_types:
+        raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")       
     
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
     tag = None
@@ -150,7 +151,7 @@ def acr_cache_create(cmd,
     #create artifact sync filters object
     artifact_sync_filters = {}
 
-    if sync:
+    if sync == 'enable':
         if platforms:
             platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
             artifact_sync_filters['platforms'] = PlatformFilter(
@@ -171,9 +172,22 @@ def acr_cache_create(cmd,
                 values=exclude_artifact_list
             )
 
+        if include_image_types:
+            include_image_list = include_image_types if isinstance(include_image_types, list) else include_image_types.split(',')
+            artifact_sync_filters["imageTypes"] = ArtifactTypeFilter(
+                type="include",
+                values=include_image_list
+            )
+        elif exclude_image_types:
+            exclude_image_list = exclude_image_types if isinstance(exclude_image_types, list) else exclude_image_types.split(',')
+            artifact_sync_filters["imageTypes"] = ArtifactTypeFilter(
+                type="exclude",
+                values=exclude_image_list
+            )
+
         kql_str = f"Tags | where Name == '{tag}'" if tag is not None else _create_kql(starts_with, ends_with, contains)
         if sync and not kql_str:
-            kql_str = "Tags | where Name != ''"
+            kql_str = "Tags"
 
         artifact_sync_filters["tags"] = TagFilter(
             type="KQL",
@@ -205,7 +219,7 @@ def acr_cache_create(cmd,
         resource_group_name=rg,
         registry_name=registry_name,
         cache_rule_name=name,
-        cache_rule_create_parameters=cache_rule
+        cache_rule_create_parameters=cache_rule,
     )
 
 
@@ -222,84 +236,127 @@ def acr_cache_update_custom(cmd,
                             contains=None,
                             yes=False,
                             platforms=None,
-                            sync_referrers=False,
+                            sync_referrers=None,
                             include_artifact_types=None,
-                            exclude_artifact_types=None
+                            exclude_artifact_types=None,
+                            include_image_types=None,
+                            exclude_image_types=None
                             ):
 
-    instance = CacheRuleUpdateParameters()
-    # Warn if any new parameters are used
-    if platforms or sync_referrers or include_artifact_types or exclude_artifact_types:
-        print("Warning: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented.")
-    
-    if include_artifact_types and exclude_artifact_types:
-        raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")    
-    
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
+    # Warn if mutually exclusive parameters are provided
+    if sync_referrers and not sync:
+        raise CLIError("The --sync-referrers parameter requires the --sync parameter to be enabled. Please enable sync to use this feature.")
+    if include_artifact_types and exclude_artifact_types:
+        raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
+    if include_image_types and exclude_image_types:
+        raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")
+
+    #fetch existing cacheRule
+    cache_rule = client.get(resource_group_name=rg,
+                            registry_name=registry_name,
+                            cache_rule_name=name)
+
+    #extract existing properties
+    properties = cache_rule.properties
+    artifact_sync_status = properties.artifact_sync_status
+    sync_referrers_status = properties.sync_referrers
+
+    #create updated artifact sync filters object
+    updated_artifact_sync_filters = {}
+
+    #preserve old artifact sync filters
+    preserve_filters = (properties.artifact_sync_filters is not None and
+                        (sync == 'enable' or sync is None))
+
+    if preserve_filters:
+        # Copy tag filters If no new filters are provided
+        if properties.artifact_sync_filters.tags and not starts_with and not ends_with and not contains:
+            updated_artifact_sync_filters["tags"] = properties.artifact_sync_filters.tags                
+
+        # Copy platform filters If no new platform filters are provided
+        if properties.artifact_sync_filters.platforms and not platforms:
+            updated_artifact_sync_filters["platforms"] = properties.artifact_sync_filters.platforms
+        
+        # Copy artifact types filters if no new artifact types filters are provided
+        if properties.artifact_sync_filters.artifact_types and not include_artifact_types and not exclude_artifact_types:
+            updated_artifact_sync_filters["artifact_types"] = properties.artifact_sync_filters.artifact_types
+
+        # Copy image types filters if no new image types filters are provided
+        if properties.artifact_sync_filters.image_types and not include_image_types and not exclude_image_types:
+            updated_artifact_sync_filters["image_types"] = properties.artifact_sync_filters.image_types
+
+    #Handle credential sets update
+    cred_set_id = properties.credential_set_resource_id
     if remove_cred_set:
-        instance = client.get(resource_group_name=rg,
-                              registry_name=registry_name,
-                              cache_rule_name=name)
+        cred_set_id = AzureCoreNull
+    elif cred_set:
+        cred_set_id = f'{registry.id}/credentialSets/{cred_set}'
 
-    cred_set_id = AzureCoreNull if remove_cred_set else f'{registry.id}/credentialSets/{cred_set}'
+    if cred_set is None and not remove_cred_set:
+        cred_set_id = AzureCoreNull
 
-    if remove_cred_set or cred_set:
-        credential_set_resource_id = cred_set_id
-
+    # Handle artifact sync status
     if sync is not None:
-        artifact_sync_status = "Enable" if sync else "Disable"
+        artifact_sync_status = "Enable" if sync == 'enable' else "Disable"
+        # clear filters if sync is disabled
+        if sync == 'disable':
+            updated_artifact_sync_filters = {}
 
     if sync_referrers is not None:
-       sync_referrers = "Enable" if sync_referrers else "Disable"    
+        sync_referrers_status = "Enable" if sync_referrers == 'enable' else "Disable"
 
-    #create artifact sync filters object
-    artifact_sync_filters = {}
-
-    if sync:
+    #update artifact sync filters object
+    if sync == 'enable':
         if starts_with or ends_with or contains:
-            artifact_sync_filters["tags"] = TagFilter(
+            updated_artifact_sync_filters["tags"] = TagFilter(
                 type="KQL",
                 query=_create_kql(starts_with, ends_with, contains)
             )
-        else:
-            artifact_sync_filters["tags"] = TagFilter(
-                type="KQL",
-                query="Tags | where Name != ''"
-            )
-
 
         if platforms:
             platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
-            artifact_sync_filters["platforms"] = PlatformFilter(
+            updated_artifact_sync_filters["platforms"] = PlatformFilter(
                 type="array",
                 values=platform_list
             )
 
         if include_artifact_types:
             include_artifact_list = include_artifact_types if isinstance(include_artifact_types, list) else include_artifact_types.split(',')
-            artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
+            updated_artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
                 type="include",
                 values=include_artifact_list
             ) 
         elif exclude_artifact_types:
             exclude_artifact_list = exclude_artifact_types if isinstance(exclude_artifact_types, list) else exclude_artifact_types.split(',')
-            artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
+            updated_artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
                 type="exclude",
                 values=exclude_artifact_list
             )
 
-    #create CacheRuleUpdateProperties from CacheRuleUpdateParameters
-    instance.properties = CacheRuleUpdateProperties(
-        credential_set_resource_id=cred_set_id,
+        if include_image_types:
+            include_image_list = include_image_types if isinstance(include_image_types, list) else include_image_types.split(',')
+            updated_artifact_sync_filters["image_types"] = ArtifactTypeFilter(
+                type="include",
+                values=include_image_list
+            )
+        elif exclude_image_types:
+            exclude_image_list = exclude_image_types if isinstance(exclude_image_types, list) else exclude_image_types.split(',')
+            updated_artifact_sync_filters["image_types"] = ArtifactTypeFilter(
+                type="exclude",
+                values=exclude_image_list
+            )
+
+    #create updated cache rule properties
+    updated_properties = CacheRuleUpdateProperties(
+        credential_set_resource_id= cred_set_id,
         artifact_sync_status= artifact_sync_status,
-        sync_referrers=sync_referrers,
-        artifact_sync_filters=artifact_sync_filters
+        sync_referrers=sync_referrers_status,
+        artifact_sync_filters=updated_artifact_sync_filters
     )
 
-    logger.debug(f"Updating cache rule {name} with properties: {instance.properties}")
-
-    if sync:
+    if sync == 'enable':
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Continue?", yes)
 
 
@@ -307,12 +364,12 @@ def acr_cache_update_custom(cmd,
         return client.begin_create(resource_group_name=rg,
                                    registry_name=registry_name,
                                    cache_rule_name=name,
-                                   cache_rule_create_parameters=instance)
+                                   cache_rule_create_parameters=CacheRuleUpdateParameters(properties=updated_properties))
 
     return client.begin_update(resource_group_name=rg,
                                registry_name=registry_name,
                                cache_rule_name=name,
-                               cache_rule_update_parameters=instance)
+                               cache_rule_update_parameters=CacheRuleUpdateParameters(properties=updated_properties))
 
 
 def acr_cache_sync(cmd,
