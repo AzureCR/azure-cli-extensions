@@ -6,7 +6,6 @@
 
 from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
-# Import AzureCoreNull to represent a null value for Azure resource IDs when credential set is not provided
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
 from azure.cli.core._profile import Profile
@@ -16,9 +15,6 @@ from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_re
     CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
     PlatformFilter, ArtifactTypeFilter, TagFilter
 )
-
-import logging
-import traceback
 
 def _create_kql(starts_with=None, ends_with=None, contains=None):
     if not starts_with and not ends_with and not contains:
