@@ -3,9 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
-import logging
-import traceback
-from azure.cli.core._profile import Profile
 
 def cf_acrcache(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id

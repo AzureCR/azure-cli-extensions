@@ -8,10 +8,8 @@ from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
-from azure.cli.core._profile import Profile
-from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client import ContainerRegistryManagementClient
 from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client.models._models import (
-    CacheRule, CacheRuleProperties, ArtifactSyncFilterProperties, 
+    CacheRule, CacheRuleProperties,
     CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
     PlatformFilter, ArtifactTypeFilter, TagFilter
 )
@@ -124,7 +122,7 @@ def acr_cache_create(cmd,
         rg = match.group(1) if match else None
 
     if not rg:
-        raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")    
+        raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")
 
     sync_str = "Enable" if sync == 'enable' else "Disable"
     sync_referrers_str = "Enable" if sync_referrers == 'enable' else "Disable"
@@ -136,8 +134,8 @@ def acr_cache_create(cmd,
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
 
     if include_image_types and exclude_image_types:
-        raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")       
-    
+        raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")
+
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
     tag = None
 
@@ -154,7 +152,7 @@ def acr_cache_create(cmd,
                 type="array",
                 values=platform_list
             )
-            
+
         if include_artifact_types:
             include_artifact_list = include_artifact_types if isinstance(include_artifact_types, list) else include_artifact_types.split(',')
             artifact_sync_filters["artifactTypes"] = ArtifactTypeFilter(
@@ -210,7 +208,7 @@ def acr_cache_create(cmd,
 
     if tag is None and sync and not dry_run:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Run with the dry-run flag for details. Continue?", yes)
-    
+
     return client.begin_create(
         resource_group_name=rg,
         registry_name=registry_name,
@@ -269,12 +267,12 @@ def acr_cache_update_custom(cmd,
     if preserve_filters:
         # Copy tag filters If no new filters are provided
         if properties.artifact_sync_filters.tags and not starts_with and not ends_with and not contains:
-            updated_artifact_sync_filters["tags"] = properties.artifact_sync_filters.tags                
+            updated_artifact_sync_filters["tags"] = properties.artifact_sync_filters.tags
 
         # Copy platform filters If no new platform filters are provided
         if properties.artifact_sync_filters.platforms and not platforms:
             updated_artifact_sync_filters["platforms"] = properties.artifact_sync_filters.platforms
-        
+
         # Copy artifact types filters if no new artifact types filters are provided
         if properties.artifact_sync_filters.artifact_types and not include_artifact_types and not exclude_artifact_types:
             updated_artifact_sync_filters["artifact_types"] = properties.artifact_sync_filters.artifact_types
@@ -323,7 +321,7 @@ def acr_cache_update_custom(cmd,
             updated_artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
                 type="include",
                 values=include_artifact_list
-            ) 
+            )
         elif exclude_artifact_types:
             exclude_artifact_list = exclude_artifact_types if isinstance(exclude_artifact_types, list) else exclude_artifact_types.split(',')
             updated_artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
@@ -397,5 +395,4 @@ def acr_cache_sync(cmd,
     return client.registries.begin_import_image(resource_group_name=rg,
                                                 registry_name=registry_name,
                                                 parameters=params)
-
-                                               
+                         
