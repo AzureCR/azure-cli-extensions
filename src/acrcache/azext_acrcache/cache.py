@@ -8,10 +8,10 @@ from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
-from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client.models._models import (
+from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_registry_management_client.models._models import (
     CacheRule, CacheRuleProperties,
     CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
-    PlatformFilter, ArtifactTypeFilter, TagFilter
+    PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties
 )
 
 def _create_kql(starts_with=None, ends_with=None, contains=None):
@@ -124,17 +124,25 @@ def acr_cache_create(cmd,
     if not rg:
         raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")
 
-    sync_str = "Enable" if sync == 'enable' else "Disable"
-    sync_referrers_str = "Enable" if sync_referrers == 'enable' else "Disable"
+    sync_str = sync if sync else None
+    sync_referrers_str = "Enabled" if sync_referrers and sync_referrers.lower() == 'enabled' else "Disabled"
 
-    if sync_referrers and not sync:
-        raise CLIError("The --sync-referrers parameter requires the --sync parameter to be enabled. Please enable sync to use this feature.")
+    if sync_referrers and sync_referrers.lower() == 'enabled' and sync and sync.lower() != 'activesync':
+        raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     if include_artifact_types and exclude_artifact_types:
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
 
     if include_image_types and exclude_image_types:
         raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")
+
+    #validate that filter parameters require sync to be enabled
+    if sync and sync.lower() != 'activesync' and (include_artifact_types or exclude_artifact_types or 
+                              include_image_types or exclude_image_types or 
+                              platforms or starts_with or ends_with or contains):
+        raise CLIError("Artifact sync filters (--include-artifact-types, --exclude-artifact-types, "
+                        "--include-image-types, --exclude-image-types, --platforms, "
+                        "--starts-with, --ends-with, --contains) require --sync activesync.")
 
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
     tag = None
@@ -143,9 +151,11 @@ def acr_cache_create(cmd,
         source_repo, tag = source_repo.rsplit(':', 1)
 
     #create artifact sync filters object
-    artifact_sync_filters = {}
+    artifact_sync_filters = None
 
-    if sync == 'enable':
+    if sync and sync.lower() == 'activesync':
+        artifact_sync_filters = {}
+
         if platforms:
             platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
             artifact_sync_filters['platforms'] = PlatformFilter(
@@ -193,7 +203,7 @@ def acr_cache_create(cmd,
         credential_set_resource_id=cred_set_id,
         source_repository=source_repo,
         target_repository=target_repo,
-        artifact_sync_status=sync_str,
+        sync_mode=sync_str,
         sync_referrers=sync_referrers_str,
     )
 
@@ -239,14 +249,6 @@ def acr_cache_update_custom(cmd,
 
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
-    # Warn if mutually exclusive parameters are provided
-    if sync_referrers and not sync:
-        raise CLIError("The --sync-referrers parameter requires the --sync parameter to be enabled. Please enable sync to use this feature.")
-    if include_artifact_types and exclude_artifact_types:
-        raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
-    if include_image_types and exclude_image_types:
-        raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")
-
     #fetch existing cacheRule
     cache_rule = client.get(resource_group_name=rg,
                             registry_name=registry_name,
@@ -254,32 +256,47 @@ def acr_cache_update_custom(cmd,
 
     #extract existing properties
     properties = cache_rule.properties
-    artifact_sync_status = properties.artifact_sync_status
+    sync_mode = properties.sync_mode
     sync_referrers_status = properties.sync_referrers
 
-    #create updated artifact sync filters object
-    updated_artifact_sync_filters = {}
+    #check if activesync is enabled 
+    #check both existing sync mode (when not changing sync) AND new sync value (when updating sync)
+    isActiveSync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
+
+    if sync_referrers and sync_referrers.lower() == 'enabled' and not isActiveSync and sync and sync.lower() != 'activesync':
+        raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
+
+    # Warn if mutually exclusive parameters are provided
+    if include_artifact_types and exclude_artifact_types:
+        raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
+    if include_image_types and exclude_image_types:
+        raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")
+ 
+    # Initialize filter objects
+    updated_tags = None
+    updated_platforms = None
+    updated_artifact_types = None
+    updated_image_types = None
 
     #preserve old artifact sync filters
-    preserve_filters = (properties.artifact_sync_filters is not None and
-                        (sync == 'enable' or sync is None))
+    preserve_filters = (properties.artifact_sync_filters is not None and isActiveSync)
 
     if preserve_filters:
         # Copy tag filters If no new filters are provided
         if properties.artifact_sync_filters.tags and not starts_with and not ends_with and not contains:
-            updated_artifact_sync_filters["tags"] = properties.artifact_sync_filters.tags
+            updated_tags = properties.artifact_sync_filters.tags
 
         # Copy platform filters If no new platform filters are provided
         if properties.artifact_sync_filters.platforms and not platforms:
-            updated_artifact_sync_filters["platforms"] = properties.artifact_sync_filters.platforms
+            updated_platforms = properties.artifact_sync_filters.platforms
 
         # Copy artifact types filters if no new artifact types filters are provided
         if properties.artifact_sync_filters.artifact_types and not include_artifact_types and not exclude_artifact_types:
-            updated_artifact_sync_filters["artifact_types"] = properties.artifact_sync_filters.artifact_types
+            updated_artifact_types = properties.artifact_sync_filters.artifact_types
 
         # Copy image types filters if no new image types filters are provided
         if properties.artifact_sync_filters.image_types and not include_image_types and not exclude_image_types:
-            updated_artifact_sync_filters["image_types"] = properties.artifact_sync_filters.image_types
+            updated_image_types = properties.artifact_sync_filters.image_types
 
     #Handle credential sets update
     cred_set_id = properties.credential_set_resource_id
@@ -291,68 +308,73 @@ def acr_cache_update_custom(cmd,
     if cred_set is None and not remove_cred_set:
         cred_set_id = AzureCoreNull
 
-    # Handle artifact sync status
+    # Handle artifact sync status - only change if explicitly provided
     if sync is not None:
-        artifact_sync_status = "Enable" if sync == 'enable' else "Disable"
-        # clear filters if sync is disabled
-        if sync == 'disable':
-            updated_artifact_sync_filters = {}
+        sync_mode = "ActiveSync" if sync.lower() == 'activesync' else "PassiveSync"
 
     if sync_referrers is not None:
-        sync_referrers_status = "Enable" if sync_referrers == 'enable' else "Disable"
+        sync_referrers_status = "Enabled" if sync_referrers and sync_referrers.lower() == 'enabled' else "Disabled"
 
     #update artifact sync filters object
-    if sync == 'enable':
+    updated_artifact_sync_filters = None
+    if isActiveSync:
         if starts_with or ends_with or contains:
-            updated_artifact_sync_filters["tags"] = TagFilter(
+            updated_tags = TagFilter(
                 type="KQL",
                 query=_create_kql(starts_with, ends_with, contains)
             )
 
         if platforms:
             platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
-            updated_artifact_sync_filters["platforms"] = PlatformFilter(
+            updated_platforms = PlatformFilter(
                 type="array",
                 values=platform_list
             )
 
         if include_artifact_types:
             include_artifact_list = include_artifact_types if isinstance(include_artifact_types, list) else include_artifact_types.split(',')
-            updated_artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
+            updated_artifact_types = ArtifactTypeFilter(
                 type="include",
                 values=include_artifact_list
             )
         elif exclude_artifact_types:
             exclude_artifact_list = exclude_artifact_types if isinstance(exclude_artifact_types, list) else exclude_artifact_types.split(',')
-            updated_artifact_sync_filters["artifact_types"] = ArtifactTypeFilter(
+            updated_artifact_types = ArtifactTypeFilter(
                 type="exclude",
                 values=exclude_artifact_list
             )
 
         if include_image_types:
             include_image_list = include_image_types if isinstance(include_image_types, list) else include_image_types.split(',')
-            updated_artifact_sync_filters["image_types"] = ArtifactTypeFilter(
+            updated_image_types = ArtifactTypeFilter(
                 type="include",
                 values=include_image_list
             )
         elif exclude_image_types:
             exclude_image_list = exclude_image_types if isinstance(exclude_image_types, list) else exclude_image_types.split(',')
-            updated_artifact_sync_filters["image_types"] = ArtifactTypeFilter(
+            updated_image_types = ArtifactTypeFilter(
                 type="exclude",
                 values=exclude_image_list
             )
 
+    #create artifactSyncFilterProperties object if any filter is set
+    updated_artifact_sync_filters = ArtifactSyncFilterProperties(
+        tags=updated_tags,
+        platforms=updated_platforms,
+        artifact_types=updated_artifact_types,
+        image_types=updated_image_types
+    )
+
     #create updated cache rule properties
     updated_properties = CacheRuleUpdateProperties(
         credential_set_resource_id= cred_set_id,
-        artifact_sync_status= artifact_sync_status,
+        sync_mode= sync_mode,
         sync_referrers=sync_referrers_status,
         artifact_sync_filters=updated_artifact_sync_filters
     )
 
-    if sync == 'enable':
+    if isActiveSync:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Continue?", yes)
-
 
     if remove_cred_set:
         return client.begin_create(resource_group_name=rg,
