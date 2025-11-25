@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "dynatrace monitor tag-rule create",
 )
 class Create(AAZCommand):
-    """Create a tag rule
+    """Create a new tag rule that defines which Azure resources should be monitored based on their assigned tags.
 
     :example: Create tag-rule
         az dynatrace monitor tag-rule create -g rg --monitor-name monitor -n default --log-rules "{send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{name:env,value:prod,action:include},{name:env,value:dev,action:exclude}]}" --metric-rules "{sending-metrics:enabled,filtering-tags:[{name:env,value:prod,action:include}]}"
     """
 
     _aaz_info = {
-        "version": "2023-04-27",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2023-04-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2024-04-24"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Create(AAZCommand):
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -57,6 +60,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--rule-set-name"],
             help="Monitor rule set name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]*$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -230,7 +236,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-27",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }

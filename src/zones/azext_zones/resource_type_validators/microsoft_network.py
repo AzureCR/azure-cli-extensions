@@ -10,10 +10,11 @@ from .._resourceTypeValidation import (
 from knack.log import get_logger
 
 
+# pylint: disable=too-few-public-methods
 @register_resource_type("microsoft.network")
 class microsoft_network:
     @staticmethod
-    def validate(resource):
+    def validate(resource):  # pylint: disable=too-many-return-statements,too-many-branches
         resourceType = resource["type"]
         resourceSubType = resourceType[resourceType.index("/") + 1:]
 
@@ -25,16 +26,14 @@ class microsoft_network:
             zones = resource.get("zones") or []
             if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Azure Firewalls
         if resourceSubType == "azurefirewalls":
             zones = resource.get("zones") or []
             if len(zones) > 1 and resource["sku"]["capacity"] > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Network Connections
         if resourceSubType == "connections":
@@ -60,14 +59,20 @@ class microsoft_network:
             zones = frontend_ip_configs[0].get("zones") or []
             if len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         # Local Network Gateways
         if resourceSubType == "localnetworkgateways":
             # Local network gateways depend on the configuration of the VPN
             # Gateway
             return ZoneRedundancyValidationResult.Dependent
+
+        # NAT Gateways
+        if resourceSubType == "natgateways":
+            zones = resource.get("zones") or []
+            if len(zones) > 1:
+                return ZoneRedundancyValidationResult.Yes
+            return ZoneRedundancyValidationResult.No
 
         # Network Interfaces
         if resourceSubType == "networkinterfaces":
@@ -107,8 +112,14 @@ class microsoft_network:
             zones = resource.get("zones") or []
             if resource["sku"]["name"] in ["Standard"] and len(zones) > 1:
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
+
+        # Public IP Prefixes
+        if resourceSubType == "publicipprefixes":
+            zones = resource.get("zones") or []
+            if len(zones) > 1:
+                return ZoneRedundancyValidationResult.Yes
+            return ZoneRedundancyValidationResult.No
 
         # Virtual Networks
         if resourceSubType == "virtualnetworks":
@@ -121,7 +132,6 @@ class microsoft_network:
             sku = resource["properties"]["sku"]["name"]
             if sku.endswith("AZ"):
                 return ZoneRedundancyValidationResult.Yes
-            else:
-                return ZoneRedundancyValidationResult.No
+            return ZoneRedundancyValidationResult.No
 
         return ZoneRedundancyValidationResult.Unknown

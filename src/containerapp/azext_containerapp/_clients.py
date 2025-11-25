@@ -8,7 +8,7 @@ import json
 import os
 import requests
 
-from azure.cli.core.azclierror import ResourceNotFoundError
+from azure.cli.core.azclierror import ResourceNotFoundError, CLIError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp._clients import (
@@ -26,7 +26,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2024-10-02-preview"
+PREVIEW_API_VERSION = "2025-10-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -119,6 +119,62 @@ class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
+
+    @classmethod
+    def list_by_subscription(cls, cmd, formatter=lambda x: x):
+        app_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = "{}/subscriptions/{}/providers/Microsoft.App/jobs?api-version={}".format(
+            management_hostname.strip('/'),
+            sub_id,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for app in j["value"]:
+            formatted = formatter(app)
+            app_list.append(formatted)
+
+        while j.get("nextLink") is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for app in j["value"]:
+                formatted = formatter(app)
+                app_list.append(formatted)
+
+        return app_list
+
+    @classmethod
+    def list_by_resource_group(cls, cmd, resource_group_name, formatter=lambda x: x):
+        app_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for app in j["value"]:
+            formatted = formatter(app)
+            app_list.append(formatted)
+
+        while j.get("nextLink") is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for app in j["value"]:
+                formatted = formatter(app)
+                app_list.append(formatted)
+
+        return app_list
 
 
 class ContainerAppsResiliencyPreviewClient():
@@ -245,6 +301,161 @@ class ContainerAppsResiliencyPreviewClient():
             policy_list.append(policy)
 
         return policy_list
+
+
+class ContainerAppFunctionsPreviewClient():
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def list_functions_by_revision(cls, cmd, resource_group_name, container_app_name, revision_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/functions?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            revision_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        if not r:
+            raise CLIError(f"Error retrieving functions for revision '{revision_name}' of container app '{container_app_name}'.")
+        return r.json()
+
+    @classmethod
+    def get_function_by_revision(cls, cmd, resource_group_name, container_app_name, revision_name, function_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/functions/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            revision_name,
+            function_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        if not r:
+            raise CLIError(f"Error retrieving function '{function_name}' for revision '{revision_name}' of container app '{container_app_name}'.")
+        return r.json()
+
+    @classmethod
+    def list_functions(cls, cmd, resource_group_name, container_app_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/functions?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        if not r:
+            raise CLIError(f"Error retrieving functions for container app '{container_app_name}'.")
+        return r.json()
+
+    @classmethod
+    def get_function(cls, cmd, resource_group_name, container_app_name, function_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/functions/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            function_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        if not r:
+            raise CLIError(f"Error retrieving function '{function_name}' for container app '{container_app_name}'.")
+        return r.json()
+
+    @classmethod
+    def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None, revision_name=None, replica_name=None, container_name=None):
+        from ._utils import execute_function_admin_command
+
+        command_fmt = ""
+        if key_type != "functionKey":
+            command_fmt = "/bin/azure-functions-admin keys show --key-type {} --key-name {}"
+            command = command_fmt.format(key_type, key_name)
+        else:
+            command_fmt = "/bin/azure-functions-admin keys show --key-type {} --key-name {} --function-name {}"
+            command = command_fmt.format(key_type, key_name, function_name)
+
+        r = execute_function_admin_command(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            command=command,
+            revision_name=revision_name,
+            replica_name=replica_name,
+            container_name=container_name
+        )
+        if not r:
+            raise CLIError(f"Error retrieving function key '{key_name}' of type '{key_type}'.")
+        return r
+
+    @classmethod
+    def list_function_keys(cls, cmd, resource_group_name, name, key_type, function_name=None, revision_name=None, replica_name=None, container_name=None):
+        from ._utils import execute_function_admin_command
+
+        command_fmt = ""
+        if key_type != "functionKey":
+            command_fmt = "/bin/azure-functions-admin keys list --key-type {}"
+            command = command_fmt.format(key_type)
+        else:
+            command_fmt = "/bin/azure-functions-admin keys list --key-type {} --function-name {}"
+            command = command_fmt.format(key_type, function_name)
+
+        r = execute_function_admin_command(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            command=command,
+            revision_name=revision_name,
+            replica_name=replica_name,
+            container_name=container_name
+        )
+        if not r:
+            raise CLIError(f"Error retrieving function keys of type '{key_type}'.")
+        return r
+
+    @classmethod
+    def set_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision_name=None, replica_name=None, container_name=None):
+        """Set/Update function keys based on key type"""
+        from ._utils import execute_function_admin_command
+
+        command_fmt = ""
+        if key_type != "functionKey":
+            command_fmt = "/bin/azure-functions-admin keys set --key-type {} --key-name {}"
+            command = command_fmt.format(key_type, key_name)
+        else:
+            command_fmt = "/bin/azure-functions-admin keys set --key-type {} --key-name {} --function-name {}"
+            command = command_fmt.format(key_type, key_name, function_name)
+
+        if key_value is not None:
+            command += " --key-value {}".format(key_value)
+
+        r = execute_function_admin_command(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            command=command,
+            revision_name=revision_name,
+            replica_name=replica_name,
+            container_name=container_name
+        )
+        if not r:
+            raise CLIError(f"Error setting function key '{key_name}' of type '{key_type}'.")
+        return r
 
 
 class DaprComponentResiliencyPreviewClient():
@@ -1455,6 +1666,23 @@ class SessionCodeInterpreterPreviewClient():
             return path_in_filename, filename
         else:
             return path.rstrip("/") + "/" + path_in_filename.lstrip('/'), filename
+
+
+class SessionCustomContainerPreviewClient():
+    # pylint: disable=too-few-public-methods
+    session_dp_api_version = "2025-02-02-preview"  # may be different from ACA CP
+
+    @classmethod
+    def stop_session(cls, cmd, identifier, session_pool_endpoint):
+        url_fmt = "{}/.management/stopSession?identifier={}&api-version={}"
+        request_url = url_fmt.format(
+            session_pool_endpoint,
+            identifier,
+            cls.session_dp_api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, resource=SESSION_RESOURCE)
+
+        return r.text
 
 
 class DotNetComponentPreviewClient():
