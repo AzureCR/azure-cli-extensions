@@ -4,15 +4,22 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import re
 from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_registry_management_client.models._models import (
     CacheRule, CacheRuleProperties,
     CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
-    PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties
+    PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties,
+    IdentityProperties, UserIdentityProperties
 )
+
+# Constants for managed identity resource validation
+MANAGED_IDENTITY_RESOURCE_PROVIDER = "Microsoft.ManagedIdentity"
+USER_ASSIGNED_IDENTITY_RESOURCE_TYPE = "userAssignedIdentities"
 
 def _create_kql(starts_with=None, ends_with=None, contains=None):
     if not starts_with and not ends_with and not contains:
@@ -50,6 +57,49 @@ def _separate_params(query):
 
     return starts_with, ends_with, contains
 
+def process_assign_identity_parameter(assign_identity: str) -> IdentityProperties:
+    """Process assign identity parameter and return IdentityProperties object.
+
+    :param assign_identity: User-assigned managed identity resource ID
+    :return: IdentityProperties object or None
+    """
+
+    if not assign_identity:
+        return None
+  
+    if not is_valid_user_assigned_managed_identity_resource_id(assign_identity):
+        raise CLIError(f"Invalid user-assigned managed identity resource ID: {assign_identity}")
+
+    identity_properties = IdentityProperties(
+        type="UserAssigned",
+        user_assigned_identities={
+            assign_identity: UserIdentityProperties()
+        }
+    )
+    return identity_properties
+    
+def is_valid_user_assigned_managed_identity_resource_id(resource_id):
+    """
+    Validate user-assigned managed identity resource ID using Azure's built-in utilities.
+    
+    :param resource_id: Resource ID to validate
+    :return: True if valid, False otherwise
+    """
+    if not is_valid_resource_id(resource_id):
+        return False
+    
+    try:
+        parsed = parse_resource_id(resource_id)
+        # Ensure it's specifically a Microsoft.ManagedIdentity userAssignedIdentities resource
+        return (
+            parsed.get("namespace") == MANAGED_IDENTITY_RESOURCE_PROVIDER and
+            (
+                parsed.get("type") == USER_ASSIGNED_IDENTITY_RESOURCE_TYPE or
+                parsed.get("resource_type") == USER_ASSIGNED_IDENTITY_RESOURCE_TYPE
+            )
+        )
+    except Exception:
+        return False
 
 def acr_cache_show(cmd,
                    client,
@@ -96,6 +146,7 @@ def acr_cache_create(cmd,
                      target_repo,
                      resource_group_name=None,
                      cred_set=None,
+                     assign_identity=None,
                      sync=False,
                      starts_with=None,
                      ends_with=None,
@@ -127,8 +178,10 @@ def acr_cache_create(cmd,
     sync_str = sync if sync else None
     sync_referrers_str = "Enabled" if sync_referrers and sync_referrers.lower() == 'enabled' else "Disabled"
 
-    if sync_referrers and sync_referrers.lower() == 'enabled' and sync and sync.lower() != 'activesync':
-        raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
+    # Validate sync_referrers requires activesync - check both when sync is provided and when it's not
+    if sync_referrers and sync_referrers.lower() == 'enabled':
+        if not sync or sync.lower() != 'activesync':
+            raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     if include_artifact_types and exclude_artifact_types:
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
@@ -145,6 +198,9 @@ def acr_cache_create(cmd,
                         "--starts-with, --ends-with, --contains) require --sync activesync.")
 
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
+
+    identity_properties = process_assign_identity_parameter(assign_identity)
+
     tag = None
 
     if ':' in source_repo:
@@ -213,7 +269,8 @@ def acr_cache_create(cmd,
     # Create cache rule with properties
     cache_rule = CacheRule(
         name=name,
-        properties=properties
+        properties=properties,
+        identity=identity_properties
     )
 
     if tag is None and sync and not dry_run:
@@ -233,6 +290,7 @@ def acr_cache_update_custom(cmd,
                             name,
                             resource_group_name=None,
                             cred_set=None,
+                            assign_identity=None,
                             remove_cred_set=False,
                             sync=None,
                             starts_with=None,
@@ -263,7 +321,8 @@ def acr_cache_update_custom(cmd,
     #check both existing sync mode (when not changing sync) AND new sync value (when updating sync)
     isActiveSync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
 
-    if sync_referrers and sync_referrers.lower() == 'enabled' and not isActiveSync and sync and sync.lower() != 'activesync':
+    # Validate sync_referrers requires activesync
+    if sync_referrers and sync_referrers.lower() == 'enabled' and not isActiveSync:
         raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     # Warn if mutually exclusive parameters are provided
@@ -307,6 +366,9 @@ def acr_cache_update_custom(cmd,
 
     if cred_set is None and not remove_cred_set:
         cred_set_id = AzureCoreNull
+
+    # Process identity parameter
+    identity_properties = process_assign_identity_parameter(assign_identity)
 
     # Handle artifact sync status - only change if explicitly provided
     if sync is not None:
@@ -380,12 +442,16 @@ def acr_cache_update_custom(cmd,
         return client.begin_create(resource_group_name=rg,
                                    registry_name=registry_name,
                                    cache_rule_name=name,
-                                   cache_rule_create_parameters=CacheRuleUpdateParameters(properties=updated_properties))
+                                   cache_rule_create_parameters=CacheRuleUpdateParameters(
+                                        properties=updated_properties,
+                                        identity=identity_properties))
 
     return client.begin_update(resource_group_name=rg,
                                registry_name=registry_name,
                                cache_rule_name=name,
-                               cache_rule_update_parameters=CacheRuleUpdateParameters(properties=updated_properties))
+                               cache_rule_update_parameters=CacheRuleUpdateParameters(
+                                    properties=updated_properties,
+                                    identity=identity_properties))
 
 
 def acr_cache_sync(cmd,
