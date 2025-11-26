@@ -9,12 +9,17 @@ from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_registry_management_client.models._models import (
     CacheRule, CacheRuleProperties,
     CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
     PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties,
     IdentityProperties, UserIdentityProperties
 )
+
+# Constants for managed identity resource validation
+MANAGED_IDENTITY_RESOURCE_PROVIDER = "Microsoft.ManagedIdentity"
+USER_ASSIGNED_IDENTITY_RESOURCE_TYPE = "userAssignedIdentities"
 
 def _create_kql(starts_with=None, ends_with=None, contains=None):
     if not starts_with and not ends_with and not contains:
@@ -53,8 +58,7 @@ def _separate_params(query):
     return starts_with, ends_with, contains
 
 def process_assign_identity_parameter(assign_identity: str) -> IdentityProperties:
-    """   
-    Process assign identity parameter and return IdentityProperties object.
+    """Process assign identity parameter and return IdentityProperties object.
 
     :param assign_identity: User-assigned managed identity resource ID
     :return: IdentityProperties object or None
@@ -66,7 +70,6 @@ def process_assign_identity_parameter(assign_identity: str) -> IdentityPropertie
     if not is_valid_user_assigned_managed_identity_resource_id(assign_identity):
         raise CLIError(f"Invalid user-assigned managed identity resource ID: {assign_identity}")
 
-
     identity_properties = IdentityProperties(
         type="UserAssigned",
         user_assigned_identities={
@@ -76,16 +79,27 @@ def process_assign_identity_parameter(assign_identity: str) -> IdentityPropertie
     return identity_properties
     
 def is_valid_user_assigned_managed_identity_resource_id(resource_id):
-    # format Validation logic for user-assigned managed identity resource ID
-    # include the full pattern of Microsoft.ManagedIdentity.
-    # check GUID format for subscription ID
-    # https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules#microsoftmanagedidentity
-   pattern = (
-        r"^/subscriptions/[0-9a-zA-Z\-]{36}"
-        r"/resourceGroups/[^/]+"
-        r"/providers/Microsoft\.ManagedIdentity/userAssignedIdentities/[^/]+$"
-    ) 
-   return bool(re.match(pattern, resource_id, re.IGNORECASE))
+    """
+    Validate user-assigned managed identity resource ID using Azure's built-in utilities.
+    
+    :param resource_id: Resource ID to validate
+    :return: True if valid, False otherwise
+    """
+    if not is_valid_resource_id(resource_id):
+        return False
+    
+    try:
+        parsed = parse_resource_id(resource_id)
+        # Ensure it's specifically a Microsoft.ManagedIdentity userAssignedIdentities resource
+        return (
+            parsed.get("namespace") == MANAGED_IDENTITY_RESOURCE_PROVIDER and
+            (
+                parsed.get("type") == USER_ASSIGNED_IDENTITY_RESOURCE_TYPE or
+                parsed.get("resource_type") == USER_ASSIGNED_IDENTITY_RESOURCE_TYPE
+            )
+        )
+    except Exception:
+        return False
 
 def acr_cache_show(cmd,
                    client,

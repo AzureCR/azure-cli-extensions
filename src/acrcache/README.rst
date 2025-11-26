@@ -188,14 +188,15 @@ az acr cache delete -r <registry-name> -n <rule-name>
 
 The `--assign-identity` parameter enables secure authentication between Azure Container Registries using user-assigned managed identities. This is particularly useful for:
 
-- **Cross-subscription ACR caching**: Cache images from ACRs in different subscriptions
-- **Cross-tenant scenarios**: Secure authentication across Azure AD tenants
+- **Cross-subscription ACR caching**: Cache images from ACRs in different subscriptions within the same tenant
 - **Enhanced security**: Eliminates the need for credential sets in many scenarios
+- **Simplified authentication**: Uses Azure's managed identity infrastructure for secure access
 
 #### Requirements
-- Both source and target registries must be in the same Azure AD tenant
-- The managed identity must have `AcrPull` permissions on the source registry
-- The managed identity must be in the same subscription as the target registry
+- **Same tenant**: Both source and target registries must be in the same Azure AD tenant
+- **Permissions**: The managed identity must have `AcrPull` permissions on the source registry
+- **Identity location**: The managed identity must be in the same subscription as the target registry
+- **Cross-subscription support**: Registries can be in different subscriptions within the same tenant
 
 #### Resource ID Format
 ```

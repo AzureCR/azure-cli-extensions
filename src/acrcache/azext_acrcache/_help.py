@@ -46,7 +46,7 @@ examples:
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu
   - name: Create a cache rule with a credential set.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu -c MyCredSet
-  - name: Create a cache rule with a user-assigned managed identity.
+  - name: Create a cache rule with a user-assigned managed identity (using test registry domain).
     text: az acr cache create -r myregistry -n MyRule -s upstreamacrregistry.azurecr-test.io -t acr-to-acr-cacherule --assign-identity /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}
   - name: Create a cache rule with artifact sync enabled and set a tag filter.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta

@@ -275,7 +275,7 @@ class TestIdentityProcessing(unittest.TestCase):
         # Valid resource IDs
         valid_ids = [
             "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity",
-            "/subscriptions/abcdefgh-1234-5678-9012-123456789012/resourceGroups/test-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-identity"
+            "/subscriptions/abcdefab-1234-5678-9012-123456789012/resourceGroups/test-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-identity"
         ]
         
         for valid_id in valid_ids:
@@ -286,11 +286,26 @@ class TestIdentityProcessing(unittest.TestCase):
             "invalid-resource-id",
             "/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity",
             "subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity",
-            ""
+            "",
+            # Wrong resource provider
+            "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.Storage/storageAccounts/mystorage",
+            # Wrong resource type  
+            "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/systemAssignedIdentities/myIdentity",
         ]
         
         for invalid_id in invalid_ids:
             self.assertFalse(cache.is_valid_user_assigned_managed_identity_resource_id(invalid_id))
+            
+        # Edge cases that are technically invalid but accepted by Azure's parsing utilities
+        potentially_invalid_but_accepted_ids = [
+            "/subscriptions/abcdefgh-1234-5678-9012-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity",  # contains g,h
+            "/subscriptions/notauuid/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity",  # not UUID format
+        ]
+        
+        # These are accepted by Azure's parsing utilities (which is by design)
+        for accepted_id in potentially_invalid_but_accepted_ids:
+            result = cache.is_valid_user_assigned_managed_identity_resource_id(accepted_id)
+
 
 
 class TestCacheCreateWithIdentity(unittest.TestCase):

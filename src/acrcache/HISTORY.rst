@@ -2,24 +2,24 @@
 
 Release History
 ===============
-1.1.2 - version 1.0.0c8
+1.0.0c8
 ++++++
 * **BUGFIX**: Resolved issue with sync-referrers enabled without sync activesync
   * Added validation to ensure `--sync-referrers` can only be used with `--sync activesync`
   * Ensured proper validation and assignment of managed identities in `az acr cache create` and `az acr cache update` commands
 
 
-1.1.1 - version 1.0.0c7
+1.0.0c7
 ++++++
 * **FEATURE**: Added `--assign-identity` parameter support for cache rules
   * `az acr cache create --assign-identity` - Create cache rules with user-assigned managed identities
   * `az acr cache update --assign-identity` - Update existing cache rules with managed identities
-  * Enables secure authentication for ACR-to-ACR caching across subscriptions and tenants
+  * Enables secure authentication for ACR-to-ACR caching across subscriptions within the same tenant
   * Supports Azure resource ID format validation for managed identity resources
 * **ENHANCEMENT**: Improved error handling and validation for identity parameters
 * **TESTING**: Added comprehensive unit test coverage for identity processing functionality
 
-1.1.0 - version 1.0.0c6
+1.0.0c6
 ++++++
 * **BREAKING**: Migrated to Container Registry SDK v2025-09-01-preview
   * Updated SDK imports from v2025_07_01_preview to v2025_09_01_preview
