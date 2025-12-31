@@ -1,97 +1,109 @@
 Microsoft Azure CLI 'acrcache' Extension
 ==========================================
 
-## Overview
-.
+**Overview**
+
 The `acrcache` extension adds support for managing Azure Container Registry (ACR) cache rules via the Azure CLI. 
 
-## Features
+**Features**
 
-- Create, update, list, show, and delete cache rules for ACR.
+- Create, update, list, show, and sync cache rules for ACR.
+**Parameters**
+
+- **Artifact Sync Modes**: Choose between passive and active synchronization of artifacts.
+
+  - **--sync**: Set sync to `passivesync` (default) or `activesync`. 
+
 - **Managed Identity Authentication**: Configure user-assigned managed identities for secure cross-registry authentication.
+
   - **--assign-identity**: Specify a user-assigned managed identity for authenticating with source registries.
-- Configure artifact sync with flexible filters:
+
+- **Configure artifact sync with flexible filters**:
+
   - **--platforms**: Filter which platforms to sync (e.g., `linux/amd64`, `linux/arm64`).
-  - **--sync-referrers**: Enable or disable syncing of referrers.
-  - **--include-artifact-types**: Specify artifact types to include in sync.
+  - **--sync-referrers**: Enable or disable syncing of referrers.  Default value is disabled
+  - **--include-artifact-types**: Specify artifact types to include in sync. 
   - **--exclude-artifact-types**: Specify artifact types to exclude from sync.
   - **--include-image-types**: Specify image types to include in sync.
   - **--exclude-image-types**: Specify image types to exclude from sync.
 
-## Installation
+Installation
+==============
 
-### Prerequisites
+**Prerequisites**
+
 1. Install Python (minimum supported version is 3.6; Python 3.12 is recommended) from http://python.org.
+
 2. Fork and clone the required repo's
     - Azure CLI Repo : https://github.com/Azure/azure-cli  
     - Azure CLI Extensions Repo : https://github.com/AzureCR/azure-cli-extensions. 
 
-- Note: ACR cache extension is in feature/artifactcache branch.
+3. After forking `azure-cli`, follow the below commands to setup
 
-    After forking `azure-cli`, follow the below commands to setup
+      # Clone your forked repository
 
-    # Clone your forked repository
+    - git clone `https://github.com/<your-github-name>/azure-cli.git`
 
-    git clone https://github.com/<your-github-name>/azure-cli.git
+    - cd azure-cli
 
-    cd azure-cli
+      # Add the Azure/azure-cli repository as upstream
 
-    # Add the Azure/azure-cli repository as upstream
+    -  git remote add upstream https://github.com/Azure/azure-cli.git
 
-    git remote add upstream https://github.com/Azure/azure-cli.git
+    -  git fetch upstream
 
-    git fetch upstream
+      # Reset the default dev branch to track dev branch of Azure/azure-cli so you can use it to track the latest azure-cli code.
 
-    # Reset the default dev branch to track dev branch of Azure/azure-cli so you can use it to track the latest azure-cli code.
+    -  git branch dev --set-upstream-to upstream/dev
 
-    git branch dev --set-upstream-to upstream/dev
+      # Develop with a new branch
 
-    # Develop with a new branch
+    -  git checkout -b <feature_branch>
 
-    git checkout -b <feature_branch>
 
-  Do the same for `azure-cli-extensions` except that the default branch for it is main, run git branch main --set-upstream-to upstream/main instead.
-  Note: The ACR cache extension is in the `feature/artifactcache` branch of the `azure-cli-extensions` repository, do NOT merge changes into main.
+    Do the same for `azure-cli-extensions` except that the default branch for it is main, run git branch main --set-upstream-to upstream/main instead.
+    Note: The ACR cache extension is in the `feature/artifactcache` branch of the `azure-cli-extensions` repository, do NOT merge changes into main.
 
-3. Create a virtual environment in the directory that contains both your CLI and CLI extension clones
+4. Create a virtual environment in the directory that contains both your CLI and CLI extension clones
 
     ```sh
     python -m venv .venv
     ```
-4. Activate the virtual environment
+5. Activate the virtual environment
 
     Windows CMD.exe:
 
-    `.venv\Scripts\activate.bat`
+      .venv\Scripts\activate.bat
 
     Windows Powershell:
 
-    `.venv\Scripts\activate.ps1`
+      `.venv\Scripts\activate.ps1`
 
     OSX/Linux (bash):
 
-    `source .venv/bin/activate`
+      `source .venv/bin/activate`
 
 5. Install the required packages
-    Install python dependencies
-      ```sh
-      python -m pip install -U pip
-      ```
-      Due to a known issue, the Azure CLI currently requires an older version of setuptools (70.0.0) and wheel (0.30.0) because newer versions are incompatible and may cause installation or build failures. For more details, see the related issue: https://github.com/Azure/azure-cli/issues/29467
+      - Install python dependencies
+
+           - python -m pip install -U pip
      
-      pip install setuptools==70.0.0 	
+          Due to a known issue, the Azure CLI currently requires an older version of setuptools (70.0.0) and wheel (0.30.0) because newer versions are incompatible and may cause installation or build                    failures.         
+          For more details, see the related issue: https://github.com/Azure/azure-cli/issues/29467
+     
+           - pip install setuptools==70.0.0 	
 
-      pip install --force-reinstall wheel==0.30.0
+           - pip install --force-reinstall wheel==0.30.0
 
-    Install azdev
-      ```sh
-      pip install -U azdev
-      ```
+       - Install azdev
+    
+           - pip install -U azdev
+     
+       - Setup azdev
+           - azdev setup -c -r azure-cli-extensions/
 
-    Setup azdev
-      azdev setup -c -r azure-cli-extensions/
+  6. Build extension
 
-    Build extension
       azdev extension build acrcache
 
 Developing with the ACR Cache Extension
