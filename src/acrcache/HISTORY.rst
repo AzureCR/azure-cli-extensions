@@ -4,9 +4,10 @@ Release History
 ===============
 1.0.0c8
 ++++++
-* **BUGFIX**: Resolved issue with sync-referrers enabled without sync activesync
+* **BUGFIX**: Resolved issue with sync-referrers enabled without `--sync activesync`
   * Added validation to ensure `--sync-referrers` can only be used with `--sync activesync`
   * Ensured proper validation and assignment of managed identities in `az acr cache create` and `az acr cache update` commands
+  * Improved README documentation for clarity on parameter dependencies and usage examples
 
 
 1.0.0c7

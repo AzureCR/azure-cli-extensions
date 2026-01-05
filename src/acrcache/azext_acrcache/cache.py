@@ -464,12 +464,13 @@ def acr_cache_sync(cmd,
     rg = get_resource_group_name_by_registry_name(cmd.cli_ctx, registry_name, resource_group_name)
 
     rule = client.cache_rules.get(resource_group_name=rg,
-                                  registry_name=registry_name,
-                                  cache_rule_name=name)
+                      registry_name=registry_name,
+                      cache_rule_name=name)
+
     tag = image
     rule_id = rule.id
-    source_repo = rule.source_repository
-    target_repo = rule.target_repository
+    source_repo = rule.properties.source_repository
+    target_repo = rule.properties.target_repository
     source_image_str = source_repo[source_repo.find('/') + 1:] + ":" + tag
 
     import_source = ImportSource(source_image=source_image_str,
@@ -481,6 +482,6 @@ def acr_cache_sync(cmd,
                                    target_tags=[target_repo + ":" + tag])
 
     return client.registries.begin_import_image(resource_group_name=rg,
-                                                registry_name=registry_name,
-                                                parameters=params)
+                                    registry_name=registry_name,
+                                    parameters=params)
                          
