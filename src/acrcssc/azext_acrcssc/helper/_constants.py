@@ -28,6 +28,12 @@ class TaskRunStatus(Enum):
 
 # General Constants
 CSSC_TAGS = "acr-cssc"
+# there is an issue with using API version 2025-05-01-preview to check for networ rules bypass, that api has no published Python SDK
+# https://azuresdkdocs.z19.web.core.windows.net/python/azure-mgmt-containerregistry/14.0.0/azure.mgmt.containerregistry.html#azure.mgmt.containerregistry.ContainerRegistryManagementClient.registries
+# we might have to request an API release, and mark the bug fix as gated behind that release
+# another way is to do the REST call or the call via ARM and use that, but seems wasteful
+ACR_API_VERSION_2025_05_01_PREVIEW = "2025-05-01-preview"
+ACR_API_VERSION_2025_03_01_PREVIEW = "2025-03-01-preview"
 ACR_API_VERSION_2023_01_01_PREVIEW = "2023-01-01-preview"
 ACR_API_VERSION_2019_06_01_PREVIEW = "2019-06-01-preview"
 BEARER_TOKEN_USERNAME = "00000000-0000-0000-0000-000000000000"
@@ -84,19 +90,22 @@ CONTINUOUSPATCH_TASK_DEFINITION = {
         {
             "parameter_name": "imagePatchingEncodedTask",
             "template_file": "task/cssc_patch_image.yaml",
-            DESCRIPTION: CONTINUOUSPATCH_TASK_PATCHIMAGE_DESCRIPTION
+            DESCRIPTION: CONTINUOUSPATCH_TASK_PATCHIMAGE_DESCRIPTION,
+            "roles_required": ["ACRPush"]
         },
     CONTINUOUSPATCH_TASK_SCANIMAGE_NAME:
         {
             "parameter_name": "imageScanningEncodedTask",
             "template_file": "task/cssc_scan_image.yaml",
-            DESCRIPTION: CONTINUOUSPATCH_TASK_SCANIMAGE_DESCRIPTION
+            DESCRIPTION: CONTINUOUSPATCH_TASK_SCANIMAGE_DESCRIPTION,
+            "roles_required": ["ACRPull", "Container Registry Tasks Contributor"]
         },
     CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME:
         {
             "parameter_name": "registryScanningEncodedTask",
             "template_file": "task/cssc_trigger_workflow.yaml",
-            DESCRIPTION: CONTINUOUSPATCH_TASK_SCANREGISTRY_DESCRIPTION
+            DESCRIPTION: CONTINUOUSPATCH_TASK_SCANREGISTRY_DESCRIPTION,
+            "roles_required": ["ACRPull", "Container Registry Tasks Contributor"]
         },
 }
 CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT = 1024 * 1024 * 10  # 10MB, we don't want to allow huge files

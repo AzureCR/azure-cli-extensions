@@ -10,15 +10,18 @@ import os
 import tempfile
 import time
 import logging
+from uuid import uuid4
 from knack.log import get_logger
 from knack.util import CLIError
 from ._constants import (
+    ACR_API_VERSION_2025_05_01_PREVIEW,
     CONTINUOUSPATCH_DEPLOYMENT_NAME,
     CONTINUOUSPATCH_DEPLOYMENT_TEMPLATE,
     CONTINUOUSPATCH_ALL_TASK_NAMES,
     CONTINUOUSPATCH_TASK_DEFINITION,
     CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
     RESOURCE_GROUP,
+    SUBSCRIPTION,
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     TMP_DRY_RUN_FILE_NAME,
@@ -34,11 +37,23 @@ from ._constants import (
 from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.progress import IndeterminateProgressBar
-from azure.cli.command_modules.acr._utils import prepare_source_location
+from azure.cli.command_modules.acr._utils import (
+    prepare_source_location,
+    get_source_and_custom_registry_credentials)
 from azure.cli.command_modules.acr._archive_utils import logger as acr_archive_utils_logger
+from azure.cli.command_modules.acr.task import (
+    IDENTITY_LOCAL_ID,
+    acr_task_update,
+    acr_task_credential_add,
+    acr_task_credential_update)
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.core.tools import parse_resource_id
-from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
+from azext_acrcssc._client_factory import (
+    cf_acr_tasks,
+    cf_authorization,
+    cf_acr_registries_tasks,
+    cf_acr_runs,
+    cf_resources)
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
 from azext_acrcssc._validators import check_continuous_task_exists, check_continuous_task_config_exists
 from datetime import datetime, timezone, timedelta
@@ -75,6 +90,11 @@ def create_update_continuous_patch_v1(cmd,
         logger.debug(f"Uploading of {cssc_config_file} for create completed successfully.")
 
         _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
+        # the network bypass needs to be checked and set if not existent
+        _enable_task_network_bypass(cmd, registry)
+        # modified the template to do the equivalent of '--auth-mode None --assign-identity [system]'
+        # also new role assignment
+        # the equivalent of 'az acr task credential add' might need to be done in a sepparate step (code) since there seems to be a dependency issue when doing both via template
     else:
         if not cssc_tasks_exists:
             raise AzCLIError(f"{ERROR_MESSAGE_WORKFLOW_TASKS_DOES_NOT_EXIST}")
@@ -84,6 +104,26 @@ def create_update_continuous_patch_v1(cmd,
             logger.debug(f"Uploading of {cssc_config_file} for update completed successfully.")
 
         _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun, task_list)
+        # since this is working on an existingworkflow, we have to do all the steps,
+            # verify before set
+        # --set properties.networkRuleBypassAllowedForTasks=true
+        
+    # the network bypass needs to be checked and set if not existent
+        # --auth-mode None
+        # --source-acr-auth-id '[system]'
+        # az role assignment create
+    # can the ones above be done by checking and then rerunning the arm template deployment?
+        # 'az acr task credential add'
+        
+    _enable_task_network_bypass(cmd, registry)
+    # for task in task_list:
+    #     _ensure_task_credential_identity(cmd, acr_task_client, registry, task)
+    #     _ensure_task_source_registry_credentials(cmd, acr_task_client, registry, task)
+        
+
+
+
+    # _configure_system_assigned_identity(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
 
     # on 'update' schedule is optional
     if schedule is None:
@@ -95,6 +135,39 @@ def create_update_continuous_patch_v1(cmd,
     _eval_trigger_run(cmd, registry, resource_group, run_immediately)
     next_date = get_next_date(schedule_cron_expression)
     print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
+
+
+def _ensure_task_credential_identity(cmd, acr_task_client, registry, task_list):
+    # check if the task lsit already has set up the identity for them
+    # if not try to redeploy template
+    # if that does not work, remove that and do it via sdk
+    return
+
+
+def _ensure_task_source_registry_credentials(cmd, acr_task_client, registry, task):
+    set_task_credentials = False
+    existingCreds = getattr(task, 'credentials', None)
+    if not existingCreds or not existingCreds.custom_registries:
+        set_task_credentials = True
+    else:
+        if not registry.login_server in existingCreds.custom_registries:
+            set_task_credentials = True
+
+    if set_task_credentials:
+        logger.debug("Setting up source registry credentials for task %s", task.name)
+        # tasks credentials need to be set up
+        Credentials, CustomRegistryCredentials, SourceRegistryCredentials, TaskUpdateParameters = cmd.get_models('Credentials', 'CustomRegistryCredentials', 'SourceRegistryCredentials', 'TaskUpdateParameters', operation_group='tasks')
+
+        # the way these aprameters are setup might not be correctm, need to double check
+        source_registry_credentials = SourceRegistryCredentials(
+            login_mode=auth_mode, identity=source_registry_identity)
+        taskUpdateParameters = TaskUpdateParameters(
+            credentials=source_registry_credentials)
+
+        resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
+        registry_name = parse_resource_id(registry.id)[NAME]
+        task_name = task.name
+        resp = acr_task_client.update(resource_group_name, registry_name, task_name, taskUpdateParameters)
 
 
 def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, silent_execution=False):
@@ -122,6 +195,252 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
     if not silent_execution:
         print(f"Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.")
 
+    # step 3 & 4 could be done during setup on the arm template, but how do we fix it if it is not setup correctly?
+
+    #     log "Step 3: Retrieving system identity object ID..."
+    #     IDENTITY_OBJECT_ID=$(az acr task show -r "$REGISTRY_NAME" -n "$TASK_NAME" --query identity.principalId -o tsv)
+
+    #     log "Step 4: Creating $ROLE_NAME role assignment..."
+    #     az role assignment create --role "$ROLE_NAME" --assignee-object-id "$IDENTITY_OBJECT_ID" --assignee-principal-type ServicePrincipal --scope "$REGISTRY_ID"
+
+# fix for bug https://msazure.visualstudio.com/AzureContainerRegistry/_workitems/edit/35989919
+# def _configure_system_assigned_identity(cmd, registry, task, login_server=None):
+#     """Ensure the Continuous Patching task uses the registry system identity."""
+#     if not registry or not getattr(registry, 'id', None):
+#         raise AzCLIError("Registry information is required to configure identities.")
+
+#     parsed_registry_id = parse_resource_id(registry.id)
+#     resource_group_name = parsed_registry_id.get(RESOURCE_GROUP)
+#     subscription_id = parsed_registry_id.get(SUBSCRIPTION)
+#     registry_name = getattr(registry, 'name', None)
+#     if not resource_group_name or not registry_name:
+#         raise AzCLIError("Failed to resolve registry scope while configuring system identity.")
+
+#     task_name = getattr(task, 'name', None) if task else None
+#     if not task_name and isinstance(task, str):
+#         task_name = task
+#     if not task_name:
+#         raise AzCLIError("Task information is required to configure system identity.")
+
+#     login_server = login_server or getattr(registry, 'login_server', None)
+#     if not login_server:
+#         raise AzCLIError("A login server is required to configure task credentials.")
+
+#     roles_required = CONTINUOUSPATCH_TASK_DEFINITION.get(task_name, {}).get("roles_required", [])
+
+#     logger.debug("Configuring system assigned identity for task %s in registry %s", task_name, registry_name)
+
+#     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
+#     _safe_acr_task_update(
+#         cmd,
+#         acr_task_client,
+#         registry_name,
+#         resource_group_name,
+#         task_name,
+#         "set auth mode to None",
+#         auth_mode='None')
+
+#     _safe_acr_task_update(
+#         cmd,
+#         acr_task_client,
+#         registry_name,
+#         resource_group_name,
+#         task_name,
+#         "assign the source registry identity",
+#         auth_mode='None',
+#         source_acr_auth_id=IDENTITY_LOCAL_ID)
+
+#     task_resource = get_task(cmd, registry_name, task_name, acr_task_client)
+
+#     _ensure_task_credential_identity(
+#         cmd,
+#         acr_task_client,
+#         resource_group_name,
+#         registry_name,
+#         task_name,
+#         login_server,
+#         task_resource)
+
+#     _ensure_task_role_assignments(
+#         cmd,
+#         registry,
+#         task_resource,
+#         task_name,
+#         roles_required)
+
+
+def _enable_task_network_bypass(cmd, registry):
+    property_name = 'networkRuleBypassAllowedForTasks'
+    current_state = getattr(registry, 'network_rule_bypass_allowed_for_tasks', None)
+    if current_state:
+        logger.debug("Network rule bypass for tasks already enabled on registry %s", registry.name)
+        return
+
+    logger.debug("Enabling network rule bypass for tasks on registry %s", registry.name)
+    subscription = parse_resource_id(registry.id)[SUBSCRIPTION]
+    resources_client = cf_resources(cmd.cli_ctx, subscription_id=subscription)
+    try:
+        poller = resources_client.resources.begin_update_by_id(
+            registry.id,
+            ACR_API_VERSION_2025_05_01_PREVIEW,
+            {'properties': {property_name: True}}
+        )
+        LongRunningOperation(cmd.cli_ctx)(poller)
+    except HttpResponseError as exception:
+        raise AzCLIError(
+            f"Failed to enable task network rule bypass for registry {registry.name}: {exception}") from exception
+
+
+def _safe_acr_task_update(cmd,
+                          acr_task_client,
+                          registry_name,
+                          resource_group_name,
+                          task_name,
+                          step_description,
+                          **update_kwargs):
+    logger.debug("Running task update (%s) for task %s", step_description, task_name)
+    try:
+        acr_task_update(
+            cmd,
+            acr_task_client,
+            task_name,
+            registry_name,
+            resource_group_name=resource_group_name,
+            **update_kwargs)
+    except AzCLIError:
+        raise
+    except (CLIError, HttpResponseError) as exception:
+        raise AzCLIError(f"Failed to {step_description} for task {task_name}: {exception}") from exception
+
+
+# def _ensure_task_credential_identity(cmd,
+#                                      acr_task_client,
+#                                      resource_group_name,
+#                                      registry_name,
+#                                      task_name,
+#                                      login_server,
+#                                      task):
+#     logger.debug("Ensuring task %s credential %s uses system identity", task_name, login_server)
+
+#     credentials = getattr(task, 'credentials', None)
+#     if credentials is None:
+#         try:
+#             credentials = acr_task_client.get_details(resource_group_name, registry_name, task_name).credentials
+#         except HttpResponseError as exception:
+#             raise AzCLIError(
+#                 f"Failed to retrieve credentials for task {task_name}: {exception}") from exception
+
+#     custom_registries = getattr(credentials, 'custom_registries', None) if credentials else None
+#     existing_credential = None
+#     if custom_registries and hasattr(custom_registries, 'get'):
+#         existing_credential = custom_registries.get(login_server)
+
+#     if existing_credential and getattr(existing_credential, 'identity', None) == IDENTITY_LOCAL_ID:
+#         logger.debug("Task credential already configured to use system identity")
+#         return
+
+#     try:
+#         if existing_credential:
+#             logger.debug("Updating credential %s to use system identity", login_server)
+#             acr_task_credential_update(
+#                 cmd,
+#                 acr_task_client,
+#                 task_name,
+#                 registry_name,
+#                 login_server,
+#                 use_identity=IDENTITY_LOCAL_ID,
+#                 resource_group_name=resource_group_name)
+#         else:
+#             logger.debug("Adding credential %s to use system identity", login_server)
+#             acr_task_credential_add(
+#                 cmd,
+#                 acr_task_client,
+#                 task_name,
+#                 registry_name,
+#                 login_server,
+#                 use_identity=IDENTITY_LOCAL_ID,
+#                 resource_group_name=resource_group_name)
+#     except AzCLIError:
+#         raise
+#     except (CLIError, HttpResponseError) as exception:
+#         action = 'update' if existing_credential else 'add'
+#         raise AzCLIError(
+#             f"Failed to {action} task credential for login server {login_server}: {exception}") from exception
+
+
+# def _ensure_task_role_assignments(cmd,
+#                                   registry,
+#                                   task,
+#                                   task_name,
+#                                   roles_required):
+#     if not roles_required:
+#         return
+
+#     identity = getattr(task, 'identity', None)
+#     principal_id = getattr(identity, 'principal_id', None) if identity else None
+#     if not principal_id:
+#         raise AzCLIError(
+#             f"Task {task_name} has no system assigned identity configured; cannot manage role assignments.")
+
+#     scope = registry.id
+#     role_client = cf_authorization(cmd.cli_ctx)
+
+#     try:
+#         assignments = list(role_client.role_assignments.list_for_scope(
+#             scope,
+#             filter=f"principalId eq '{principal_id}'"))
+#     except HttpResponseError as exception:
+#         raise AzCLIError(
+#             f"Failed to retrieve existing role assignments for task {task_name}: {exception}") from exception
+
+#     existing_role_ids = {assignment.role_definition_id.lower()
+#                          for assignment in assignments if getattr(assignment, 'role_definition_id', None)}
+#     role_definition_cache = {}
+
+#     for role_name in roles_required:
+#         role_definition_id = _get_role_definition_id(role_client, scope, role_name, role_definition_cache)
+#         if role_definition_id.lower() in existing_role_ids:
+#             logger.debug("Task %s already has role %s", task_name, role_name)
+#             continue
+
+#         parameters = role_client.models.RoleAssignmentCreateParameters(
+#             role_definition_id=role_definition_id,
+#             principal_id=principal_id,
+#             principal_type="ServicePrincipal"
+#         )
+#         try:
+#             role_client.role_assignments.create(
+#                 scope,
+#                 str(uuid4()),
+#                 parameters)
+#             logger.debug("Assigned role %s to task %s", role_name, task_name)
+#         except HttpResponseError as exception:
+#             raise AzCLIError(
+#                 f"Failed to assign role {role_name} to task {task_name}: {exception}") from exception
+
+
+# def _get_role_definition_id(role_client, scope, role_name, cache):
+#     if not role_name:
+#         raise AzCLIError("Role name cannot be empty when resolving role definition.")
+
+#     cached = cache.get(role_name)
+#     if cached:
+#         return cached
+
+#     filter_expression = f"roleName eq '{role_name}'"
+#     try:
+#         role_definitions = list(role_client.role_definitions.list(scope, filter=filter_expression))
+#     except HttpResponseError as exception:
+#         raise AzCLIError(
+#             f"Failed to query role definition '{role_name}': {exception}") from exception
+
+#     if not role_definitions:
+#         raise AzCLIError(
+#             f"Role '{role_name}' was not found in the current subscription. Ensure the role exists before retrying.")
+
+#     role_id = role_definitions[0].id
+#     cache[role_name] = role_id
+#     return role_id
 
 def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run, task_list):
     # compare the task definition to the existing tasks, if there is a difference, we need to update the tasks
@@ -267,10 +586,10 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
             agent_pool_name=None,
             log_template=None
         )
-        queued = LongRunningOperation(cmd.cli_ctx, start_msg=WORKFLOW_VALIDATION_MESSAGE)(acr_registries_task_client.begin_schedule_run(
+        queued = acr_registries_task_client.schedule_run(
             resource_group_name=resource_group_name,
             registry_name=registry.name,
-            run_request=request))
+            run_request=request)
         run_id = queued.run_id
         logger.info("Performing dry-run check for filter policy using acr task run id: %s", run_id)
         return WorkflowTaskStatus.remove_internal_acr_statements(
@@ -378,11 +697,10 @@ def _trigger_task_run(cmd, registry, resource_group, task_name):
     acr_task_registries_client = cf_acr_registries_tasks(cmd.cli_ctx)
     request = acr_task_registries_client.models.TaskRunRequest(
         task_id=f"{registry.id}/tasks/{task_name}")
-    queued_run = LongRunningOperation(cmd.cli_ctx)(
-        acr_task_registries_client.begin_schedule_run(
+    queued_run = acr_task_registries_client.schedule_run(
             resource_group,
             registry.name,
-            request))
+            request)
     run_id = queued_run.run_id
     print(f"Queued {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task '{task_name}' with run ID: {run_id}. Use 'az acr task logs --registry {registry.name} --run-id {run_id}' to view the logs.")
 
