@@ -50,6 +50,8 @@ examples:
     text: az acr cache create -r myregistry -n MyRule -s upstreamacrregistry.azurecr-test.io -t acr-to-acr-cacherule --assign-identity /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}
   - name: Create a cache rule with artifact sync enabled and set a tag filter.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta
+  - name: Create a cache rule with artifact sync enabled and sync only a specific tag.
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/nginx -t library/nginx --sync activesync --tag 8.0
   - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify platforms and sync referrers.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
   - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify  platforms, sync referrers and artifact types to include.
@@ -88,6 +90,8 @@ examples:
     text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
   - name: Enable artifact sync, set a tag filter, and specify platforms, sync referrers and artifact types to include.
     text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types images,notary-project-signature
+  - name: Update cache rule to sync only a specific tag.
+    text: az acr cache update -r myregistry -n MyRule --sync activesync --tag latest
   - name: Enable artifact sync, set a tag filter, and specify platforms, sync referrers and artifact types to exclude.
     text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.aquasec.trivy.vulnerability.report
 """

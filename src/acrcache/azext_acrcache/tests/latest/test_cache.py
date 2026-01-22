@@ -15,22 +15,34 @@ class TestCacheUtilityFunctions(unittest.TestCase):
         self.assertEqual(cache._create_kql(starts_with="foo"), "Tags | where Name startswith 'foo'")
         self.assertEqual(cache._create_kql(ends_with="bar"), "Tags | where Name endswith 'bar'")
         self.assertEqual(cache._create_kql(contains="baz"), "Tags | where Name contains 'baz'")
+        self.assertEqual(cache._create_kql(tag="exact"), "Tags | where Name == 'exact'")
         self.assertEqual(cache._create_kql(starts_with="foo", ends_with="bar"), 
                         "Tags | where Name startswith 'foo' and Name endswith 'bar'")
         self.assertEqual(cache._create_kql(starts_with="foo", contains="baz"), 
                         "Tags | where Name startswith 'foo' and Name contains 'baz'")
         self.assertEqual(cache._create_kql(ends_with="bar", contains="baz"), 
                         "Tags | where Name endswith 'bar' and Name contains 'baz'")
+        self.assertEqual(cache._create_kql(tag="exact", starts_with="foo"), 
+                        "Tags | where Name startswith 'foo' and Name == 'exact'")
         self.assertEqual(cache._create_kql(starts_with="foo", ends_with="bar", contains="baz"), 
                         "Tags | where Name startswith 'foo' and Name endswith 'bar' and Name contains 'baz'")
 
     def test_separate_params(self):
         """Test parameter extraction from KQL queries"""
         q = "Tags | where Name startswith 'foo' and Name endswith 'bar' and Name contains 'baz'"
-        starts_with, ends_with, contains = cache._separate_params(q)
+        starts_with, ends_with, contains, tag = cache._separate_params(q)
         self.assertEqual(starts_with, "foo")
         self.assertEqual(ends_with, "bar")
         self.assertEqual(contains, "baz")
+        self.assertIsNone(tag)
+        
+        # Test exact tag match
+        q_tag = "Tags | where Name == 'exact'"
+        starts_with, ends_with, contains, tag = cache._separate_params(q_tag)
+        self.assertIsNone(starts_with)
+        self.assertIsNone(ends_with)
+        self.assertIsNone(contains)
+        self.assertEqual(tag, "exact")
 
 
 class TestCacheOperations(unittest.TestCase):
