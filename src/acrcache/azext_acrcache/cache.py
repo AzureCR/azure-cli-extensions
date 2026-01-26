@@ -345,7 +345,7 @@ def acr_cache_update_custom(cmd,
     updated_image_types = None
 
     #preserve old artifact sync filters
-    preserve_filters = (properties.artifact_sync_filters is not None and isActiveSync)
+    preserve_filters = (properties.artifact_sync_filters is not None and is_active_sync)
 
     if preserve_filters:
         # Copy tag filters If no new filters are provided
@@ -386,7 +386,7 @@ def acr_cache_update_custom(cmd,
 
     #update artifact sync filters object
     updated_artifact_sync_filters = None
-    if isActiveSync:
+    if is_active_sync:
         if starts_with or ends_with or contains or tag:
             updated_tags = TagFilter(
                 type="KQL",
@@ -442,7 +442,7 @@ def acr_cache_update_custom(cmd,
         artifact_sync_filters=updated_artifact_sync_filters
     )
 
-    if isActiveSync:
+    if is_active_sync:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Continue?", yes)
 
     if remove_cred_set:
