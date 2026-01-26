@@ -22,8 +22,21 @@ class TestCacheUtilityFunctions(unittest.TestCase):
                         "Tags | where Name startswith 'foo' and Name contains 'baz'")
         self.assertEqual(cache._create_kql(ends_with="bar", contains="baz"), 
                         "Tags | where Name endswith 'bar' and Name contains 'baz'")
-        self.assertEqual(cache._create_kql(tag="exact", starts_with="foo"), 
-                        "Tags | where Name startswith 'foo' and Name == 'exact'")
+        # Test that specific tag is mutually exclusive with other filters
+        with self.assertRaises(CLIError):
+            cache._create_kql(tag="exact", starts_with="foo")
+        with self.assertRaises(CLIError):
+            cache._create_kql(tag="exact", ends_with="bar")
+        with self.assertRaises(CLIError):
+            cache._create_kql(tag="exact", contains="baz")
+        with self.assertRaises(CLIError):
+            cache._create_kql(tag="exact", starts_with="foo", ends_with="bar")
+        with self.assertRaises(CLIError):
+            cache._create_kql(tag="exact", starts_with="foo", contains="baz")
+        with self.assertRaises(CLIError):
+            cache._create_kql(tag="exact", ends_with="bar", contains="baz")
+        with self.assertRaises(CLIError):
+            cache._create_kql(tag="exact", starts_with="foo", ends_with="bar", contains="baz")
         self.assertEqual(cache._create_kql(starts_with="foo", ends_with="bar", contains="baz"), 
                         "Tags | where Name startswith 'foo' and Name endswith 'bar' and Name contains 'baz'")
 

@@ -6,6 +6,7 @@ Release History
 ++++++  
 * **FEATURE**: added new artifact sync filtering options for cache rules
   * `--tag`: filter tag by exact name
+* **ENHANCEMENT**:Improved error messages for invalid parameter combinations  
 
 1.0.0c8
 ++++++

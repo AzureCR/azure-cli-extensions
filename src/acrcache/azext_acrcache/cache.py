@@ -173,7 +173,7 @@ def acr_cache_create(cmd,
         rg = resource_group_name
     else:
         #extract resource group from registry id
-        import re
+
         match = re.search(r'/resourceGroups/([^/]+)/', registry.id)
         rg = match.group(1) if match else None
 
@@ -206,8 +206,9 @@ def acr_cache_create(cmd,
 
     identity_properties = process_assign_identity_parameter(assign_identity)
 
+    # Validate that source_repo doesn't contain tags. Users must use --tag parameter
     if ':' in source_repo:
-        source_repo, source_tag = source_repo.rsplit(':', 1)
+        raise CLIError("Source repository should not include a tag. Please use the --tag parameter to specify tag for filtering.")
 
     #create artifact sync filters object
     artifact_sync_filters = None
@@ -325,10 +326,10 @@ def acr_cache_update_custom(cmd,
 
     #check if activesync is enabled 
     #check both existing sync mode (when not changing sync) AND new sync value (when updating sync)
-    isActiveSync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
+    is_active_sync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
 
     # Validate sync_referrers requires activesync
-    if sync_referrers and sync_referrers.lower() == 'enabled' and not isActiveSync:
+    if sync_referrers and sync_referrers.lower() == 'enabled' and not is_active_sync:
         raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     # Warn if mutually exclusive parameters are provided
