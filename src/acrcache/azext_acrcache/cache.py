@@ -21,23 +21,23 @@ from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_re
 MANAGED_IDENTITY_RESOURCE_PROVIDER = "Microsoft.ManagedIdentity"
 USER_ASSIGNED_IDENTITY_RESOURCE_TYPE = "userAssignedIdentities"
 
-def _create_kql(starts_with=None, ends_with=None, contains=None):
-    if not starts_with and not ends_with and not contains:
+def _create_kql(starts_with=None, ends_with=None, contains=None, tag=None):
+    if not starts_with and not ends_with and not contains and not tag:
         return "Tags"
 
     query = "Tags | where "
+    conditions = []
 
     if starts_with:
-        query += f"Name startswith '{starts_with}'"
-        if ends_with or contains:
-            query += " and "
+        conditions.append(f"Name startswith '{starts_with}'")
     if ends_with:
-        query += f"Name endswith '{ends_with}'"
-        if contains:
-            query += " and "
+        conditions.append(f"Name endswith '{ends_with}'")
     if contains:
-        query += f"Name contains '{contains}'"
+        conditions.append(f"Name contains '{contains}'")
+    if tag:
+        conditions.append(f"Name == '{tag}'")
 
+    query += " and ".join(conditions)
     return query
 
 
@@ -45,6 +45,7 @@ def _separate_params(query):
     starts_with = None
     ends_with = None
     contains = None
+    tag = None
 
     if "Name startswith" in query:
         starts_with = query.split("Name startswith")[1].split("'")[1]
@@ -54,8 +55,11 @@ def _separate_params(query):
 
     if "Name contains" in query:
         contains = query.split("Name contains")[1].split("'")[1]
+    
+    if "Name ==" in query:
+        tag = query.split("Name ==")[1].split("'")[1]
 
-    return starts_with, ends_with, contains
+    return starts_with, ends_with, contains, tag
 
 def process_assign_identity_parameter(assign_identity: str) -> IdentityProperties:
     """Process assign identity parameter and return IdentityProperties object.
@@ -151,6 +155,7 @@ def acr_cache_create(cmd,
                      starts_with=None,
                      ends_with=None,
                      contains=None,
+                     tag=None,
                      dry_run=False,
                      yes=False,
                      platforms=None,
@@ -168,7 +173,7 @@ def acr_cache_create(cmd,
         rg = resource_group_name
     else:
         #extract resource group from registry id
-        import re
+
         match = re.search(r'/resourceGroups/([^/]+)/', registry.id)
         rg = match.group(1) if match else None
 
@@ -192,19 +197,18 @@ def acr_cache_create(cmd,
     #validate that filter parameters require sync to be enabled
     if sync and sync.lower() != 'activesync' and (include_artifact_types or exclude_artifact_types or 
                               include_image_types or exclude_image_types or 
-                              platforms or starts_with or ends_with or contains):
+                              platforms or starts_with or ends_with or contains or tag):
         raise CLIError("Artifact sync filters (--include-artifact-types, --exclude-artifact-types, "
                         "--include-image-types, --exclude-image-types, --platforms, "
-                        "--starts-with, --ends-with, --contains) require --sync activesync.")
+                        "--starts-with, --ends-with, --contains, --tag) require --sync activesync.")
 
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
 
     identity_properties = process_assign_identity_parameter(assign_identity)
 
-    tag = None
-
+    # Validate that source_repo doesn't contain tags. Users must use --tag parameter
     if ':' in source_repo:
-        source_repo, tag = source_repo.rsplit(':', 1)
+        raise CLIError("Source repository should not include a tag. Please use the --tag parameter to specify tag for filtering.")
 
     #create artifact sync filters object
     artifact_sync_filters = None
@@ -245,8 +249,10 @@ def acr_cache_create(cmd,
                 values=exclude_image_list
             )
 
-        kql_str = f"Tags | where Name == '{tag}'" if tag is not None else _create_kql(starts_with, ends_with, contains)
-        if sync and not kql_str:
+        # Generate KQL query for tag filtering
+        if starts_with or ends_with or contains or tag:
+            kql_str = _create_kql(starts_with, ends_with, contains, tag)
+        else:
             kql_str = "Tags"
 
         artifact_sync_filters["tags"] = TagFilter(
@@ -273,7 +279,7 @@ def acr_cache_create(cmd,
         identity=identity_properties
     )
 
-    if tag is None and sync and not dry_run:
+    if not (starts_with or ends_with or contains or tag) and sync and not dry_run:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Run with the dry-run flag for details. Continue?", yes)
 
     return client.begin_create(
@@ -296,6 +302,7 @@ def acr_cache_update_custom(cmd,
                             starts_with=None,
                             ends_with=None,
                             contains=None,
+                            tag=None,
                             yes=False,
                             platforms=None,
                             sync_referrers=None,
@@ -319,10 +326,10 @@ def acr_cache_update_custom(cmd,
 
     #check if activesync is enabled 
     #check both existing sync mode (when not changing sync) AND new sync value (when updating sync)
-    isActiveSync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
+    is_active_sync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
 
     # Validate sync_referrers requires activesync
-    if sync_referrers and sync_referrers.lower() == 'enabled' and not isActiveSync:
+    if sync_referrers and sync_referrers.lower() == 'enabled' and not is_active_sync:
         raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     # Warn if mutually exclusive parameters are provided
@@ -338,7 +345,7 @@ def acr_cache_update_custom(cmd,
     updated_image_types = None
 
     #preserve old artifact sync filters
-    preserve_filters = (properties.artifact_sync_filters is not None and isActiveSync)
+    preserve_filters = (properties.artifact_sync_filters is not None and is_active_sync)
 
     if preserve_filters:
         # Copy tag filters If no new filters are provided
@@ -379,11 +386,11 @@ def acr_cache_update_custom(cmd,
 
     #update artifact sync filters object
     updated_artifact_sync_filters = None
-    if isActiveSync:
-        if starts_with or ends_with or contains:
+    if is_active_sync:
+        if starts_with or ends_with or contains or tag:
             updated_tags = TagFilter(
                 type="KQL",
-                query=_create_kql(starts_with, ends_with, contains)
+                query=_create_kql(starts_with, ends_with, contains, tag)
             )
 
         if platforms:
@@ -435,7 +442,7 @@ def acr_cache_update_custom(cmd,
         artifact_sync_filters=updated_artifact_sync_filters
     )
 
-    if isActiveSync:
+    if is_active_sync:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Continue?", yes)
 
     if remove_cred_set:
