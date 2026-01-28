@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.0.0c9
+++++++  
+* **FEATURE**: added new artifact sync filtering options for cache rules
+  * `--tag`: filter tag by exact name
+* **ENHANCEMENT**:Improved error messages for invalid parameter combinations  
+
 1.0.0c8
 ++++++
 * **BUGFIX**: Resolved issue with sync-referrers enabled without `--sync activesync`

@@ -27,6 +27,13 @@ The `acrcache` extension adds support for managing Azure Container Registry (ACR
   - **--include-image-types**: Specify image types to include in sync.
   - **--exclude-image-types**: Specify image types to exclude from sync.
 
+- **Tag filtering options** (mutually exclusive):
+
+  - **--tag**: Specify an exact tag name to sync.
+  - **--starts-with**: Sync tags that start with a specific prefix.
+  - **--ends-with**: Sync tags that end with a specific suffix.
+  - **--contains**: Sync tags that contain a specific substring.
+
 Installation
 ==============
 
@@ -34,7 +41,7 @@ Installation
 
 1. Install Python (minimum supported version is 3.6; Python 3.12 is recommended) from http://python.org.
 
-2. Fork and clone the required repo's
+2. Fork and clone the required repos
     - Azure CLI Repo : https://github.com/Azure/azure-cli  
     - Azure CLI Extensions Repo : https://github.com/AzureCR/azure-cli-extensions. 
 
@@ -91,7 +98,7 @@ Installation
         Due to a known issue, the Azure CLI currently requires an older version of setuptools (70.0.0) and wheel (0.30.0) because newer versions are incompatible and may cause installation or build                    failures.         
         For more details, see the related issue: https://github.com/Azure/azure-cli/issues/29467
 
-      - pip install setuptools==70.0.0 	
+      - pip install setuptools==70.0.0
 
       - pip install --force-reinstall wheel==0.30.0
 
@@ -119,22 +126,22 @@ If you make changes to the extension, you can test it by running:
 
   **this will build your new changes into the extension package which you will see immediately.**
 
-After building the extension, if you dont see your changes immediately outputed in the cli, you can run the following command to reinstall the newly built extension:
+After building the extension, if you don't see your changes immediately outputted in the CLI, you can run the following command to reinstall the newly built extension:
 
     - az extension remove --name acrcache
-    - az extension add --source "path\dist\acrcache-1.0.<0rc8>-py3-none-any.whl" 
+    - az extension add --source "path\dist\acrcache.whl" 
 
 
 **Usage**
 ==============
 
-**cache rules Create, update, list, show, and sync **
+**Cache Rules: create, update, list, show, and sync**
 
     see `az acr cache -h` for more information and examples.
 
 **Authentication Methods**
 
-  ** User-Assigned Managed Identity**
+  **User-Assigned Managed Identity**
 
     The `--assign-identity` parameter enables secure authentication between Azure Container Registries using user-assigned managed identities. This is particularly useful for:
 
@@ -148,7 +155,7 @@ After building the extension, if you dont see your changes immediately outputed 
       --assign-identity /subscriptions/<sub-id>/resourceGroups/<rg>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<identity-name>
     ```  
 
-  ** Credentials**
+  **Credentials**
 
     If `--assign-identity` is not specified in a cache rule command, the extension will fall back to using existing credentials configured for the target registry. This may include:
 
@@ -160,19 +167,20 @@ After building the extension, if you dont see your changes immediately outputed 
         az acr cache create -r <target-registry> -n <rule-name> -s <source-registry>.azurecr.io/<repo> -t <target-repo> --credential-set
     ```
 
-** Important Notes**
+**Important Notes**
 ==============
 
-  ** Sync Modes **
+  **Sync Modes**
     - **PassiveSync** (default): Pull-through cache behavior - images are cached when pulled
     - **ActiveSync**: Proactive synchronization - images are automatically pulled and cached
   
-  ** Parameter Dependencies **
+  **Parameter Dependencies**
     - --sync-referrers enabled requires **--sync activesync**
     -  Artifact filtering parameters (--platforms, --include-artifact-types, etc.) require **--sync activesync**
-    -  Tag filters (--starts-with, --ends-with, --contains) require **--sync activesync**
+    -  Tag filtering parameters (--tag, --starts-with, --ends-with, --contains) require **--sync activesync**
+    -  Tag filtering options are mutually exclusive: use either **--tag** for exact match OR pattern-based filters (--starts-with, --ends-with, --contains)
 
-** Minimum Azure CLI Version **
+**Minimum Azure CLI Version**
 ==============
 
   This extension requires Azure CLI version **2.57.0** or higher.
