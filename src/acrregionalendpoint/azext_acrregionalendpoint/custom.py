@@ -25,7 +25,7 @@ from .vendored_sdks.containerregistry.models import (
 )
 
 logger = get_logger(__name__)
-ACR_AFEC_REGIONAL_ENDPOINT = "RegionalEndpoint"
+ACR_AFEC_REGIONAL_ENDPOINT = "RegionalEndpoints"
 ACR_RESOURCE_PROVIDER = "Microsoft.ContainerRegistry"
 REGIONAL_ENDPOINTS_NOT_SUPPORTED = "Regional endpoints are only supported for managed registries in Premium SKU."
 REGIONAL_ENDPOINTS_NOT_SUPPORTED_FOR_DCT = "Regional endpoints cannot be enabled when Content Trust is enabled. " \
