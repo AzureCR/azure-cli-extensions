@@ -1,98 +1,119 @@
 Microsoft Azure CLI 'acrcache' Extension
 ==========================================
 
-## Overview
-.
+**Overview**
+
 The `acrcache` extension adds support for managing Azure Container Registry (ACR) cache rules via the Azure CLI. 
 
-## Features
+**Features**
 
-- Create, update, list, show, and delete cache rules for ACR.
-- Configure artifact sync with flexible filters:
+- Create, update, list, show, and sync cache rules for ACR.
+**Parameters**
+
+- **Artifact Sync Modes**: Choose between passive and active synchronization of artifacts.
+
+  - **--sync**: Set sync to `passivesync` (default) or `activesync`. 
+
+- **Managed Identity Authentication**: Configure user-assigned managed identities for secure cross-registry authentication.
+
+  - **--assign-identity**: Specify a user-assigned managed identity for authenticating with source registries.
+
+- **Configure artifact sync with flexible filters**:
+
   - **--platforms**: Filter which platforms to sync (e.g., `linux/amd64`, `linux/arm64`).
-  - **--sync-referrers**: Enable or disable syncing of referrers.
-  - **--include-artifact-types**: Specify artifact types to include in sync.
+  - **--sync-referrers**: Enable or disable syncing of referrers.  Default value is disabled
+  - **--include-artifact-types**: Specify artifact types to include in sync. 
   - **--exclude-artifact-types**: Specify artifact types to exclude from sync.
   - **--include-image-types**: Specify image types to include in sync.
   - **--exclude-image-types**: Specify image types to exclude from sync.
 
-## Installation
+- **Tag filtering options** (mutually exclusive):
 
-### Prerequisites
+  - **--tag**: Specify an exact tag name to sync.
+  - **--starts-with**: Sync tags that start with a specific prefix.
+  - **--ends-with**: Sync tags that end with a specific suffix.
+  - **--contains**: Sync tags that contain a specific substring.
+
+Installation
+==============
+
+**Prerequisites**
+
 1. Install Python (minimum supported version is 3.6; Python 3.12 is recommended) from http://python.org.
-2. Fork and clone the required repo's
+
+2. Fork and clone the required repos
     - Azure CLI Repo : https://github.com/Azure/azure-cli  
     - Azure CLI Extensions Repo : https://github.com/AzureCR/azure-cli-extensions. 
 
-- Note: ACR cache extension is in feature/artifactcache branch.
+3. After forking `azure-cli`, follow the below commands to setup
 
-    After forking `azure-cli`, follow the below commands to setup
+    Clone your forked repository
 
-    # Clone your forked repository
+      - git clone `https://github.com/<your-github-name>/azure-cli.git`
 
-    git clone https://github.com/<your-github-name>/azure-cli.git
+      - cd azure-cli
 
-    cd azure-cli
+    Add the Azure/azure-cli repository as upstream
 
-    # Add the Azure/azure-cli repository as upstream
+      -  git remote add upstream https://github.com/Azure/azure-cli.git
 
-    git remote add upstream https://github.com/Azure/azure-cli.git
+      -  git fetch upstream
 
-    git fetch upstream
+    Reset the default dev branch to track dev branch of Azure/azure-cli so you can use it to track the latest azure-cli code.
 
-    # Reset the default dev branch to track dev branch of Azure/azure-cli so you can use it to track the latest azure-cli code.
+      -  git branch dev --set-upstream-to upstream/dev
 
-    git branch dev --set-upstream-to upstream/dev
+    Develop with a new branch
 
-    # Develop with a new branch
+      -  git checkout -b <feature_branch>
 
-    git checkout -b <feature_branch>
 
   Do the same for `azure-cli-extensions` except that the default branch for it is main, run git branch main --set-upstream-to upstream/main instead.
   Note: The ACR cache extension is in the `feature/artifactcache` branch of the `azure-cli-extensions` repository, do NOT merge changes into main.
 
-3. Create a virtual environment in the directory that contains both your CLI and CLI extension clones
+4. Create a virtual environment in the directory that contains both your CLI and CLI extension clones
 
     ```sh
     python -m venv .venv
     ```
-4. Activate the virtual environment
+
+5. Activate the virtual environment
 
     Windows CMD.exe:
 
-    `.venv\Scripts\activate.bat`
+      .venv\Scripts\activate.bat
 
     Windows Powershell:
 
-    `.venv\Scripts\activate.ps1`
+      `.venv\Scripts\activate.ps1`
 
     OSX/Linux (bash):
 
-    `source .venv/bin/activate`
+      `source .venv/bin/activate`
 
-5. Install the required packages
+6. Install the required packages
     Install python dependencies
-      ```sh
-      python -m pip install -U pip
-      ```
-      Due to a known issue, the Azure CLI currently requires an older version of setuptools (70.0.0) and wheel (0.30.0) because newer versions are incompatible and may cause installation or build failures. For more details, see the related issue: https://github.com/Azure/azure-cli/issues/29467
-     
-      pip install setuptools==70.0.0 	
+        - python -m pip install -U pip
+    
+        Due to a known issue, the Azure CLI currently requires an older version of setuptools (70.0.0) and wheel (0.30.0) because newer versions are incompatible and may cause installation or build                    failures.         
+        For more details, see the related issue: https://github.com/Azure/azure-cli/issues/29467
 
-      pip install --force-reinstall wheel==0.30.0
+      - pip install setuptools==70.0.0
 
-    Install azdev
-      ```sh
-      pip install -U azdev
-      ```
+      - pip install --force-reinstall wheel==0.30.0
 
+      - Install azdev
+  
+      - pip install -U azdev
+    
     Setup azdev
-      azdev setup -c -r azure-cli-extensions/
+      - azdev setup -c -r azure-cli-extensions/
 
-    Build extension
-      azdev extension build acrcache
+7. Build extension
 
-Developing with the ACR Cache Extension
+    azdev extension build acrcache
+
+**Developing with the ACR Cache Extension**
 ==========================================  
 
 Please write the description of changes which can be perceived by customers into HISTORY.rst.
@@ -101,61 +122,71 @@ If you want to release a new extension version, please update the version in set
 
 If you make changes to the extension, you can test it by running:
 
-azdev extension build "acrcache"
+    - azdev extension build "acrcache"
 
-this will build your new changes into the extension package which you will see immediately.
+  **this will build your new changes into the extension package which you will see immediately.**
 
-## Usage
+After building the extension, if you don't see your changes immediately outputted in the CLI, you can run the following command to reinstall the newly built extension:
 
-### List cache rules
+    - az extension remove --name acrcache
+    - az extension add --source "path\dist\acrcache.whl" 
 
-```sh
-az acr cache list -r <registry-name>
-```
 
-### Create a cache rule
+**Usage**
+==============
 
-```sh
-az acr cache create -r <registry-name> -n <rule-name> -s <source-repo> -t <target-repo> \
-  --sync true --platforms linux/amd64,linux/arm64 --sync-referrers enabled \
-  --include-artifact-types images,notary-project-signature --exclude-image-types <image-types>
-```sh
-az acr cache list -r <registry-name>
-az acr cache list -r <registry-name>
-```
+**Cache Rules: create, update, list, show, and sync**
 
-### Create a cache rule
+    see `az acr cache -h` for more information and examples.
 
-```sh
-az acr cache create -r <registry-name> -n <rule-name> -s <source-repo> -t <target-repo> \
-  --sync true --platforms linux/amd64,linux/arm64 --sync-referrers enabled \
-  --include-artifact-types images,notary-project-signature --exclude-image-types <image-types>
-```
+**Authentication Methods**
 
-### Update a cache rule
+  **User-Assigned Managed Identity**
 
-```sh
-az acr cache update -r <registry-name> -n <rule-name> --platforms linux/amd64 --sync-referrers disabled \
-  --include-artifact-types images --exclude-artifact-types <image-types>
-```
+    The `--assign-identity` parameter enables secure authentication between Azure Container Registries using user-assigned managed identities. This is particularly useful for:
 
-### Show a cache rule
+      - **Cross-subscription ACR caching**: Cache images from ACR to ACR within the same tenant
+      - **Enhanced security**: Eliminates the need for credential sets in many scenarios
+      - **Simplified authentication**: Uses Azure's managed identity infrastructure for secure access
 
-```sh
-az acr cache show -r <registry-name> -n <rule-name>
-```
+    Create cache rule with managed identity
+    ``` 
+      az acr cache create -r <target-registry> -n <rule-name> -s <source-registry>.azurecr.io/<repo> -t <target-repo> \
+      --assign-identity /subscriptions/<sub-id>/resourceGroups/<rg>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<identity-name>
+    ```  
 
-### Delete a cache rule
+  **Credentials**
 
-```sh
-az acr cache delete -r <registry-name> -n <rule-name>
-```
+    If `--assign-identity` is not specified in a cache rule command, the extension will fall back to using existing credentials configured for the target registry. This may include:
 
-## Minimum Azure CLI Version
+      - Admin user credentials
+      - Service principal credentials
+      
+    Create cache rule with credentials
+    ``` 
+        az acr cache create -r <target-registry> -n <rule-name> -s <source-registry>.azurecr.io/<repo> -t <target-repo> --credential-set
+    ```
 
-This extension requires Azure CLI version **2.57.0** or higher.
+**Important Notes**
+==============
 
-## Documentation
+  **Sync Modes**
+    - **PassiveSync** (default): Pull-through cache behavior - images are cached when pulled
+    - **ActiveSync**: Proactive synchronization - images are automatically pulled and cached
+  
+  **Parameter Dependencies**
+    - --sync-referrers enabled requires **--sync activesync**
+    -  Artifact filtering parameters (--platforms, --include-artifact-types, etc.) require **--sync activesync**
+    -  Tag filtering parameters (--tag, --starts-with, --ends-with, --contains) require **--sync activesync**
+    -  Tag filtering options are mutually exclusive: use either **--tag** for exact match OR pattern-based filters (--starts-with, --ends-with, --contains)
+
+**Minimum Azure CLI Version**
+==============
+
+  This extension requires Azure CLI version **2.57.0** or higher.
+  You can check your Azure CLI version with:
+
+    az version
 
 For more details, see the official [Azure CLI documentation](https://learn.microsoft.com/cli/azure/acr).
 

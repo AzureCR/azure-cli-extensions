@@ -4,33 +4,40 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import re
 from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_registry_management_client.models._models import (
     CacheRule, CacheRuleProperties,
     CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
-    PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties
+    PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties,
+    IdentityProperties, UserIdentityProperties
 )
 
-def _create_kql(starts_with=None, ends_with=None, contains=None):
-    if not starts_with and not ends_with and not contains:
+# Constants for managed identity resource validation
+MANAGED_IDENTITY_RESOURCE_PROVIDER = "Microsoft.ManagedIdentity"
+USER_ASSIGNED_IDENTITY_RESOURCE_TYPE = "userAssignedIdentities"
+
+def _create_kql(starts_with=None, ends_with=None, contains=None, tag=None):
+    if not starts_with and not ends_with and not contains and not tag:
         return "Tags"
 
     query = "Tags | where "
+    conditions = []
 
     if starts_with:
-        query += f"Name startswith '{starts_with}'"
-        if ends_with or contains:
-            query += " and "
+        conditions.append(f"Name startswith '{starts_with}'")
     if ends_with:
-        query += f"Name endswith '{ends_with}'"
-        if contains:
-            query += " and "
+        conditions.append(f"Name endswith '{ends_with}'")
     if contains:
-        query += f"Name contains '{contains}'"
+        conditions.append(f"Name contains '{contains}'")
+    if tag:
+        conditions.append(f"Name == '{tag}'")
 
+    query += " and ".join(conditions)
     return query
 
 
@@ -38,6 +45,7 @@ def _separate_params(query):
     starts_with = None
     ends_with = None
     contains = None
+    tag = None
 
     if "Name startswith" in query:
         starts_with = query.split("Name startswith")[1].split("'")[1]
@@ -47,9 +55,55 @@ def _separate_params(query):
 
     if "Name contains" in query:
         contains = query.split("Name contains")[1].split("'")[1]
+    
+    if "Name ==" in query:
+        tag = query.split("Name ==")[1].split("'")[1]
 
-    return starts_with, ends_with, contains
+    return starts_with, ends_with, contains, tag
 
+def process_assign_identity_parameter(assign_identity: str) -> IdentityProperties:
+    """Process assign identity parameter and return IdentityProperties object.
+
+    :param assign_identity: User-assigned managed identity resource ID
+    :return: IdentityProperties object or None
+    """
+
+    if not assign_identity:
+        return None
+  
+    if not is_valid_user_assigned_managed_identity_resource_id(assign_identity):
+        raise CLIError(f"Invalid user-assigned managed identity resource ID: {assign_identity}")
+
+    identity_properties = IdentityProperties(
+        type="UserAssigned",
+        user_assigned_identities={
+            assign_identity: UserIdentityProperties()
+        }
+    )
+    return identity_properties
+    
+def is_valid_user_assigned_managed_identity_resource_id(resource_id):
+    """
+    Validate user-assigned managed identity resource ID using Azure's built-in utilities.
+    
+    :param resource_id: Resource ID to validate
+    :return: True if valid, False otherwise
+    """
+    if not is_valid_resource_id(resource_id):
+        return False
+    
+    try:
+        parsed = parse_resource_id(resource_id)
+        # Ensure it's specifically a Microsoft.ManagedIdentity userAssignedIdentities resource
+        return (
+            parsed.get("namespace") == MANAGED_IDENTITY_RESOURCE_PROVIDER and
+            (
+                parsed.get("type") == USER_ASSIGNED_IDENTITY_RESOURCE_TYPE or
+                parsed.get("resource_type") == USER_ASSIGNED_IDENTITY_RESOURCE_TYPE
+            )
+        )
+    except Exception:
+        return False
 
 def acr_cache_show(cmd,
                    client,
@@ -96,10 +150,12 @@ def acr_cache_create(cmd,
                      target_repo,
                      resource_group_name=None,
                      cred_set=None,
+                     assign_identity=None,
                      sync=False,
                      starts_with=None,
                      ends_with=None,
                      contains=None,
+                     tag=None,
                      dry_run=False,
                      yes=False,
                      platforms=None,
@@ -117,7 +173,7 @@ def acr_cache_create(cmd,
         rg = resource_group_name
     else:
         #extract resource group from registry id
-        import re
+
         match = re.search(r'/resourceGroups/([^/]+)/', registry.id)
         rg = match.group(1) if match else None
 
@@ -127,8 +183,10 @@ def acr_cache_create(cmd,
     sync_str = sync if sync else None
     sync_referrers_str = "Enabled" if sync_referrers and sync_referrers.lower() == 'enabled' else "Disabled"
 
-    if sync_referrers and sync_referrers.lower() == 'enabled' and sync and sync.lower() != 'activesync':
-        raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
+    # Validate sync_referrers requires activesync - check both when sync is provided and when it's not
+    if sync_referrers and sync_referrers.lower() == 'enabled':
+        if not sync or sync.lower() != 'activesync':
+            raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     if include_artifact_types and exclude_artifact_types:
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
@@ -139,16 +197,18 @@ def acr_cache_create(cmd,
     #validate that filter parameters require sync to be enabled
     if sync and sync.lower() != 'activesync' and (include_artifact_types or exclude_artifact_types or 
                               include_image_types or exclude_image_types or 
-                              platforms or starts_with or ends_with or contains):
+                              platforms or starts_with or ends_with or contains or tag):
         raise CLIError("Artifact sync filters (--include-artifact-types, --exclude-artifact-types, "
                         "--include-image-types, --exclude-image-types, --platforms, "
-                        "--starts-with, --ends-with, --contains) require --sync activesync.")
+                        "--starts-with, --ends-with, --contains, --tag) require --sync activesync.")
 
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
-    tag = None
 
+    identity_properties = process_assign_identity_parameter(assign_identity)
+
+    # Validate that source_repo doesn't contain tags. Users must use --tag parameter
     if ':' in source_repo:
-        source_repo, tag = source_repo.rsplit(':', 1)
+        raise CLIError("Source repository should not include a tag. Please use the --tag parameter to specify tag for filtering.")
 
     #create artifact sync filters object
     artifact_sync_filters = None
@@ -189,8 +249,10 @@ def acr_cache_create(cmd,
                 values=exclude_image_list
             )
 
-        kql_str = f"Tags | where Name == '{tag}'" if tag is not None else _create_kql(starts_with, ends_with, contains)
-        if sync and not kql_str:
+        # Generate KQL query for tag filtering
+        if starts_with or ends_with or contains or tag:
+            kql_str = _create_kql(starts_with, ends_with, contains, tag)
+        else:
             kql_str = "Tags"
 
         artifact_sync_filters["tags"] = TagFilter(
@@ -213,10 +275,11 @@ def acr_cache_create(cmd,
     # Create cache rule with properties
     cache_rule = CacheRule(
         name=name,
-        properties=properties
+        properties=properties,
+        identity=identity_properties
     )
 
-    if tag is None and sync and not dry_run:
+    if not (starts_with or ends_with or contains or tag) and sync and not dry_run:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Run with the dry-run flag for details. Continue?", yes)
 
     return client.begin_create(
@@ -233,11 +296,13 @@ def acr_cache_update_custom(cmd,
                             name,
                             resource_group_name=None,
                             cred_set=None,
+                            assign_identity=None,
                             remove_cred_set=False,
                             sync=None,
                             starts_with=None,
                             ends_with=None,
                             contains=None,
+                            tag=None,
                             yes=False,
                             platforms=None,
                             sync_referrers=None,
@@ -261,9 +326,10 @@ def acr_cache_update_custom(cmd,
 
     #check if activesync is enabled 
     #check both existing sync mode (when not changing sync) AND new sync value (when updating sync)
-    isActiveSync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
+    is_active_sync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
 
-    if sync_referrers and sync_referrers.lower() == 'enabled' and not isActiveSync and sync and sync.lower() != 'activesync':
+    # Validate sync_referrers requires activesync
+    if sync_referrers and sync_referrers.lower() == 'enabled' and not is_active_sync:
         raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     # Warn if mutually exclusive parameters are provided
@@ -279,7 +345,7 @@ def acr_cache_update_custom(cmd,
     updated_image_types = None
 
     #preserve old artifact sync filters
-    preserve_filters = (properties.artifact_sync_filters is not None and isActiveSync)
+    preserve_filters = (properties.artifact_sync_filters is not None and is_active_sync)
 
     if preserve_filters:
         # Copy tag filters If no new filters are provided
@@ -308,6 +374,9 @@ def acr_cache_update_custom(cmd,
     if cred_set is None and not remove_cred_set:
         cred_set_id = AzureCoreNull
 
+    # Process identity parameter
+    identity_properties = process_assign_identity_parameter(assign_identity)
+
     # Handle artifact sync status - only change if explicitly provided
     if sync is not None:
         sync_mode = "ActiveSync" if sync.lower() == 'activesync' else "PassiveSync"
@@ -317,11 +386,11 @@ def acr_cache_update_custom(cmd,
 
     #update artifact sync filters object
     updated_artifact_sync_filters = None
-    if isActiveSync:
-        if starts_with or ends_with or contains:
+    if is_active_sync:
+        if starts_with or ends_with or contains or tag:
             updated_tags = TagFilter(
                 type="KQL",
-                query=_create_kql(starts_with, ends_with, contains)
+                query=_create_kql(starts_with, ends_with, contains, tag)
             )
 
         if platforms:
@@ -373,19 +442,23 @@ def acr_cache_update_custom(cmd,
         artifact_sync_filters=updated_artifact_sync_filters
     )
 
-    if isActiveSync:
+    if is_active_sync:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Continue?", yes)
 
     if remove_cred_set:
         return client.begin_create(resource_group_name=rg,
                                    registry_name=registry_name,
                                    cache_rule_name=name,
-                                   cache_rule_create_parameters=CacheRuleUpdateParameters(properties=updated_properties))
+                                   cache_rule_create_parameters=CacheRuleUpdateParameters(
+                                        properties=updated_properties,
+                                        identity=identity_properties))
 
     return client.begin_update(resource_group_name=rg,
                                registry_name=registry_name,
                                cache_rule_name=name,
-                               cache_rule_update_parameters=CacheRuleUpdateParameters(properties=updated_properties))
+                               cache_rule_update_parameters=CacheRuleUpdateParameters(
+                                    properties=updated_properties,
+                                    identity=identity_properties))
 
 
 def acr_cache_sync(cmd,
@@ -398,12 +471,13 @@ def acr_cache_sync(cmd,
     rg = get_resource_group_name_by_registry_name(cmd.cli_ctx, registry_name, resource_group_name)
 
     rule = client.cache_rules.get(resource_group_name=rg,
-                                  registry_name=registry_name,
-                                  cache_rule_name=name)
+                      registry_name=registry_name,
+                      cache_rule_name=name)
+
     tag = image
     rule_id = rule.id
-    source_repo = rule.source_repository
-    target_repo = rule.target_repository
+    source_repo = rule.properties.source_repository
+    target_repo = rule.properties.target_repository
     source_image_str = source_repo[source_repo.find('/') + 1:] + ":" + tag
 
     import_source = ImportSource(source_image=source_image_str,
@@ -415,6 +489,6 @@ def acr_cache_sync(cmd,
                                    target_tags=[target_repo + ":" + tag])
 
     return client.registries.begin_import_image(resource_group_name=rg,
-                                                registry_name=registry_name,
-                                                parameters=params)
+                                    registry_name=registry_name,
+                                    parameters=params)
                          
