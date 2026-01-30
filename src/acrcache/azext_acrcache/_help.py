@@ -23,9 +23,6 @@ examples:
 helps['acr cache list'] = """
 type: command
 short-summary: List the cache rules in an Azure Container Registry.
-long-summary: |
-  NOTE: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented. Using any of these parameters will return a 'not implemented' error message.
-
 examples:
   - name: List the cache rules in an Azure Container Registry.
     text: az acr cache list -r myregistry
@@ -34,13 +31,27 @@ examples:
 helps['acr cache create'] = """
 type: command
 short-summary: Create a cache rule.
+parameters:
+  - name: --assign-identity
+    short-summary: Resource ID of the user-assigned managed identity.
+    long-summary: |
+      Resource ID of the user-assigned managed identity for authenticating with the ACR source registry. 
+      Must be in the same tenant as both registries. 
+      Format: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}
+  - name: --sync-referrers
+    short-summary: Enable or disable sync referrers.
+    long-summary: Requires --sync activesync to be enabled.
 examples:
   - name: Create a cache rule without a credential set.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu
   - name: Create a cache rule with a credential set.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu -c MyCredSet
+  - name: Create a cache rule with a user-assigned managed identity (using test registry domain).
+    text: az acr cache create -r myregistry -n MyRule -s upstreamacrregistry.azurecr-test.io -t acr-to-acr-cacherule --assign-identity /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}
   - name: Create a cache rule with artifact sync enabled and set a tag filter.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta
+  - name: Create a cache rule with artifact sync enabled and sync only a specific tag.
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/nginx -t library/nginx --sync activesync --tag 8.0
   - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify platforms and sync referrers.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
   - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify  platforms, sync referrers and artifact types to include.
@@ -55,21 +66,32 @@ examples:
 
 helps['acr cache update'] = """
 type: command
-short-summary: Update the credential set on a cache rule.
-long-summary: |
-  NOTE: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented. Using any of these parameters will return a 'not implemented' error message.
-
+short-summary: Update a cache rule.
+parameters:
+  - name: --assign-identity
+    short-summary: Resource ID of the user-assigned managed identity.
+    long-summary: |
+      Resource ID of the user-assigned managed identity for authenticating with the ACR source registry. 
+      Must be in the same tenant as both registries. 
+      Format: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}
+  - name: --sync-referrers
+    short-summary: Enable or disable syncing of referrers.
+    long-summary: Requires --sync activesync to be enabled.
 examples:
   - name: Change or add a credential set to an existing cache rule.
     text: az acr cache update -r myregistry -n MyRule -c NewCredSet
   - name: Remove a credential set from an existing cache rule.
     text: az acr cache update -r myregistry -n MyRule --remove-cred-set
+  - name: Update a cache rule with a user-assigned managed identity.
+    text: az acr cache update -r myregistry -n MyRule --assign-identity /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name} 
   - name: Enable artifact sync and set a tag filter.
     text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta
   - name: Enable artifact sync, set a tag filter, and specify platforms and sync referrers.
     text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
   - name: Enable artifact sync, set a tag filter, and specify platforms, sync referrers and artifact types to include.
     text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types images,notary-project-signature
+  - name: Update cache rule to sync only a specific tag.
+    text: az acr cache update -r myregistry -n MyRule --sync activesync --tag latest
   - name: Enable artifact sync, set a tag filter, and specify platforms, sync referrers and artifact types to exclude.
     text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.aquasec.trivy.vulnerability.report
 """
