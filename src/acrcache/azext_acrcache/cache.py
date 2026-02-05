@@ -7,6 +7,7 @@
 import re
 from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
+from knack.log import get_logger
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
@@ -20,6 +21,8 @@ from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_re
 # Constants for managed identity resource validation
 MANAGED_IDENTITY_RESOURCE_PROVIDER = "Microsoft.ManagedIdentity"
 USER_ASSIGNED_IDENTITY_RESOURCE_TYPE = "userAssignedIdentities"
+
+logger = get_logger(__name__)
 
 def _create_kql(starts_with=None, ends_with=None, contains=None, tag=None):
     if not starts_with and not ends_with and not contains and not tag:
@@ -41,25 +44,19 @@ def _create_kql(starts_with=None, ends_with=None, contains=None, tag=None):
     return query
 
 
-def _separate_params(query):
-    starts_with = None
-    ends_with = None
-    contains = None
-    tag = None
 
-    if "Name startswith" in query:
-        starts_with = query.split("Name startswith")[1].split("'")[1]
-
-    if "Name endswith" in query:
-        ends_with = query.split("Name endswith")[1].split("'")[1]
-
-    if "Name contains" in query:
-        contains = query.split("Name contains")[1].split("'")[1]
+def process_tag_filters(tag, starts_with, ends_with, contains,
+                        tag_equals, tag_starts_with, tag_ends_with, tag_contains):
+    """
+    Merge legacy and new tag filtering parameters.
+    New explicit parameters take precedence over legacy ones when both are provided.
+    """
+    final_tag = tag_equals if tag_equals is not None else tag
+    final_starts_with = tag_starts_with if tag_starts_with is not None else starts_with
+    final_ends_with = tag_ends_with if tag_ends_with is not None else ends_with
+    final_contains = tag_contains if tag_contains is not None else contains
     
-    if "Name ==" in query:
-        tag = query.split("Name ==")[1].split("'")[1]
-
-    return starts_with, ends_with, contains, tag
+    return final_tag, final_starts_with, final_ends_with, final_contains
 
 def process_assign_identity_parameter(assign_identity: str) -> IdentityProperties:
     """Process assign identity parameter and return IdentityProperties object.
@@ -153,13 +150,17 @@ def acr_cache_create(cmd,
                      assign_identity=None,
                      sync=False,
                      starts_with=None,
+                     tag_starts_with=None,
                      ends_with=None,
+                     tag_ends_with=None,
                      contains=None,
+                     tag_contains=None,
                      tag=None,
+                     tag_equals=None,
                      dry_run=False,
                      yes=False,
                      platforms=None,
-                     sync_referrers=False,
+                     sync_referrers=None,
                      include_artifact_types=None,
                      exclude_artifact_types=None,
                      include_image_types=None,
@@ -180,8 +181,35 @@ def acr_cache_create(cmd,
     if not rg:
         raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")
 
+    # Warn about deprecated legacy parameters
+    legacy_params_used = []
+    if tag is not None:
+        legacy_params_used.append("--tag")
+    if starts_with is not None:
+        legacy_params_used.append("--starts-with")
+    if ends_with is not None:
+        legacy_params_used.append("--ends-with")
+    if contains is not None:
+        legacy_params_used.append("--contains")
+    
+    if legacy_params_used:
+        logger.warning(
+            "Option %s will be deprecated in the future. Use %s instead.",
+            ", ".join(legacy_params_used),
+            "--tag-equals, --tag-starts-with, --tag-ends-with, --tag-contains"
+        )
+
+    # Merge legacy and new tag parameters
+    processed_tag, processed_starts_with, processed_ends_with, processed_contains = process_tag_filters(
+        tag, starts_with, ends_with, contains,
+        tag_equals, tag_starts_with, tag_ends_with, tag_contains
+    )
+
     sync_str = sync if sync else None
-    sync_referrers_str = "Enabled" if sync_referrers and sync_referrers.lower() == 'enabled' else "Disabled"
+    # Only set sync_referrers_str when the parameter is explicitly provided; otherwise, leave unchanged
+    sync_referrers_str = None
+    if sync_referrers is not None:
+        sync_referrers_str = "Enabled" if sync_referrers.lower() == 'enabled' else "Disabled"
 
     # Validate sync_referrers requires activesync - check both when sync is provided and when it's not
     if sync_referrers and sync_referrers.lower() == 'enabled':
@@ -197,18 +225,19 @@ def acr_cache_create(cmd,
     #validate that filter parameters require sync to be enabled
     if sync and sync.lower() != 'activesync' and (include_artifact_types or exclude_artifact_types or 
                               include_image_types or exclude_image_types or 
-                              platforms or starts_with or ends_with or contains or tag):
+                              platforms or processed_starts_with or processed_ends_with or processed_contains or processed_tag):
         raise CLIError("Artifact sync filters (--include-artifact-types, --exclude-artifact-types, "
                         "--include-image-types, --exclude-image-types, --platforms, "
-                        "--starts-with, --ends-with, --contains, --tag) require --sync activesync.")
+                        "--starts-with, --ends-with, --contains, --tag, "
+                        "--tag-equals, --tag-starts-with, --tag-ends-with, --tag-contains) require --sync activesync.")
 
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
 
     identity_properties = process_assign_identity_parameter(assign_identity)
 
-    # Validate that source_repo doesn't contain tags. Users must use --tag parameter
+    # Validate that source_repo doesn't contain tags. Users must use --tag-equals parameter
     if ':' in source_repo:
-        raise CLIError("Source repository should not include a tag. Please use the --tag parameter to specify tag for filtering.")
+        raise CLIError("Source repository should not include a tag. Please use the --tag-equals parameter to specify tag for filtering.")
 
     #create artifact sync filters object
     artifact_sync_filters = None
@@ -250,8 +279,8 @@ def acr_cache_create(cmd,
             )
 
         # Generate KQL query for tag filtering
-        if starts_with or ends_with or contains or tag:
-            kql_str = _create_kql(starts_with, ends_with, contains, tag)
+        if processed_starts_with or processed_ends_with or processed_contains or processed_tag:
+            kql_str = _create_kql(processed_starts_with, processed_ends_with, processed_contains, processed_tag)
         else:
             kql_str = "Tags"
 
@@ -279,7 +308,7 @@ def acr_cache_create(cmd,
         identity=identity_properties
     )
 
-    if not (starts_with or ends_with or contains or tag) and sync and not dry_run:
+    if not (processed_starts_with or processed_ends_with or processed_contains or processed_tag) and sync and not dry_run:
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Run with the dry-run flag for details. Continue?", yes)
 
     return client.begin_create(
@@ -300,9 +329,13 @@ def acr_cache_update_custom(cmd,
                             remove_cred_set=False,
                             sync=None,
                             starts_with=None,
+                            tag_starts_with=None,
                             ends_with=None,
+                            tag_ends_with=None,
                             contains=None,
+                            tag_contains=None,
                             tag=None,
+                            tag_equals=None,
                             yes=False,
                             platforms=None,
                             sync_referrers=None,
@@ -337,6 +370,30 @@ def acr_cache_update_custom(cmd,
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
     if include_image_types and exclude_image_types:
         raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")
+
+    # Warn about deprecated legacy parameters
+    legacy_params_used = []
+    if tag is not None:
+        legacy_params_used.append("--tag")
+    if starts_with is not None:
+        legacy_params_used.append("--starts-with")
+    if ends_with is not None:
+        legacy_params_used.append("--ends-with")
+    if contains is not None:
+        legacy_params_used.append("--contains")
+    
+    if legacy_params_used:
+        logger.warning(
+            "Option %s will be deprecated in a future release. Use %s instead.",
+            ", ".join(legacy_params_used),
+            "--tag-equals, --tag-starts-with, --tag-ends-with, --tag-contains"
+        )
+
+    # Merge legacy and new tag parameters for update
+    processed_tag, processed_starts_with, processed_ends_with, processed_contains = process_tag_filters(
+        tag, starts_with, ends_with, contains,
+        tag_equals, tag_starts_with, tag_ends_with, tag_contains
+    )
  
     # Initialize filter objects
     updated_tags = None
@@ -349,7 +406,7 @@ def acr_cache_update_custom(cmd,
 
     if preserve_filters:
         # Copy tag filters If no new filters are provided
-        if properties.artifact_sync_filters.tags and not starts_with and not ends_with and not contains:
+        if properties.artifact_sync_filters.tags and not processed_starts_with and not processed_ends_with and not processed_contains and not processed_tag:
             updated_tags = properties.artifact_sync_filters.tags
 
         # Copy platform filters If no new platform filters are provided
@@ -387,10 +444,10 @@ def acr_cache_update_custom(cmd,
     #update artifact sync filters object
     updated_artifact_sync_filters = None
     if is_active_sync:
-        if starts_with or ends_with or contains or tag:
+        if processed_starts_with or processed_ends_with or processed_contains or processed_tag:
             updated_tags = TagFilter(
                 type="KQL",
-                query=_create_kql(starts_with, ends_with, contains, tag)
+                query=_create_kql(processed_starts_with, processed_ends_with, processed_contains, processed_tag)
             )
 
         if platforms:
@@ -465,7 +522,7 @@ def acr_cache_sync(cmd,
                    client,
                    registry_name,
                    name,
-                   image,
+                   tag,
                    resource_group_name=None):
 
     rg = get_resource_group_name_by_registry_name(cmd.cli_ctx, registry_name, resource_group_name)
@@ -474,7 +531,6 @@ def acr_cache_sync(cmd,
                       registry_name=registry_name,
                       cache_rule_name=name)
 
-    tag = image
     rule_id = rule.id
     source_repo = rule.properties.source_repository
     target_repo = rule.properties.target_repository
