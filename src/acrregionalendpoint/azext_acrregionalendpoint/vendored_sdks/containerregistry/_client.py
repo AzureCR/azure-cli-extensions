@@ -140,7 +140,6 @@ class ContainerRegistryManagementClient:  # pylint: disable=too-many-instance-at
 
         if 'base_url' in kwargs:
             # If base_url is already in kwargs, don't pass it explicitly
-            kwargs['base_url'] = "https://centraluseuap.management.azure.com/"
             self._client: ARMPipelineClient = ARMPipelineClient(policies=_policies, **kwargs)
         else:
             # Otherwise use the endpoint parameter
