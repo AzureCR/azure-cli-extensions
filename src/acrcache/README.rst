@@ -215,7 +215,7 @@ List all cache rules::
 Update cache rule with new filters::
 
     az acr cache update -r myregistry -n my-rule \
-      --tag-ends-with -alpine --sync-referrers enabled
+      --tag-ends-with alpine --sync-referrers enabled
 
 Manually sync a specific tag::
 

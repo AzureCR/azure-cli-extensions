@@ -87,6 +87,29 @@ class TestTagFilterProcessing(unittest.TestCase):
                                             "new-tag", "new-starts", "new-ends", "new-contains")
         self.assertEqual(result, ("new-tag", "new-starts", "new-ends", "new-contains"))
 
+    def test_process_tag_filters_supports_gradual_migration(self):
+        """Test partial override scenarios mixing legacy and new pattern-based parameters"""
+        
+        # Legacy starts_with + new ends_with 
+        result = cache.process_tag_filters(None, "legacy-starts", None, None, 
+                                           None, None, "new-ends", None)
+        self.assertEqual(result, (None, "legacy-starts", "new-ends", None))
+        
+        # Legacy ends_with + new contains
+        result = cache.process_tag_filters(None, None, "legacy-ends", None, 
+                                           None, None, None, "new-contains")
+        self.assertEqual(result, (None, None, "legacy-ends", "new-contains"))
+        
+        # Legacy contains + new starts_with
+        result = cache.process_tag_filters(None, None, None, "legacy-contains", 
+                                           None, "new-starts", None, None)
+        self.assertEqual(result, (None, "new-starts", None, "legacy-contains"))
+        
+        # Mix multiple pattern-based parameters (no exact tag)
+        result = cache.process_tag_filters(None, "legacy-starts", "legacy-ends", None, 
+                                           None, None, None, "new-contains")
+        self.assertEqual(result, (None, "legacy-starts", "legacy-ends", "new-contains"))
+
 class TestDualFlagSupport(unittest.TestCase):
     """Test dual flag support for tag filtering parameters"""
     
