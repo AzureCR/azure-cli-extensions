@@ -62,19 +62,11 @@ Cache Rule Creation & Updates
 
 **Tag Filtering** (requires ``--sync activesync``):
 
-*New Parameters* (preferred):
-
 - ``--tag-equals``: Only sync artifacts with this exact tag name
 - ``--tag-starts-with``: Only sync tags that start with the specified string
 - ``--tag-ends-with``: Only sync tags that end with the specified string
 - ``--tag-contains``: Only sync tags that contain the specified string
 
-*Legacy Parameters* (deprecated - shows warning):
-
-- ``--tag``: Only sync artifacts with this exact tag name
-- ``--starts-with``: Only sync tags that start with the specified string
-- ``--ends-with``: Only sync tags that end with the specified string
-- ``--contains``: Only sync tags that contain the specified string
 
 **Platform & Artifact Filtering** (requires ``--sync activesync``):
 
@@ -242,20 +234,6 @@ Parameter Constraints
 - Tag filtering is mutually exclusive: use either exact match OR pattern-based filters
 - Include/exclude parameters are mutually exclusive within the same type
 - Source repository path cannot contain tags (use tag filtering parameters instead)
-
-Legacy Parameter Migration
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Legacy tag filtering parameters show deprecation warnings. Use the new explicit parameters for clarity:
-
-==============================  ==============================
-Legacy Parameter                New Parameter
-==============================  ==============================
-``--tag``                       ``--tag-equals``
-``--starts-with``               ``--tag-starts-with``
-``--ends-with``                 ``--tag-ends-with``
-``--contains``                  ``--tag-contains``
-==============================  ==============================
 
 Requirements
 ------------

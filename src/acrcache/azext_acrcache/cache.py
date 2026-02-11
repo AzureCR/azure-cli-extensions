@@ -24,26 +24,6 @@ USER_ASSIGNED_IDENTITY_RESOURCE_TYPE = "userAssignedIdentities"
 
 logger = get_logger(__name__)
 
-def _warn_deprecated_tag_parameters(tag, starts_with, ends_with, contains, 
-                                   tag_equals, tag_starts_with, tag_ends_with, tag_contains):
-    """Emit deprecation warning only for legacy tag filtering parameters that are actually being used"""
-    legacy_params_used = []
-    
-    # Only warn about legacy parameters that are actually being used (not overridden by new parameters)
-    if tag is not None and tag_equals is None:
-        legacy_params_used.append("--tag")
-    if starts_with is not None and tag_starts_with is None:
-        legacy_params_used.append("--starts-with")
-    if ends_with is not None and tag_ends_with is None:
-        legacy_params_used.append("--ends-with")
-    if contains is not None and tag_contains is None:
-        legacy_params_used.append("--contains")
-    
-    if legacy_params_used:
-        logger.warning(
-            f"Option {', '.join(legacy_params_used)} will be deprecated in a future release. Use --tag-equals, --tag-starts-with, --tag-ends-with, --tag-contains instead."
-        )
-
 def _create_kql(starts_with=None, ends_with=None, contains=None, tag=None):
     if not starts_with and not ends_with and not contains and not tag:
         return "Tags"
@@ -200,10 +180,6 @@ def acr_cache_create(cmd,
 
     if not rg:
         raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")
-
-    # Warn about deprecated legacy parameters that are being used
-    _warn_deprecated_tag_parameters(tag, starts_with, ends_with, contains,
-                                   tag_equals, tag_starts_with, tag_ends_with, tag_contains)
 
     # Merge legacy and new tag parameters
     processed_tag, processed_starts_with, processed_ends_with, processed_contains = process_tag_filters(
@@ -376,10 +352,6 @@ def acr_cache_update_custom(cmd,
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
     if include_image_types and exclude_image_types:
         raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")
-
-    # Warn about deprecated legacy parameters that are being used
-    _warn_deprecated_tag_parameters(tag, starts_with, ends_with, contains,
-                                   tag_equals, tag_starts_with, tag_ends_with, tag_contains)
 
     # Merge legacy and new tag parameters for update
     processed_tag, processed_starts_with, processed_ends_with, processed_contains = process_tag_filters(
