@@ -49,19 +49,19 @@ examples:
   - name: Create a cache rule with a user-assigned managed identity (using test registry domain).
     text: az acr cache create -r myregistry -n MyRule -s upstreamacrregistry.azurecr-test.io -t acr-to-acr-cacherule --assign-identity /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}
   - name: Create a cache rule with artifact sync enabled and set a tag filter.
-    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --tag-starts-with v1 --tag-ends-with beta
   - name: Create a cache rule with artifact sync enabled and sync only a specific tag.
-    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/nginx -t library/nginx --sync activesync --tag 8.0
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/nginx -t library/nginx --sync activesync --tag-equals 8.0
   - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify platforms and sync referrers.
-    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --tag-starts-with v1 --tag-ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
   - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify  platforms, sync referrers and artifact types to include.
-    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types application/vnd.cncf.notary.signature
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --tag-starts-with v1 --tag-ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types application/vnd.cncf.notary.signature
   - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify platforms, sync referrers and artifact types to exclude.
-    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.cncf.helm.chart.v1.tar+gzip,application/vnd.aquasec.trivy.report+json
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --tag-starts-with v1 --tag-ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.cncf.helm.chart.v1.tar+gzip,application/vnd.aquasec.trivy.report+json
   - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify platforms, sync referrers, artifact types to include and image types to include.
-    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types application/vnd.aquasec.trivy.report+json,application/vnd.cncf.helm.chart.v1.tar+gzip --include-image-types docker.manifest.v2+json
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --tag-starts-with v1 --tag-ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types application/vnd.aquasec.trivy.report+json,application/vnd.cncf.helm.chart.v1.tar+gzip --include-image-types docker.manifest.v2+json
   - name: Create a cache rule with artifact sync enabled, set a tag filter, and specify platforms, sync referrers, artifact types to exclude and image types to exclude.
-    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.aquasec.trivy.vulnerability.report,application/vnd.aquasec.trivy.report+json --exclude-image-types application/vnd.oci.image.manifest.v1+json,application/vnd.oci.image.index.v1+json
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync activesync --tag-starts-with v1 --tag-ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.aquasec.trivy.vulnerability.report,application/vnd.aquasec.trivy.report+json --exclude-image-types application/vnd.oci.image.manifest.v1+json,application/vnd.oci.image.index.v1+json
 """
 
 helps['acr cache update'] = """
@@ -85,15 +85,15 @@ examples:
   - name: Update a cache rule with a user-assigned managed identity.
     text: az acr cache update -r myregistry -n MyRule --assign-identity /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name} 
   - name: Enable artifact sync and set a tag filter.
-    text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta
+    text: az acr cache update -r myregistry -n MyRule --sync activesync --tag-starts-with v1 --tag-ends-with beta
   - name: Enable artifact sync, set a tag filter, and specify platforms and sync referrers.
-    text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
+    text: az acr cache update -r myregistry -n MyRule --sync activesync --tag-starts-with v1 --tag-ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled
   - name: Enable artifact sync, set a tag filter, and specify platforms, sync referrers and artifact types to include.
-    text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types images,notary-project-signature
+    text: az acr cache update -r myregistry -n MyRule --sync activesync --tag-starts-with v1 --tag-ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --include-artifact-types images,notary-project-signature
   - name: Update cache rule to sync only a specific tag.
-    text: az acr cache update -r myregistry -n MyRule --sync activesync --tag latest
+    text: az acr cache update -r myregistry -n MyRule --sync activesync --tag-equals latest
   - name: Enable artifact sync, set a tag filter, and specify platforms, sync referrers and artifact types to exclude.
-    text: az acr cache update -r myregistry -n MyRule --sync activesync --starts-with v1 --ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.aquasec.trivy.vulnerability.report
+    text: az acr cache update -r myregistry -n MyRule --sync activesync --tag-starts-with v1 --tag-ends-with beta --platforms linux/amd64,linux/arm64 --sync-referrers enabled --exclude-artifact-types application/vnd.aquasec.trivy.vulnerability.report
 """
 
 helps['acr cache delete'] = """
@@ -109,5 +109,5 @@ type: command
 short-summary: Sync a tag immediately. Artifact sync must be enabled on the cache rule and the tag must be within any specified tag filter.
 examples:
   - name: Sync the 'latest' tag.
-    text: az acr cache sync -r myregistry -n MyRule --image latest
+    text: az acr cache sync -r myregistry -n MyRule --tag latest
 """

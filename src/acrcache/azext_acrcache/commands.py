@@ -21,4 +21,4 @@ def load_command_table(self, _):
         g.command('list', 'acr_cache_list')
         g.command('delete', 'acr_cache_delete', confirmation=True)
         g.command('update', 'acr_cache_update_custom')
-        g.command('sync', 'acr_cache_sync', client_factory=cf_acrreg)
+        g.command('sync', 'acr_cache_sync', client_factory=cf_acrreg, is_preview=True)

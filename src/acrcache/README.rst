@@ -150,6 +150,9 @@ Development
       azdev extension build acrcache
       az extension remove --name acrcache
       az extension add --source "path/dist/acrcache.whl"
+- Run tests::
+
+      azdev test acrcache   
 
 Usage Examples
 --------------

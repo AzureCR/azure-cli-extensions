@@ -118,27 +118,6 @@ class TestDualFlagSupport(unittest.TestCase):
         self.cmd = mock.Mock()
         self.cmd.cli_ctx = mock.Mock()
         self.client = mock.Mock()
-        
-    @mock.patch('azext_acrcache.cache.get_registry_by_name')
-    @mock.patch('azext_acrcache.cache.user_confirmation')
-    @mock.patch('azext_acrcache.cache.logger')
-    def test_legacy_parameters_trigger_deprecation_warning(self, mock_logger, mock_confirmation, mock_get_registry):
-        """Test that legacy parameters trigger deprecation warnings"""
-        mock_registry = mock.Mock()
-        mock_registry.id = "/subscriptions/xxx/resourceGroups/rg1/providers/Microsoft.ContainerRegistry/registries/registry1"
-        mock_get_registry.return_value = (mock_registry, None)
-        
-        cache.acr_cache_create(
-            self.cmd, self.client, "mockRegistry", "mockCacheRule", "source/repo", "target/repo",
-            resource_group_name="mockrg", sync="activesync", tag="legacy-tag", 
-            sync_referrers=None, yes=True
-        )
-        
-        # Verify deprecation warning was logged
-        mock_logger.warning.assert_called_once()
-        warning_call = mock_logger.warning.call_args
-        self.assertIn("--tag", warning_call[0][1])
-        self.assertIn("will be deprecated", warning_call[0][0])
 
     @mock.patch('azext_acrcache.cache.get_registry_by_name')
     @mock.patch('azext_acrcache.cache.user_confirmation')

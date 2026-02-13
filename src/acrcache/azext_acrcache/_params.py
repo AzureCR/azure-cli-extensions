@@ -35,4 +35,4 @@ def load_arguments(self, _):
         c.argument('exclude_image_types', help='A list of image types to exclude from the sync. e.g. application/vnd.docker.distribution.manifest.v2+json')
 
     with self.argument_context('acr cache sync') as c:
-        c.argument('tag', help='The name of the tag you want to sync immediately. Can only be used if artifact sync is enabled and the tag is within any specified tag filter.')
+        c.argument('tag', help='The name of the tag you want to sync immediately. Can only be used if artifact sync is enabled and the tag is within any specified tag filter.', deprecate_info=None)
