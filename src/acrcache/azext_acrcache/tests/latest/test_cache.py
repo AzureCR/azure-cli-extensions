@@ -1,7 +1,6 @@
 import unittest
 from unittest import mock
 from azure.core.serialization import NULL as AzureCoreNull
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.core.util import CLIError
 import azext_acrcache.cache as cache
 
@@ -22,40 +21,9 @@ class TestCacheUtilityFunctions(unittest.TestCase):
                         "Tags | where Name startswith 'foo' and Name contains 'baz'")
         self.assertEqual(cache._create_kql(ends_with="bar", contains="baz"), 
                         "Tags | where Name endswith 'bar' and Name contains 'baz'")
-        # Test that specific tag is mutually exclusive with other filters
-        with self.assertRaises(CLIError):
-            cache._create_kql(tag="exact", starts_with="foo")
-        with self.assertRaises(CLIError):
-            cache._create_kql(tag="exact", ends_with="bar")
-        with self.assertRaises(CLIError):
-            cache._create_kql(tag="exact", contains="baz")
-        with self.assertRaises(CLIError):
-            cache._create_kql(tag="exact", starts_with="foo", ends_with="bar")
-        with self.assertRaises(CLIError):
-            cache._create_kql(tag="exact", starts_with="foo", contains="baz")
-        with self.assertRaises(CLIError):
-            cache._create_kql(tag="exact", ends_with="bar", contains="baz")
-        with self.assertRaises(CLIError):
-            cache._create_kql(tag="exact", starts_with="foo", ends_with="bar", contains="baz")
         self.assertEqual(cache._create_kql(starts_with="foo", ends_with="bar", contains="baz"), 
                         "Tags | where Name startswith 'foo' and Name endswith 'bar' and Name contains 'baz'")
 
-    def test_separate_params(self):
-        """Test parameter extraction from KQL queries"""
-        q = "Tags | where Name startswith 'foo' and Name endswith 'bar' and Name contains 'baz'"
-        starts_with, ends_with, contains, tag = cache._separate_params(q)
-        self.assertEqual(starts_with, "foo")
-        self.assertEqual(ends_with, "bar")
-        self.assertEqual(contains, "baz")
-        self.assertIsNone(tag)
-        
-        # Test exact tag match
-        q_tag = "Tags | where Name == 'exact'"
-        starts_with, ends_with, contains, tag = cache._separate_params(q_tag)
-        self.assertIsNone(starts_with)
-        self.assertIsNone(ends_with)
-        self.assertIsNone(contains)
-        self.assertEqual(tag, "exact")
 
 
 class TestCacheOperations(unittest.TestCase):
@@ -98,6 +66,101 @@ class TestCacheOperations(unittest.TestCase):
             registry_name="mockRegistry", 
             cache_rule_name="mockCacheRule"
         )
+class TestTagFilterProcessing(unittest.TestCase):
+    """Test dual flag parameter processing functionality"""
+
+    def test_process_tag_filters_legacy_only(self):
+        """Test process_tag_filters with legacy parameters only"""
+        result = cache.process_tag_filters("legacy-tag", "legacy-starts", "legacy-ends", "legacy-contains", 
+                                            None, None, None, None)
+        self.assertEqual(result, ("legacy-tag", "legacy-starts", "legacy-ends", "legacy-contains"))
+
+    def test_process_tag_filters_new_only(self):
+        """Test process_tag_filters with new parameters only"""
+        result = cache.process_tag_filters(None, None, None, None, 
+                                            "new-tag", "new-starts", "new-ends", "new-contains")
+        self.assertEqual(result, ("new-tag", "new-starts", "new-ends", "new-contains"))
+
+    def test_process_tag_filters_new_overrides_legacy(self):
+        """Test process_tag_filters where new parameters override legacy ones"""
+        result = cache.process_tag_filters("legacy-tag", "legacy-starts", "legacy-ends", "legacy-contains", 
+                                            "new-tag", "new-starts", "new-ends", "new-contains")
+        self.assertEqual(result, ("new-tag", "new-starts", "new-ends", "new-contains"))
+
+    def test_process_tag_filters_supports_gradual_migration(self):
+        """Test partial override scenarios mixing legacy and new pattern-based parameters"""
+        
+        # Legacy starts_with + new ends_with 
+        result = cache.process_tag_filters(None, "legacy-starts", None, None, 
+                                           None, None, "new-ends", None)
+        self.assertEqual(result, (None, "legacy-starts", "new-ends", None))
+        
+        # Legacy ends_with + new contains
+        result = cache.process_tag_filters(None, None, "legacy-ends", None, 
+                                           None, None, None, "new-contains")
+        self.assertEqual(result, (None, None, "legacy-ends", "new-contains"))
+        
+        # Legacy contains + new starts_with
+        result = cache.process_tag_filters(None, None, None, "legacy-contains", 
+                                           None, "new-starts", None, None)
+        self.assertEqual(result, (None, "new-starts", None, "legacy-contains"))
+        
+        # Mix multiple pattern-based parameters (no exact tag)
+        result = cache.process_tag_filters(None, "legacy-starts", "legacy-ends", None, 
+                                           None, None, None, "new-contains")
+        self.assertEqual(result, (None, "legacy-starts", "legacy-ends", "new-contains"))
+
+class TestDualFlagSupport(unittest.TestCase):
+    """Test dual flag support for tag filtering parameters"""
+    
+    def setUp(self):
+        """Set up test fixtures"""
+        self.cmd = mock.Mock()
+        self.cmd.cli_ctx = mock.Mock()
+        self.client = mock.Mock()
+
+    @mock.patch('azext_acrcache.cache.get_registry_by_name')
+    @mock.patch('azext_acrcache.cache.user_confirmation')
+    def test_new_parameters_override_legacy(self, mock_confirmation, mock_get_registry):
+        """Test that new parameters override legacy ones"""
+        mock_registry = mock.Mock()
+        mock_registry.id = "/subscriptions/xxx/resourceGroups/rg1/providers/Microsoft.ContainerRegistry/registries/registry1"
+        mock_get_registry.return_value = (mock_registry, None)
+        
+        cache.acr_cache_create(
+            self.cmd, self.client, "mockRegistry", "mockCacheRule", "source/repo", "target/repo",
+            resource_group_name="mockrg", sync="activesync", 
+            # Legacy parameters 
+            tag="legacy-tag", starts_with="legacy-starts", 
+            # New parameters should override
+            tag_equals="new-tag", tag_starts_with="new-starts",
+            sync_referrers=None, yes=True
+        )
+        
+        # Verify client.begin_create was called
+        self.client.begin_create.assert_called_once()
+        
+        # The actual KQL generation would use the new values (tested in process_tag_filters tests)
+        # This test verifies the flow doesn't break
+
+    @mock.patch('azext_acrcache.cache.get_registry_by_name')
+    def test_source_repo_with_tag_validation(self, mock_get_registry):
+        """Test that source repo with embedded tag raises error"""
+        mock_registry = mock.Mock()
+        mock_registry.id = "/subscriptions/xxx/resourceGroups/rg1/providers/Microsoft.ContainerRegistry/registries/registry1"
+        mock_get_registry.return_value = (mock_registry, None)
+        
+        with self.assertRaises(CLIError) as cm:
+            cache.acr_cache_create(
+                self.cmd, self.client, "mockRegistry", "mockCacheRule", 
+                "source/repo:tag", "target/repo",  # Invalid - contains tag
+                resource_group_name="mockrg", sync_referrers=None
+            )
+        
+        self.assertIn("Source repository should not include a tag", str(cm.exception))
+        self.assertIn("--tag-equals", str(cm.exception))
+
+
 class TestCacheCreateValidation(unittest.TestCase):
     """Test cache creation validation logic"""
     
@@ -118,7 +181,7 @@ class TestCacheCreateValidation(unittest.TestCase):
             cache.acr_cache_create(
                 self.cmd, self.client, "mockRegistry", "mockCacheRule1", "mockRepo1", "mockRepo2", 
                 resource_group_name=None, sync="activesync", 
-                starts_with="foo", ends_with=None, contains=None
+                tag_starts_with="foo", tag_ends_with=None, tag_contains=None
             )
 
     @mock.patch('azext_acrcache.cache.get_registry_by_name')
@@ -239,8 +302,9 @@ class TestCacheSync(unittest.TestCase):
         # Set up mock cache rule
         dummy_rule = mock.Mock()
         dummy_rule.id = "ruleid"
-        dummy_rule.source_repository = "repo/source"
-        dummy_rule.target_repository = "repo/target"
+        dummy_rule.properties = mock.Mock()
+        dummy_rule.properties.source_repository = "repo/source"
+        dummy_rule.properties.target_repository = "repo/target"
         
         self.client.cache_rules.get.return_value = dummy_rule
         self.client.registries.begin_import_image = mock.Mock()

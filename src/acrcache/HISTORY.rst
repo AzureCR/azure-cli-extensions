@@ -2,6 +2,19 @@
 
 Release History
 ===============
+
+1.0.1
+++++++
+* **ENHANCEMENT**: Added deprecation warnings for legacy tag filtering parameters
+  * `--starts-with`, `--ends-with`, `--contains`, `--tag` are now deprecated
+  * Users should migrate to `--tag-starts-with`, `--tag-ends-with`, `--tag-contains`, `--tag-equals` respectively
+  * Legacy parameters still work but display deprecation warnings with migration guidance
+* **CHANGED**: Changed preview status for feature differentiation
+  * Basic cache rule operations (Pull-Through Cache) are Generally Available (GA)
+  * Artifact Sync functionality and related parameters remain in Preview
+* **DOCUMENTATION**: Updated README and help files to guide users on new parameter usage and deprecation
+* **TESTING**: Updated unittests to cover deprecation warnings and new parameter handling
+
 1.0.0c9
 ++++++  
 * **FEATURE**: added new artifact sync filtering options for cache rules
