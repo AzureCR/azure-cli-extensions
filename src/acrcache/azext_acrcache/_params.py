@@ -36,3 +36,4 @@ def load_arguments(self, _):
 
     with self.argument_context('acr cache sync') as c:
         c.argument('tag', help='The name of the tag you want to sync immediately. Can only be used if artifact sync is enabled and the tag is within any specified tag filter.', deprecate_info=None)
+        c.argument('sync_tag_if_deleted', help='Flag to indicate whether the tag should be sync\'d if it has already been deleted. Defaults to false.', action='store_true')

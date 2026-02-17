@@ -12,11 +12,11 @@ from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_registry_management_client.models._models import (
-    CacheRule, CacheRuleProperties,
-    CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
-    PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties,
-    IdentityProperties, UserIdentityProperties
+    CacheRule, CacheRuleProperties, CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
+    PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties, IdentityProperties, UserIdentityProperties,
+    CacheRuleSyncParameters
 )
+
 
 # Constants for managed identity resource validation
 MANAGED_IDENTITY_RESOURCE_PROVIDER = "Microsoft.ManagedIdentity"
@@ -487,28 +487,21 @@ def acr_cache_sync(cmd,
                    registry_name,
                    name,
                    tag,
+                   sync_tag_if_deleted=None,
                    resource_group_name=None):
 
     rg = get_resource_group_name_by_registry_name(cmd.cli_ctx, registry_name, resource_group_name)
 
-    rule = client.cache_rules.get(resource_group_name=rg,
-                      registry_name=registry_name,
-                      cache_rule_name=name)
+    # Create sync parameters for the new cacheRuleSyncParameter endpoint
+    sync_params = CacheRuleSyncParameters(
+        tag_name=tag,
+        sync_tag_if_deleted=sync_tag_if_deleted
+    )
 
-    rule_id = rule.id
-    source_repo = rule.properties.source_repository
-    target_repo = rule.properties.target_repository
-    source_image_str = source_repo[source_repo.find('/') + 1:] + ":" + tag
-
-    import_source = ImportSource(source_image=source_image_str,
-                                 cache_rule_resource_id=rule_id)
-
-    params = ImportImageParameters(source=import_source,
-                                   # import tag with force to override existing tags
-                                   mode="Force",
-                                   target_tags=[target_repo + ":" + tag])
-
-    return client.registries.begin_import_image(resource_group_name=rg,
-                                    registry_name=registry_name,
-                                    parameters=params)
+    return client.cache_rules.sync_cache_rule(
+        resource_group_name=rg,
+        registry_name=registry_name,
+        cache_rule_name=name,
+        sync_tag_parameters=sync_params
+    )
                          
