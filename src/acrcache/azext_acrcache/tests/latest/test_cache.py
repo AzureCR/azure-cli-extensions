@@ -295,34 +295,45 @@ class TestCacheSync(unittest.TestCase):
         self.client = mock.Mock()
         
     @mock.patch('azext_acrcache.cache.get_resource_group_name_by_registry_name')
-    def test_acr_cache_sync_calls_import_image(self, mock_get_rg):
-        """Test that cache sync calls the import image operation"""
+    def test_acr_cache_sync_calls_sync_cache_rule(self, mock_get_rg):
+        """Test that cache sync calls the new sync cache rule operation"""
         mock_get_rg.return_value = "mockrg"
         
-        # Set up mock cache rule
-        dummy_rule = mock.Mock()
-        dummy_rule.id = "ruleid"
-        dummy_rule.properties = mock.Mock()
-        dummy_rule.properties.source_repository = "repo/source"
-        dummy_rule.properties.target_repository = "repo/target"
-        
-        self.client.cache_rules.get.return_value = dummy_rule
-        self.client.registries.begin_import_image = mock.Mock()
+        # Set up mock for the new sync API
+        self.client.cache_rules.sync_cache_rule = mock.Mock()
 
         cache.acr_cache_sync(self.cmd, self.client, "mockRegistry", "mockCacheRule1", "tag1")
 
-        self.client.registries.begin_import_image.assert_called_once()
+        self.client.cache_rules.sync_cache_rule.assert_called_once()
         
-        # Verify the import parameters
-        call_args = self.client.registries.begin_import_image.call_args
+        # Verify the sync parameters
+        call_args = self.client.cache_rules.sync_cache_rule.call_args
         self.assertEqual(call_args[1]['resource_group_name'], "mockrg")
         self.assertEqual(call_args[1]['registry_name'], "mockRegistry")
+        self.assertEqual(call_args[1]['cache_rule_name'], "mockCacheRule1")
 
-        # Verify import parameters structure
-        params = call_args[1]['parameters']
-        self.assertEqual(params.mode, "Force")
-        self.assertEqual(params.target_tags, ["repo/target:tag1"])
-        self.assertEqual(params.source.cache_rule_resource_id, "ruleid")
+        # Verify sync parameters structure
+        sync_params = call_args[1]['sync_tag_parameters']
+        self.assertEqual(sync_params.tag_name, "tag1")
+        self.assertEqual(sync_params.sync_tag_if_deleted, False)
+
+    @mock.patch('azext_acrcache.cache.get_resource_group_name_by_registry_name')
+    def test_acr_cache_sync_with_sync_tag_if_deleted(self, mock_get_rg):
+        """Test that cache sync passes sync_tag_if_deleted parameter correctly"""
+        mock_get_rg.return_value = "mockrg"
+        
+        # Set up mock for the new sync API
+        self.client.cache_rules.sync_cache_rule = mock.Mock()
+
+        cache.acr_cache_sync(self.cmd, self.client, "mockRegistry", "mockCacheRule1", "tag1", sync_tag_if_deleted=True)
+
+        self.client.cache_rules.sync_cache_rule.assert_called_once()
+        
+        # Verify sync parameters structure with sync_tag_if_deleted=True
+        call_args = self.client.cache_rules.sync_cache_rule.call_args
+        sync_params = call_args[1]['sync_tag_parameters']
+        self.assertEqual(sync_params.tag_name, "tag1")
+        self.assertEqual(sync_params.sync_tag_if_deleted, True)
 
 class TestIdentityProcessing(unittest.TestCase):
     """Test identity parameter processing functionality"""

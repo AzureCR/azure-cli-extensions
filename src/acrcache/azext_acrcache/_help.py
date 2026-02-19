@@ -35,8 +35,8 @@ parameters:
   - name: --assign-identity
     short-summary: Resource ID of the user-assigned managed identity.
     long-summary: |
-      Resource ID of the user-assigned managed identity for authenticating with the ACR source registry. 
-      Must be in the same tenant as both registries. 
+      Resource ID of the user-assigned managed identity for authenticating with the ACR source registry.
+      Must be in the same tenant as both registries.
       Format: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}
   - name: --sync-referrers
     short-summary: Enable or disable sync referrers.
@@ -71,8 +71,8 @@ parameters:
   - name: --assign-identity
     short-summary: Resource ID of the user-assigned managed identity.
     long-summary: |
-      Resource ID of the user-assigned managed identity for authenticating with the ACR source registry. 
-      Must be in the same tenant as both registries. 
+      Resource ID of the user-assigned managed identity for authenticating with the ACR source registry.
+      Must be in the same tenant as both registries.
       Format: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}
   - name: --sync-referrers
     short-summary: Enable or disable syncing of referrers.
@@ -83,7 +83,7 @@ examples:
   - name: Remove a credential set from an existing cache rule.
     text: az acr cache update -r myregistry -n MyRule --remove-cred-set
   - name: Update a cache rule with a user-assigned managed identity.
-    text: az acr cache update -r myregistry -n MyRule --assign-identity /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name} 
+    text: az acr cache update -r myregistry -n MyRule --assign-identity /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}
   - name: Enable artifact sync and set a tag filter.
     text: az acr cache update -r myregistry -n MyRule --sync activesync --tag-starts-with v1 --tag-ends-with beta
   - name: Enable artifact sync, set a tag filter, and specify platforms and sync referrers.
