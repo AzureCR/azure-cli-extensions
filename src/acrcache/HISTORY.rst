@@ -2,6 +2,20 @@
 
 Release History
 ===============
+1.0.2
+++++++
+* **BREAKING**: Migrated sync command to dedicated sync API endpoint
+  * Updated `az acr cache sync` command to use new cacheRuleSyncParameter endpoint instead of importImage
+  * Changed from Long Running Operation (LRO) pattern to fire-and-forget queuing model
+  * Added messaging to inform users that sync requests are queued and will complete asynchronously
+
+* **FEATURE**: Added `--sync-tag-if-deleted` parameter for enhanced sync control
+  * New optional flag for `az acr cache sync` command to control behavior with deleted tags
+  * When enabled, allows syncing tags that have been deleted from the source registry
+  * sync_tag_if_deleted parameter defaults to false when omitted
+
+* **ENHANCEMENT**: Improved parameter handling and validation
+  * Removed unused imports (ImportSource, ImportImageParameters) from legacy implementation
 
 1.0.1
 ++++++

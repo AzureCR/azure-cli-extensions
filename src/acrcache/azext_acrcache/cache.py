@@ -12,7 +12,7 @@ from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_registry_management_client.models._models import (
-    CacheRule, CacheRuleProperties, CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
+    CacheRule, CacheRuleProperties, CacheRuleUpdateParameters, CacheRuleUpdateProperties,
     PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties, IdentityProperties, UserIdentityProperties,
     CacheRuleSyncParameters
 )
@@ -495,13 +495,17 @@ def acr_cache_sync(cmd,
     # Create sync parameters for the new cacheRuleSyncParameter endpoint
     sync_params = CacheRuleSyncParameters(
         tag_name=tag,
-        sync_tag_if_deleted=sync_tag_if_deleted
+        sync_tag_if_deleted=sync_tag_if_deleted if sync_tag_if_deleted is not None else False
     )
 
-    return client.cache_rules.sync_cache_rule(
+    # Call the sync API
+    result = client.cache_rules.sync_cache_rule(
         resource_group_name=rg,
         registry_name=registry_name,
         cache_rule_name=name,
         sync_tag_parameters=sync_params
     )
-                         
+    
+    # Inform user that sync request has been queued
+    logger.warning("Sync request queued successfully. The repository/tag will appear when sync completes.")
+    return result               
