@@ -85,6 +85,7 @@ Manual Sync Parameters
 ~~~~~~~~~~~~~~~~~~~~~~
 
 - ``--tag``: The name of the tag to sync immediately (requires existing cache rule with artifact sync enabled)
+- ``--sync-tag-if-deleted``: Flag to indicate whether the tag should be synced if it has already been deleted from the source registry (defaults to false)
 
 Installation
 ------------
